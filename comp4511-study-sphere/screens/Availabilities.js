@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { Button, Text, View } from "react-native";
+import { Button, Text, View, ScrollView} from "react-native";
 import CalendarPicker from 'react-native-calendar-picker';
 
-export default function Availabilities({ navigation }) 
-{
+export default function Availabilities({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [buttonColorsByDate, setButtonColorsByDate] = useState({});
 
-
- const handleDateChange = (date) => {
+  const handleDateChange = (date) => {
     setSelectedDate(date);
     // Initialize button colors for the selected date if not already set
     if (!buttonColorsByDate[date]) {
@@ -46,10 +44,14 @@ export default function Availabilities({ navigation })
     }
   };
 
-
+  // Function to map button colors to availability text
+  const getAvailabilityText = (color) => {
+    return color === "green" ? "Available" : "Unavailable";
+  };
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <ScrollView>
       <Text>Availabilities Screen</Text>
       <CalendarPicker
         onDateChange={handleDateChange}
@@ -61,13 +63,14 @@ export default function Availabilities({ navigation })
           {Object.keys(buttonColorsByDate[selectedDate]).map((buttonTitle) => (
             <Button
               key={buttonTitle}
-              title={buttonTitle}
+              title={`${buttonTitle} - ${getAvailabilityText(buttonColorsByDate[selectedDate][buttonTitle])}`}
               onPress={() => toggleButtonColor(buttonTitle)}
               color={buttonColorsByDate[selectedDate][buttonTitle]}
             />
           ))}
         </View>
       )}
+      </ScrollView>
     </View>
   );
 }
