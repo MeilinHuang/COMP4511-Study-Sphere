@@ -242,7 +242,8 @@ export default function Availabilities({ navigation }) {
         {selectedDate && (
           <View>
             <Text style={styles.dateText}>{dateFormat(selectedDate)}</Text>
-            {Object.keys(buttonColorsByDate[selectedDate] || {}).map((timeSlot, index) => (
+            {Object.keys(buttonColorsByDate[selectedDate]).map((timeSlot, index) => (
+            
             <TouchableOpacity
               key={index}
               style={buttonstyle(buttonColorsByDate[selectedDate][timeSlot])}
