@@ -239,7 +239,7 @@ export default function Availabilities({ navigation }) {
           />
         </View>
 
-        {selectedDate && (
+        {selectedDate && buttonColorsByDate[selectedDate] && (
           <View>
             <Text style={styles.dateText}>{dateFormat(selectedDate)}</Text>
             {Object.keys(buttonColorsByDate[selectedDate]).map((timeSlot, index) => (
