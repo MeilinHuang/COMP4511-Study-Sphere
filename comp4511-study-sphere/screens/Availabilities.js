@@ -19,10 +19,6 @@ export default function Availabilities({ navigation }) {
         {
           setButtonColorsByDate(JSON.parse(storedButtonColors));
         } 
-        else 
-        {
-          TodayAvail();
-        }
       } 
       catch (e) 
       {
@@ -49,40 +45,11 @@ export default function Availabilities({ navigation }) {
     saveData();
   }, [buttonColorsByDate]);
 
-  useEffect(() => 
-  {
-    if (!(today in buttonColorsByDate)) 
-    {
-      TodayAvail();
-    }
-  }, [buttonColorsByDate]);
-
-  const TodayAvail = () => 
-  {
-    setButtonColorsByDate
-    ({
-      ...buttonColorsByDate,
-      [today]: 
-      {
-        "7 AM": "green",
-        "8 AM": "green",
-        "9 AM": "green",
-        "10 AM": "green",
-        "11 AM": "green",
-        "12 PM": "green",
-        "1 PM": "green",
-        "2 PM": "green",
-        "3 PM": "green",
-        "4 PM": "green",
-        "5 PM": "green",
-      },
-    });
-  };
-
   const changeDate = (date) => 
   {
-    const dateString = date;
-    if (!(dateString in buttonColorsByDate) && (dateString !== selectedDate)) 
+    const dateString = new Date(date).toISOString().split('T')[0];;
+    setSelectedDate(dateString);
+    if (!(dateString in buttonColorsByDate)) 
     {
       setButtonColorsByDate
       ({
@@ -161,72 +128,6 @@ export default function Availabilities({ navigation }) {
     borderColor: 'gray',
   });
 
-  const styles = StyleSheet.create({
-    container: 
-    {
-      alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1,
-      padding: 10,
-    },
-    
-    title: 
-    {
-      textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: 18,
-      marginVertical: 8,
-      
-    },
-
-    dateText: 
-    {
-      marginVertical: 6,
-      fontSize: 16,
-      textAlign: 'center',
-    },
-
-    button: 
-    {
-      padding: 10,
-      borderRadius: 5,
-      marginVertical: 5,
-    },
-
-    buttonText: 
-    {
-      fontSize: 14,
-    },
-
-    calendarContainer: 
-    {
-      marginVertical: 10,
-      alignSelf: 'center',
-      width: 350,
-    },
-
-
-    timeSlot: 
-    {
-      paddingVertical: 25, 
-      paddingHorizontal: 25, 
-      alignItems: 'flex-start', 
-      justifyContent: 'flex-start', 
-      alignSelf: 'stretch', 
-    },
-
-    timeText: 
-    {
-      fontSize: 16,
-      color: "#5C5C5C",
-      alignSelf: 'flex-start', 
-      position: 'absolute', 
-      top: 5, 
-      left: 5, 
-    },
-  });
-
-
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -260,3 +161,69 @@ export default function Availabilities({ navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: 
+  {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    padding: 10,
+  },
+  
+  title: 
+  {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginVertical: 8,
+    
+  },
+
+  dateText: 
+  {
+    marginVertical: 6,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+
+  button: 
+  {
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+
+  buttonText: 
+  {
+    fontSize: 14,
+  },
+
+  calendarContainer: 
+  {
+    marginVertical: 10,
+    alignSelf: 'center',
+    width: 350,
+  },
+
+
+  timeSlot: 
+  {
+    paddingVertical: 25, 
+    paddingHorizontal: 25, 
+    alignItems: 'flex-start', 
+    justifyContent: 'flex-start', 
+    alignSelf: 'stretch', 
+  },
+
+  timeText: 
+  {
+    fontSize: 16,
+    color: "#5C5C5C",
+    alignSelf: 'flex-start', 
+    position: 'absolute', 
+    top: 5, 
+    left: 5, 
+  },
+});
+
