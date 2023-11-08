@@ -130,9 +130,6 @@ export default function App() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    // backgroundColor: "linear-gradient(#e66465, #9198e5)",
-    // alignItems: 'center',
-    // justifyContent: 'center',
     height: "100%",
   },
   background: {
