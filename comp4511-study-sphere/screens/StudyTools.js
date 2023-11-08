@@ -19,10 +19,8 @@ export default function StudyTools({ route, navigation }) {
   const [todos, setTodos] = useState([]);
   const [inprogressTodos, setInprogressTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
-  const [nextKey, setNextKey] = useState(null);
+  const [nextKey, setNextKey] = useState(0);
   const windowHeight = Dimensions.get("window").height;
-  const screenDimensions = Dimensions.get("screen");
-  const tabBarHeight = useBottomTabBarHeight();
 
   const addToArray = (currTitle, currTag, currDueDate, currImg, currBody) => {
     console.log("nextKey", nextKey);
@@ -118,18 +116,19 @@ export default function StudyTools({ route, navigation }) {
 
   return (
     <View style={styles.containerInner}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <LinearGradient
-          // Background Linear Gradient
-          colors={["#B6B2E6", "#C5DDBA"]}
-          style={styles.background}
-        >
+      <LinearGradient
+        // Background Linear Gradient
+        colors={["#B6B2E6", "#C5DDBA"]}
+        style={styles.background}
+      >
+        <ScrollView contentContainerStyle={styles.container}>
           <View>
             <Text style={styles.todoHeadings}>Todo:</Text>
           </View>
           {todos.map(({ title, dueDate, tag, img, body, key }, idx) => {
             return (
               <TodoBox
+                key={idx}
                 title={title}
                 dueDate={dueDate}
                 tag={tag}
@@ -146,6 +145,7 @@ export default function StudyTools({ route, navigation }) {
           {inprogressTodos.map(
             ({ title, dueDate, tag, img, body, key }, idx) => (
               <TodoBox
+                key={idx}
                 title={title}
                 dueDate={dueDate}
                 tag={tag}
@@ -162,6 +162,7 @@ export default function StudyTools({ route, navigation }) {
           {completedTodos.map(
             ({ title, dueDate, tag, img, body, key }, idx) => (
               <TodoBox
+                key={idx}
                 title={title}
                 dueDate={dueDate}
                 tag={tag}
@@ -172,14 +173,13 @@ export default function StudyTools({ route, navigation }) {
               />
             )
           )}
-        </LinearGradient>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
       <Pressable
         accessibilityLabel="Create todo"
         onPress={() => navigation.navigate("Create")}
         style={{
           ...styles.addButton,
-          top: windowHeight - 270,
         }}
       >
         <MaterialCommunityIcons name="plus-circle" size={80} color="black" />
@@ -191,8 +191,8 @@ export default function StudyTools({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     //flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
     minHeight: "100%",
     width: "100%",
   },

@@ -8,7 +8,9 @@ export default function Availabilities({ navigation }) {
       <Button
         title="Click me to go to detail"
         onPress={() =>
-          navigation.navigate("Detail", { title: "From the Availabilities Screen" })
+          navigation.navigate("Detail", {
+            title: "From the Availabilities Screen",
+          })
         }
       />
     </View>

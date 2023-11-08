@@ -8,7 +8,9 @@ export default function StudySessions({ navigation }) {
       <Button
         title="Click me to go to detail"
         onPress={() =>
-          navigation.navigate("Detail", { title: "From the Study Sessions Screen" })
+          navigation.navigate("Detail", {
+            title: "From the Study Sessions Screen",
+          })
         }
       />
     </View>
