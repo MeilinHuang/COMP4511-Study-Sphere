@@ -6,7 +6,8 @@
     "email": "strong@gmail.com",
     "username": "hyde",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp3511": ["TH16A", "W16A"],
+      "comp3121": ["M16A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],
@@ -20,7 +21,8 @@
     "email": "espinoza@gmail.com",
     "username": "kaitlin",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp3511": ["TH16A", "W16A"],
+      "comp3121": ["M16A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],
@@ -34,7 +36,8 @@
     "email": "daugherty@gmail.com",
     "username": "potter",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp3511": ["TH16A", "W16A"],
+      "comp3121": ["M16A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],
@@ -62,7 +65,8 @@
     "email": "marsh@gmail.com",
     "username": "elsie",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp3511": ["TH16A"],
+      "comp4511": ["T12A", "W13A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],
@@ -76,7 +80,8 @@
     "email": "kelli@gmail.com",
     "username": "hood",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp3511": ["TH16A"],
+      "comp4511": ["T12A", "W13A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],
@@ -90,7 +95,8 @@
     "email": "meyer@gmail.com",
     "username": "summers",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp4511": ["W13A"],
+      "comp3121": ["W9A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],
@@ -104,7 +110,8 @@
     "email": "roberts@gmail.com",
     "username": "michael",
     "courses_classes": {
-      "comp3511": ["TH16A", "W16A"]
+      "comp4511": ["W13A"],
+      "comp3121": ["W9A"]
     },
     "availabilities": {
       "16/11/2023": ["7am", "9am", "12pm"],

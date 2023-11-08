@@ -1,12 +1,47 @@
 {
   "comp3511": {
+    "name": "Human Computer Interaction",
     "classes": {
       "TH16A": {
-        "participants": ["1", "2", "3", "4", "5", "6", "7", "8"],
-        "study_sessions": ["1"]
+        "participants": ["1", "2", "3", "4", "5", "6"],
+        "study_sessions": ["1"],
+        "tutor": "Eric Luo"
       },
-      "W16A": { "participants": ["1", "2", "3", "4", "5", "6", "7", "8"] }
+      "W16A": {
+        "participants": ["1", "2", "3", "4"],
+        "tutor": "Eric Luo"
+      }
     },
-    "participants": ["1", "2", "3", "4", "5", "6", "7", "8"]
+    "participants": ["1", "2", "3", "4", "5", "6"]
+  },
+  "comp4511": {
+    "name": "User Interface Design and Construction",
+    "classes": {
+      "T12A": {
+        "participants": ["5", "6"],
+        "study_sessions": ["2"],
+        "tutor": "Eric Luo"
+      },
+      "W13A": {
+        "participants": ["5", "6", "7", "8"],
+        "tutor": "Eric Luo"
+      }
+    },
+    "participants": ["5", "6", "7", "8"]
+  },
+  "comp3121": {
+    "name": "Algorithms and Programming Techniques",
+    "classes": {
+      "M16A": {
+        "participants": ["1", "2", "3"],
+        "study_sessions": ["3"],
+        "tutor": "Eric Luo"
+      },
+      "W9A": {
+        "participants": ["7", "8"],
+        "tutor": "Eric Luo"
+      }
+    },
+    "participants": ["1", "2", "3", "7", "8"]
   }
 }

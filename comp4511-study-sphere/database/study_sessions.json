@@ -2,6 +2,19 @@
   {
     "id": "1",
     "course": "comp3511",
-    "classes": "TH16A"
+    "classes": "TH16A",
+    "participants": ["1", "2", "3", "4", "5", "6"]
+  },
+  {
+    "id": "2",
+    "course": "comp3511",
+    "classes": "T12A",
+    "participants": ["5", "6"]
+  },
+  {
+    "id": "3",
+    "course": "comp4511",
+    "classes": "M16A",
+    "participants": ["1", "2", "3"]
   }
 ]
