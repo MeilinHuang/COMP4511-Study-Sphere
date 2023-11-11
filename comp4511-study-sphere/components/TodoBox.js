@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TodoBox(params) {
-  // console.log("params", params);
   return (
     <View style={styles.container} key={params.myKey}>
       {params.img && (

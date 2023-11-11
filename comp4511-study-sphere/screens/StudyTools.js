@@ -23,7 +23,6 @@ export default function StudyTools({ route, navigation }) {
   const windowHeight = Dimensions.get("window").height;
 
   const addToArray = (currTitle, currTag, currDueDate, currImg, currBody) => {
-    console.log("nextKey", nextKey);
     if (currTag === "To-do") {
       setTodos((prevtodos) => [
         ...prevtodos,

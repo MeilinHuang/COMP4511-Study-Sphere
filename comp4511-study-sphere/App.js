@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, Button, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -9,13 +10,40 @@ import Availabilities from "./screens/Availabilities";
 import Create from "./screens/Create";
 import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
+import LogInScreen from "./screens/Login";
+import Classes from "./screens/Classes";
 import Courses from "./screens/Courses";
 import StudyTools from "./screens/StudyTools";
+import SignUpScreen from "./screens/SignUp";
 
 const Tabs = createBottomTabNavigator();
 const RootStack = createNativeStackNavigator();
 
 export default function App() {
+  const [currUser, setCurrUser] = useState(null);
+
+  const LogIn = ({ route, navigation }) => {
+    return (
+      <LogInScreen
+        setCurrUser={setCurrUser}
+        navigation={navigation}
+        route={route}
+        currUser={currUser}
+      />
+    );
+  };
+
+  const SignUp = ({ route, navigation }) => {
+    return (
+      <SignUpScreen
+        setCurrUser={setCurrUser}
+        navigation={navigation}
+        route={route}
+        currUser={currUser}
+      />
+    );
+  };
+
   const BottomTabs = () => (
     <View style={styles.background}>
       <Tabs.Navigator
@@ -99,7 +127,23 @@ export default function App() {
   return (
     <View style={styles.background}>
       <NavigationContainer style={styles.background}>
-        <RootStack.Navigator style={styles.background}>
+        <RootStack.Navigator
+          style={styles.background}
+          screenOptions={{
+            headerStyle: { backgroundColor: "#C1C3EC" },
+            tabBarActiveBackgroundColor: "#C1C3EC",
+          }}
+        >
+          <RootStack.Screen
+            name="Login"
+            component={LogIn}
+            options={{ headerShown: false }}
+          />
+          <RootStack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{ headerTitle: "Sign Up", headerBackTitle: "Log In" }}
+          />
           <RootStack.Screen
             name="Tabs"
             component={BottomTabs}
@@ -109,6 +153,11 @@ export default function App() {
           <RootStack.Screen
             name="Detail"
             component={Detail}
+            options={{ headerBackTitle: "Back" }}
+          />
+          <RootStack.Screen
+            name="Classes"
+            component={Classes}
             options={{ headerBackTitle: "Back" }}
           />
           <RootStack.Screen

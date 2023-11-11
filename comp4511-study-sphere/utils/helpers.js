@@ -39,7 +39,6 @@ function similarity(s1, s2) {
 }
 
 export const filterFn = (search, key, name) => {
-  console.log(name);
   return (
     search.trim() === "" ||
     similarity(key, search.trim().toLowerCase()) >= 0.3 ||
@@ -56,6 +55,16 @@ export const myCoursesOnly = (myId, courses) => {
   for (const key of Object.keys(courses)) {
     if (courses[key].participants.includes(myId)) {
       retval[key] = courses[key];
+    }
+  }
+  return retval;
+};
+
+export const myClassesOnly = (myId, classes) => {
+  const retval = {};
+  for (const key of Object.keys(classes)) {
+    if (classes[key].participants.includes(myId)) {
+      retval[key] = classes[key];
     }
   }
   return retval;

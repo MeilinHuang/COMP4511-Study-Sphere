@@ -43,7 +43,6 @@ export default function Create({ route, navigation }) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       // base64: true,
     });
-    console.log(result.assets);
     if (!result.canceled) {
       setImg(result.assets[0].uri);
     }

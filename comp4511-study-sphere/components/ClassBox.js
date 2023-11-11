@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import image from "../assets/course_images/comp3121_icon.png";
 
-export default function CourseBox(params) {
-  const images = require.context("../assets/course_images", true);
-  let itemImg = images(`./${params.icon}`);
+export default function ClassBox(params) {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -11,42 +10,34 @@ export default function CourseBox(params) {
       accessibilityLabel=""
       accessibilityHint=""
       onPress={() =>
-        params.navigation.navigate("Classes", {
-          title: `${params.courseKey.charAt(0).toUpperCase()}${params.courseKey
-            .substr(1)
-            .toLowerCase()} Classes`,
-          classes: params.classes,
-          userId: params.userId,
+        params.navigation.navigate("Detail", {
+          title: "From the Class Screen",
         })
       }
     >
       <View style={styles.informationBox}>
-        {itemImg && (
+        {image && (
           <Image
             accessible={false}
             aria-hidden
-            source={itemImg}
+            source={image}
             style={styles.image}
           />
         )}
         <View>
-          <Text style={{ fontWeight: "bold" }}>
-            {params.courseKey.charAt(0).toUpperCase() +
-              params.courseKey.substr(1).toLowerCase()}
-          </Text>
-          <Text>{params.courseName}</Text>
+          <Text style={{ fontWeight: "bold" }}>{params.classKey}</Text>
+          <Text>{params.classTutor}</Text>
+          <Text>{params.classTime}</Text>
           <Text>{params.participants.length} Members</Text>
         </View>
       </View>
       {!params.participants.includes(params.userId) ? (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            accessibilityLabel={`Join ${params.courseName}`}
+            accessibilityLabel={`Join ${params.className}`}
             onPress={() =>
-              params.navigation.navigate("Classes", {
-                title: "From the Course Screen",
-                classes: params.classes,
-                userId: params.userId,
+              params.navigation.navigate("Detail", {
+                title: "From the Class Screen",
               })
             }
           >
@@ -56,12 +47,10 @@ export default function CourseBox(params) {
       ) : (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            accessibilityLabel={`Leave ${params.courseName}`}
+            accessibilityLabel={`Leave ${params.className}`}
             onPress={() =>
-              params.navigation.navigate("Classes", {
-                title: "From the Course Screen",
-                classes: params.classes,
-                userId: params.userId,
+              params.navigation.navigate("Detail", {
+                title: "From the Class Screen",
               })
             }
           >

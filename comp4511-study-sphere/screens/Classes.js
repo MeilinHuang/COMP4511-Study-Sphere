@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -8,13 +8,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import courses from "../database/courses.json";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { SearchBar } from "react-native-elements";
-import { filterFn, myCoursesOnly } from "../utils/helpers";
-import CourseBox from "../components/CourseBox";
+import { filterFn, myClassesOnly } from "../utils/helpers";
+import ClassBox from "../components/ClassBox";
 
-const CurrTab = ({ screenName, currCourses, navigation, userId }) => {
+const CurrTab = ({ screenName, currClasses, navigation }) => {
   const [search, setSearch] = useState("");
   return (
     <View style={styles.container}>
@@ -31,19 +30,18 @@ const CurrTab = ({ screenName, currCourses, navigation, userId }) => {
           placeholderTextColor="#6A74CF"
           accessibilityRole="search"
         />
-        {Object.entries(currCourses)
-          .filter(([key, val]) => filterFn(search, key, val.name))
-          .map(([courseKey, val]) => {
+        {Object.entries(currClasses)
+          .filter(([key, val]) => filterFn(search, key, val.time))
+          .map(([classKey, val]) => {
             return (
-              <CourseBox
-                courseKey={courseKey}
-                courseName={val.name}
+              <ClassBox
+                classKey={classKey}
+                classTutor={val.tutor}
+                classTime={val.time}
                 participants={val.participants}
                 navigation={navigation}
-                userId={userId}
-                icon={val.icon}
-                key={courseKey}
-                classes={val.classes}
+                userId={"1"}
+                key={classKey}
               />
             );
           })}
@@ -52,35 +50,36 @@ const CurrTab = ({ screenName, currCourses, navigation, userId }) => {
   );
 };
 
-export default function Courses({ route, navigation }) {
-  const AllCourses = () => {
+export default function Classes({ route, navigation }) {
+  const { title, classes, userId } = route.params;
+  useEffect(
+    () => navigation.setOptions({ title, classes, userId }),
+    [title, classes, userId]
+  );
+  const AllClasses = () => {
     return (
       <CurrTab
-        screenName={"All Courses"}
-        currCourses={courses}
+        screenName={"All Classes"}
+        currClasses={classes}
         navigation={navigation}
-        userId={route.params.user ? route.params.user.id : "9"}
       />
     );
   };
 
-  const MyCourses = () => {
-    const [myCourses, setMyCourses] = useState(
-      myCoursesOnly(route.params.user ? route.params.user.id : "9", courses)
-    );
+  const MyClasses = () => {
+    const [myClasses, setMyClasses] = useState(myClassesOnly(userId, classes));
     return (
       <CurrTab
-        screenName={"My Courses"}
-        currCourses={myCourses}
+        screenName={"My Classes"}
+        currClasses={myClasses}
         navigation={navigation}
-        userId={route.params.user ? route.params.user.id : "9"}
       />
     );
   };
 
   const renderScene = SceneMap({
-    first: AllCourses,
-    second: MyCourses,
+    first: AllClasses,
+    second: MyClasses,
   });
 
   const layout = useWindowDimensions();
@@ -89,13 +88,13 @@ export default function Courses({ route, navigation }) {
   const [routes] = React.useState([
     {
       key: "first",
-      title: "All Courses",
-      accessibilityLabel: "Viewing all courses",
+      title: "All Classes",
+      accessibilityLabel: "Viewing all Classes",
     },
     {
       key: "second",
-      title: "My Courses",
-      accessibilityLabel: "Viewing my joined courses",
+      title: "My Classes",
+      accessibilityLabel: "Viewing my joined Classes",
     },
   ]);
 
@@ -140,12 +139,12 @@ export default function Courses({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-  },
   containerInner: {
     minHeight: "100%",
+    width: "100%",
+  },
+  container: {
+    flex: 1,
     width: "100%",
   },
   background: {

@@ -3,7 +3,6 @@ import { Image, Text, View } from "react-native";
 
 export default function Detail({ route, navigation }) {
   const { title, formatedDate, tag } = route.params;
-  console.log(formatedDate);
   useEffect(
     () => navigation.setOptions({ title, formatedDate, tag }),
     [title, formatedDate, tag]
