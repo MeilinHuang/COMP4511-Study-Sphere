@@ -15,6 +15,10 @@ export default function CourseBox({
 }) {
   const images = require.context("../assets/course_images", true);
   let itemImg = images(`./${icon}`);
+  const [isMember, setIsMember] = useState(participants.includes(userId));
+  useEffect(() => {
+    setIsMember(participants.includes(userId));
+  }, [participants, userId]);
   return (
     <TouchableOpacity
       style={styles.container}
@@ -30,6 +34,7 @@ export default function CourseBox({
           users,
           courses,
           courseKey,
+          isMember,
         })
       }
     >
@@ -51,12 +56,13 @@ export default function CourseBox({
           <Text>{participants.length} Members</Text>
         </View>
       </View>
-      {!participants.includes(userId) ? (
+      {!isMember ? (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             accessibilityLabel={`Join ${courseName}`}
             style={styles.buttonJoin}
             onPress={() => {
+              setIsMember(true);
               const userIndex = users.findIndex(
                 (x) => x.id === userId.toString()
               );
@@ -86,6 +92,7 @@ export default function CourseBox({
             accessibilityLabel={`Leave ${courseName}`}
             style={styles.buttonLeave}
             onPress={() => {
+              setIsMember(false);
               const userIndex = users.findIndex(
                 (x) => x.id === userId.toString()
               );

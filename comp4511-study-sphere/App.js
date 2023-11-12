@@ -12,11 +12,10 @@ import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
 import LogIn from "./screens/Login";
 import Classes from "./screens/Classes";
+import ClassDetails from "./screens/ClassDetails";
 import Courses from "./screens/Courses";
 import StudyTools from "./screens/StudyTools";
 import SignUp from "./screens/SignUp";
-import myUsers from "./database/users.json";
-import myCourses from "./database/courses.json";
 
 const Tabs = createBottomTabNavigator();
 const RootStack = createNativeStackNavigator();
@@ -138,6 +137,11 @@ export default function App() {
           <RootStack.Screen
             name="Classes"
             component={Classes}
+            options={{ headerBackTitle: "Back" }}
+          />
+          <RootStack.Screen
+            name="ClassDetails"
+            component={ClassDetails}
             options={{ headerBackTitle: "Back" }}
           />
           <RootStack.Screen

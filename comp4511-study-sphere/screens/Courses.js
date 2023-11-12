@@ -66,9 +66,76 @@ const CurrTab = ({
 };
 
 export default function Courses({ route, navigation, options }) {
-  const { user } = route.params;
+  const { user, action } = route.params;
   const [courses, setCourses] = useState(myCourses);
   const [users, setUsers] = useState(myUsers);
+
+  useEffect(() => {
+    if (action) {
+      if (action.type === "join") {
+        const userIndex = users.findIndex((x) => x.id === user.id);
+        if (userIndex !== -1) {
+          const updatedUsers = [...users];
+          if (!(action.courseKey in updatedUsers[userIndex].courses_classes)) {
+            updatedUsers[userIndex].courses_classes[action.courseKey] = [];
+            setUsers(updatedUsers);
+          }
+        }
+        if (action.courseKey in courses) {
+          const newCourses = { ...courses };
+          newCourses[action.courseKey].participants = [
+            ...newCourses[action.courseKey].participants,
+            user.id,
+          ];
+          setCourses(newCourses);
+        }
+        navigation.navigate("Classes", {
+          title: `${action.courseKey.charAt(0).toUpperCase()}${action.courseKey
+            .substr(1)
+            .toLowerCase()} Classes`,
+          userId: user.id,
+          users,
+          courses,
+          courseKey: action.courseKey,
+          isMember: true,
+        });
+      } else if (action.type === "leave") {
+        const userIndex = users.findIndex((x) => x.id === user.id);
+        if (userIndex !== -1) {
+          const updatedUsers = [...users];
+          if (updatedUsers[userIndex].courses_classes[action.courseKey]) {
+            delete updatedUsers[userIndex].courses_classes[action.courseKey];
+            setUsers(updatedUsers);
+          }
+        }
+        if (action.courseKey in courses) {
+          const newCourses = { ...courses };
+          for (const classInCourse of Object.keys(
+            newCourses[action.courseKey].classes
+          )) {
+            newCourses[action.courseKey].classes[classInCourse].participants =
+              newCourses[action.courseKey].classes[
+                classInCourse
+              ].participants.filter((x) => x !== user.id);
+          }
+          newCourses[action.courseKey].participants = newCourses[
+            action.courseKey
+          ].participants.filter((x) => x !== user.id);
+          setCourses(newCourses);
+        }
+        navigation.navigate("Classes", {
+          title: `${action.courseKey.charAt(0).toUpperCase()}${action.courseKey
+            .substr(1)
+            .toLowerCase()} Classes`,
+          userId: user.id,
+          users,
+          courses,
+          courseKey: action.courseKey,
+          isMember: false,
+        });
+      }
+    }
+  }, [action]);
   const AllCourses = () => {
     return (
       <CurrTab

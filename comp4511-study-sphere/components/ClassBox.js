@@ -15,6 +15,11 @@ export default function ClassBox({
   myCourses,
   setMyCourses,
 }) {
+  const [isMember, setIsMember] = useState(participants.includes(userId));
+
+  useEffect(() => {
+    setIsMember(participants.includes(userId));
+  }, [participants, userId]);
   return (
     <TouchableOpacity
       style={styles.container}
@@ -22,8 +27,16 @@ export default function ClassBox({
       accessibilityLabel=""
       accessibilityHint=""
       onPress={() =>
-        navigation.navigate("Detail", {
-          title: "From the Class Screen",
+        navigation.navigate("ClassDetails", {
+          title: `${courseKey.charAt(0).toUpperCase()}${courseKey
+            .substr(1)
+            .toLowerCase()} ${classKey}`,
+          userId,
+          myUsers,
+          courses: myCourses,
+          courseKey,
+          isMember,
+          classKey,
         })
       }
     >
@@ -43,12 +56,13 @@ export default function ClassBox({
           <Text>{participants.length} Members</Text>
         </View>
       </View>
-      {!participants.includes(userId) ? (
+      {!isMember ? (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.buttonJoin}
             accessibilityLabel={`Join ${classKey}`}
             onPress={() => {
+              setIsMember(true);
               const userIndex = myUsers.findIndex(
                 (x) => x.id === userId.toString()
               );
@@ -83,6 +97,7 @@ export default function ClassBox({
             style={styles.buttonLeave}
             accessibilityLabel={`Leave ${classKey}`}
             onPress={() => {
+              setIsMember(false);
               const userIndex = myUsers.findIndex(
                 (x) => x.id === userId.toString()
               );
