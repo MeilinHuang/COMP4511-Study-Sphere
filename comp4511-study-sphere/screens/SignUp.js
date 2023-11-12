@@ -22,63 +22,51 @@ const checkSignUp = (
   setErrorName,
   setErrorPassword,
   setErrorUserName,
-  setErrorConfirmPassword,
-  setCurrUser
+  setErrorConfirmPassword
 ) => {
   setErrorEmail(null);
   setErrorPassword(null);
   setErrorUserName(null);
   setErrorName(null);
   setErrorConfirmPassword(null);
+  if (name.trim() === "") {
+    setErrorName("Please enter a name");
+    return false;
+  }
   if (userName.trim() === "") {
     setErrorUserName("Please enter a User Name");
-    return null;
+    return false;
   }
   if (email.trim() === "") {
     setErrorEmail("Please enter an email");
-    return null;
+    return false;
   }
   if (password === "") {
     setErrorPassword("Please enter password");
-    return null;
+    return false;
   }
   if (confirmPassword === "") {
     setErrorConfirmPassword("Please confirm password");
-    return null;
+    return false;
   }
   if (password !== confirmPassword) {
     setErrorConfirmPassword("Passwords do not match");
-    return null;
+    return false;
   }
   for (const user of users) {
     if (user.username.toLowerCase() == userName.toLowerCase()) {
       setErrorUserName("User Name already in use");
-      return null;
+      return false;
     }
     if (user.email.toLowerCase() === email.toLowerCase()) {
       setErrorEmail("Email already in use");
-      return null;
+      return false;
     }
   }
-  const user = {
-    id: "9",
-    password,
-    name,
-    email: "strong@gmail.com",
-    username: userName,
-    courses_classes: {},
-    availabilities: {},
-  };
-  setCurrUser(user);
-  return user;
+  return true;
 };
 
-export default function SignUpScreen({
-  currUser,
-  setCurrUser,
-  navigation,
-  route,
-}) {
+export default function SignUp({ navigation, route }) {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -201,13 +189,23 @@ export default function SignUpScreen({
                 setErrorName,
                 setErrorPassword,
                 setErrorUserName,
-                setErrorConfirmPassword,
-                setCurrUser
+                setErrorConfirmPassword
               );
               if (user) {
+                const newUser = {
+                  id: "9",
+                  username: userName,
+                  name,
+                  email,
+                  password,
+                  courses_classes: [],
+                  availabilities: [],
+                };
                 navigation.navigate("Tabs", {
                   screen: "Courses",
-                  params: { user },
+                  params: {
+                    user: newUser,
+                  },
                 });
               }
             }}

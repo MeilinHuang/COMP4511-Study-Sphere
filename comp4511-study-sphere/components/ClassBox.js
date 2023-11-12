@@ -2,7 +2,19 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import image from "../assets/course_images/comp3121_icon.png";
 
-export default function ClassBox(params) {
+export default function ClassBox({
+  courseKey,
+  classKey,
+  classTutor,
+  classTime,
+  participants,
+  navigation,
+  userId,
+  myUsers,
+  setMyUsers,
+  myCourses,
+  setMyCourses,
+}) {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -10,7 +22,7 @@ export default function ClassBox(params) {
       accessibilityLabel=""
       accessibilityHint=""
       onPress={() =>
-        params.navigation.navigate("Detail", {
+        navigation.navigate("Detail", {
           title: "From the Class Screen",
         })
       }
@@ -25,36 +37,78 @@ export default function ClassBox(params) {
           />
         )}
         <View>
-          <Text style={{ fontWeight: "bold" }}>{params.classKey}</Text>
-          <Text>{params.classTutor}</Text>
-          <Text>{params.classTime}</Text>
-          <Text>{params.participants.length} Members</Text>
+          <Text style={{ fontWeight: "bold" }}>{classKey}</Text>
+          <Text>{classTutor}</Text>
+          <Text>{classTime}</Text>
+          <Text>{participants.length} Members</Text>
         </View>
       </View>
-      {!params.participants.includes(params.userId) ? (
+      {!participants.includes(userId) ? (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            accessibilityLabel={`Join ${params.className}`}
-            onPress={() =>
-              params.navigation.navigate("Detail", {
-                title: "From the Class Screen",
-              })
-            }
+            style={styles.buttonJoin}
+            accessibilityLabel={`Join ${classKey}`}
+            onPress={() => {
+              const userIndex = myUsers.findIndex(
+                (x) => x.id === userId.toString()
+              );
+              if (userIndex !== -1) {
+                const updatedUsers = [...myUsers];
+                if (courseKey in updatedUsers[userIndex].courses_classes) {
+                  updatedUsers[userIndex].courses_classes[courseKey] = [
+                    ...updatedUsers[userIndex].courses_classes[courseKey],
+                    classKey,
+                  ];
+                  setMyUsers(updatedUsers);
+                }
+              }
+              if (courseKey in myCourses) {
+                const newCourses = { ...myCourses };
+                if (classKey in newCourses[courseKey].classes) {
+                  newCourses[courseKey].classes[classKey].participants = [
+                    ...newCourses[courseKey].classes[classKey].participants,
+                    userId,
+                  ];
+                }
+                setMyCourses(newCourses);
+              }
+            }}
           >
-            <Text>Join</Text>
+            <Text style={styles.buttonJoinText}>Join</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            accessibilityLabel={`Leave ${params.className}`}
-            onPress={() =>
-              params.navigation.navigate("Detail", {
-                title: "From the Class Screen",
-              })
-            }
+            style={styles.buttonLeave}
+            accessibilityLabel={`Leave ${classKey}`}
+            onPress={() => {
+              const userIndex = myUsers.findIndex(
+                (x) => x.id === userId.toString()
+              );
+              if (userIndex !== -1) {
+                const updatedUsers = [...myUsers];
+                if (courseKey in updatedUsers[userIndex].courses_classes) {
+                  updatedUsers[userIndex].courses_classes[courseKey] =
+                    updatedUsers[userIndex].courses_classes[courseKey].filter(
+                      (x) => x !== userId
+                    );
+                  setMyUsers(updatedUsers);
+                }
+              }
+              if (courseKey in myCourses) {
+                const newCourses = { ...myCourses };
+                if (classKey in newCourses[courseKey].classes) {
+                  newCourses[courseKey].classes[classKey].participants =
+                    newCourses[courseKey].classes[classKey].participants.filter(
+                      (x) => x !== userId
+                    );
+                }
+                setMyCourses(newCourses);
+              }
+            }}
           >
-            <Text>Leave</Text>
+            <Text style={styles.buttonLeaveText}>Leave</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -94,5 +148,29 @@ const styles = StyleSheet.create({
     width: 40,
     alignSelf: "center",
     borderRadius: 20,
+  },
+  buttonJoin: {
+    padding: 10,
+    color: "#22810B",
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: "#22810B",
+    backgroundColor: "white",
+  },
+  buttonLeave: {
+    padding: 10,
+    color: "#D72424",
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: "#D72424",
+    backgroundColor: "white",
+  },
+  buttonJoinText: {
+    color: "#22810B",
+    fontWeight: "bold",
+  },
+  buttonLeaveText: {
+    color: "#D72424",
+    fontWeight: "bold",
   },
 });

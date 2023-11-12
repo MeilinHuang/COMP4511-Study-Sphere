@@ -8,16 +8,10 @@ import {
   TextInput,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import users from "../database/users.json";
 import icon from "../assets/icon.png";
+import users from "../database/users.json";
 
-const checkLogIn = (
-  email,
-  password,
-  setErrorEmail,
-  setErrorPassword,
-  setCurrUser
-) => {
+const checkLogIn = (email, password, setErrorEmail, setErrorPassword) => {
   setErrorEmail(null);
   setErrorPassword(null);
   if (email.trim() === "") {
@@ -31,7 +25,6 @@ const checkLogIn = (
   for (const user of users) {
     if (user.email.toLowerCase() === email.toLowerCase()) {
       if (password === user.password) {
-        setCurrUser(user);
         return user;
       } else {
         setErrorPassword("Incorrect Password");
@@ -43,12 +36,7 @@ const checkLogIn = (
   return null;
 };
 
-export default function LogInScreen({
-  setCurrUser,
-  currUser,
-  navigation,
-  route,
-}) {
+export default function LogIn({ navigation, route }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(null);
@@ -115,13 +103,14 @@ export default function LogInScreen({
               email,
               password,
               setErrorEmail,
-              setErrorPassword,
-              setCurrUser
+              setErrorPassword
             );
             if (user) {
               navigation.navigate("Tabs", {
                 screen: "Courses",
-                params: { user },
+                params: {
+                  user: user,
+                },
               });
             }
           }}

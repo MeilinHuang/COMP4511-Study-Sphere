@@ -10,46 +10,25 @@ import Availabilities from "./screens/Availabilities";
 import Create from "./screens/Create";
 import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
-import LogInScreen from "./screens/Login";
+import LogIn from "./screens/Login";
 import Classes from "./screens/Classes";
 import Courses from "./screens/Courses";
 import StudyTools from "./screens/StudyTools";
-import SignUpScreen from "./screens/SignUp";
+import SignUp from "./screens/SignUp";
+import myUsers from "./database/users.json";
+import myCourses from "./database/courses.json";
 
 const Tabs = createBottomTabNavigator();
 const RootStack = createNativeStackNavigator();
 
 export default function App() {
-  const [currUser, setCurrUser] = useState(null);
-
-  const LogIn = ({ route, navigation }) => {
-    return (
-      <LogInScreen
-        setCurrUser={setCurrUser}
-        navigation={navigation}
-        route={route}
-        currUser={currUser}
-      />
-    );
-  };
-
-  const SignUp = ({ route, navigation }) => {
-    return (
-      <SignUpScreen
-        setCurrUser={setCurrUser}
-        navigation={navigation}
-        route={route}
-        currUser={currUser}
-      />
-    );
-  };
-
   const BottomTabs = () => (
     <View style={styles.background}>
       <Tabs.Navigator
         screenOptions={{
           headerStyle: { backgroundColor: "#C1C3EC" },
           tabBarActiveBackgroundColor: "#C1C3EC",
+          tabBarActiveTintColor: "black",
         }}
         style={styles.background}
       >
@@ -132,6 +111,7 @@ export default function App() {
           screenOptions={{
             headerStyle: { backgroundColor: "#C1C3EC" },
             tabBarActiveBackgroundColor: "#C1C3EC",
+            headerTintColor: "black",
           }}
         >
           <RootStack.Screen

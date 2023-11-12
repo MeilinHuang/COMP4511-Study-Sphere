@@ -13,7 +13,17 @@ import { SearchBar } from "react-native-elements";
 import { filterFn, myClassesOnly } from "../utils/helpers";
 import ClassBox from "../components/ClassBox";
 
-const CurrTab = ({ screenName, currClasses, navigation }) => {
+const CurrTab = ({
+  courseKey,
+  screenName,
+  currClasses,
+  navigation,
+  userId,
+  myUsers,
+  setMyUsers,
+  myCourses,
+  setMyCourses,
+}) => {
   const [search, setSearch] = useState("");
   return (
     <View style={styles.container}>
@@ -35,13 +45,18 @@ const CurrTab = ({ screenName, currClasses, navigation }) => {
           .map(([classKey, val]) => {
             return (
               <ClassBox
+                courseKey={courseKey}
                 classKey={classKey}
                 classTutor={val.tutor}
                 classTime={val.time}
                 participants={val.participants}
                 navigation={navigation}
-                userId={"1"}
+                userId={userId}
                 key={classKey}
+                myUsers={myUsers}
+                setMyUsers={setMyUsers}
+                myCourses={myCourses}
+                setMyCourses={setMyCourses}
               />
             );
           })}
@@ -51,28 +66,47 @@ const CurrTab = ({ screenName, currClasses, navigation }) => {
 };
 
 export default function Classes({ route, navigation }) {
-  const { title, classes, userId } = route.params;
+  const { title, userId, users, courses, courseKey } = route.params;
+  const [myUsers, setMyUsers] = useState(users);
+  const [myCourses, setMyCourses] = useState(courses);
   useEffect(
-    () => navigation.setOptions({ title, classes, userId }),
-    [title, classes, userId]
+    () => navigation.setOptions({ title, userId, users, courses, courseKey }),
+    [title, userId, users, courses, courseKey]
   );
   const AllClasses = () => {
     return (
       <CurrTab
+        courseKey={courseKey}
         screenName={"All Classes"}
-        currClasses={classes}
+        currClasses={myCourses[courseKey].classes}
         navigation={navigation}
+        userId={userId}
+        myUsers={myUsers}
+        setMyUsers={setMyUsers}
+        myCourses={myCourses}
+        setMyCourses={setMyCourses}
       />
     );
   };
 
   const MyClasses = () => {
-    const [myClasses, setMyClasses] = useState(myClassesOnly(userId, classes));
+    const [myClasses, setMyClasses] = useState(
+      myClassesOnly(userId, myCourses[courseKey].classes)
+    );
+    useEffect(() => {
+      setMyClasses(myClassesOnly(userId, myCourses[courseKey].classes));
+    }, [userId, myCourses[courseKey].classes]);
     return (
       <CurrTab
+        courseKey={courseKey}
         screenName={"My Classes"}
         currClasses={myClasses}
         navigation={navigation}
+        userId={userId}
+        myUsers={myUsers}
+        setMyUsers={setMyUsers}
+        myCourses={myCourses}
+        setMyCourses={setMyCourses}
       />
     );
   };
