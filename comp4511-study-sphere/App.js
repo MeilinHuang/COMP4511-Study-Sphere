@@ -1,9 +1,18 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Svg, { Path, Text as SvgText } from "react-native-svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import StudySessions from "./screens/StudySessions";
+import Availabilities from "./screens/Availabilities";
+import StudyTools from "./screens/StudyTools";
+import Create from "./screens/Create";
+import Edit from "./screens/Edit";
+import Detail from "./screens/Detail";
+import Settings from "./screens/Settings";
 
 function CourseScreen() {
   return (
@@ -61,8 +70,8 @@ function MyTabBar({ state, descriptors, navigation }) {
             fill="black"
           />
           <Path
-            d="M43.75 13.75H41.25V21.875L37.5 19.0625L33.75 21.875V13.75H26.25V36.25H43.75V13.75ZM36.25 13.75V16.875L37.5 15.9375L38.75 16.875V13.75H36.25ZM46.25 38.75H23.75V11.25H46.25V38.75Z"
-            fill="#B0AFF1"
+            d="M42.5 12.5C43.163 12.5 43.7989 12.7634 44.2678 13.2322C44.7366 13.7011 45 14.337 45 15V35C45 35.663 44.7366 36.2989 44.2678 36.7678C43.7989 37.2366 43.163 37.5 42.5 37.5H27.5C26.837 37.5 26.2011 37.2366 25.7322 36.7678C25.2634 36.2989 25 35.663 25 35V15C25 14.337 25.2634 13.7011 25.7322 13.2322C26.2011 12.7634 26.837 12.5 27.5 12.5H42.5ZM42.5 15H36.25V25L33.125 22.1875L30 25V15H27.5V35H42.5V15Z"
+            fill="#B0AFFF"
           />
           <SvgText
             x="50%"
@@ -275,17 +284,67 @@ function MyTabBar({ state, descriptors, navigation }) {
 }
 
 const Tab = createBottomTabNavigator();
+const RootStack = createNativeStackNavigator();
 
 export default function App() {
-  return (
-    <NavigationContainer>
+  const BottomTabs = () => (
+    <View style={styles.background}>
       <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
         <Tab.Screen name="Course" component={CourseScreen} />
-        <Tab.Screen name="StudySessions" component={StudySessionsScreen} />
-        <Tab.Screen name="Availabilities" component={AvailabilitiesScreen} />
-        <Tab.Screen name="StudyTools" component={StudyToolsScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="StudySessions" component={StudySessions} />
+        <Tab.Screen name="Availabilities" component={Availabilities} />
+        <Tab.Screen name="StudyTools" component={StudyTools} />
+        <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
-    </NavigationContainer>
+    </View>
+  );
+  return (
+    <View style={styles.background}>
+      <NavigationContainer style={styles.background}>
+        <RootStack.Navigator style={styles.background}>
+          <RootStack.Screen
+            name="Tabs"
+            component={BottomTabs}
+            options={{ headerShown: false }}
+            style={styles.background}
+          />
+          <RootStack.Screen
+            name="Detail"
+            component={Detail}
+            options={{ headerBackTitle: "Back" }}
+          />
+          <RootStack.Screen
+            name="Create"
+            component={Create}
+            options={{ presentation: "modal" }}
+          />
+          <RootStack.Screen
+            name="Edit"
+            component={Edit}
+            options={{ presentation: "modal" }}
+          />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    // backgroundColor: "linear-gradient(#e66465, #9198e5)",
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    height: "100%",
+  },
+  background: {
+    height: "100%",
+    width: "100%",
+  },
+  btmNavBackground: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 5,
+    color: "white",
+  },
+});
