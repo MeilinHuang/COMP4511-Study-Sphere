@@ -94,7 +94,7 @@ function MyTabBar({ state, descriptors, navigation }) {
           />
           <Path
             d="M32.75 23.75H35.25V26.25H32.75V23.75ZM50.25 16.25V33.75C50.25 35.1375 49.1375 36.25 47.75 36.25H30.25C28.8625 36.25 27.75 35.125 27.75 33.75V16.25C27.75 14.875 28.875 13.75 30.25 13.75H31.5V11.25H34V13.75H44V11.25H46.5V13.75H47.75C49.1375 13.75 50.25 14.875 50.25 16.25ZM30.25 18.75H47.75V16.25H30.25V18.75ZM47.75 33.75V21.25H30.25V33.75H47.75ZM42.75 26.25V23.75H45.25V26.25H42.75ZM37.75 26.25V23.75H40.25V26.25H37.75ZM32.75 28.75H35.25V31.25H32.75V28.75ZM42.75 31.25V28.75H45.25V31.25H42.75ZM37.75 31.25V28.75H40.25V31.25H37.75Z"
-            fill="B0AFF1"
+            fill="#B0AFF1"
           />
           <SvgText
             x="50%"
@@ -244,19 +244,24 @@ function MyTabBar({ state, descriptors, navigation }) {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingBottom: 20,
+            }}
           >
             {isFocused ? (
               tabIcon.svg
             ) : (
-              <TouchableOpacity style={{ alignItems: "center" }}>
+              <View style={{ alignItems: "center" }}>
                 <MaterialCommunityIcons
                   name={tabIcon.icon}
                   size={30}
                   color="black"
                 />
                 <Text style={{ fontSize: 9 }}>{tabIcon.text}</Text>
-              </TouchableOpacity>
+              </View>
             )}
 
             {/* <Text style={{ color: isFocused ? "#673ab7" : "#222" }}>
