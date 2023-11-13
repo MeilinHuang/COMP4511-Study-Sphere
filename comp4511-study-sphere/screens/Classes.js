@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import { SearchBar } from "react-native-elements";
+import { SearchBar, Overlay } from "react-native-elements";
 import { filterFn, myClassesOnly } from "../utils/helpers";
 import ClassBox from "../components/ClassBox";
 import warning from "../assets/warning.png";
@@ -76,6 +76,7 @@ export default function Classes({ route, navigation }) {
     () => navigation.setOptions({ title, userId, users, courses, courseKey }),
     [title, userId, users, courses, courseKey]
   );
+  const [visibleAlert, setVisibleAlert] = useState(false);
 
   useEffect(() => {
     if (action) {
@@ -113,6 +114,26 @@ export default function Classes({ route, navigation }) {
           classKey: action.classKey,
         });
       } else if (action.type === "leave") {
+        const userIndex = myUsers.findIndex((x) => x.id === userId);
+        if (userIndex !== -1) {
+          const updatedUsers = [...myUsers];
+          if (courseKey in updatedUsers[userIndex].courses_classes) {
+            updatedUsers[userIndex].courses_classes[courseKey] = updatedUsers[
+              userIndex
+            ].courses_classes[courseKey].filter((x) => x !== userId);
+            setMyUsers(updatedUsers);
+          }
+        }
+        if (courseKey in myCourses) {
+          const newCourses = { ...myCourses };
+          if (action.classKey in newCourses[courseKey].classes) {
+            newCourses[courseKey].classes[action.classKey].participants =
+              newCourses[courseKey].classes[
+                action.classKey
+              ].participants.filter((x) => x !== userId);
+          }
+          setMyCourses(newCourses);
+        }
       }
     }
   }, [action]);
@@ -184,20 +205,51 @@ export default function Classes({ route, navigation }) {
           style={styles.background}
         >
           <View style={styles.topTab}>
+            <Overlay
+              isVisible={visibleAlert}
+              onBackdropPress={() => setVisibleAlert((v) => !v)}
+            >
+              <View style={styles.modal}>
+                <Text style={styles.modalHeading}>
+                  Please confirm before continuing.
+                </Text>
+                <Text style={styles.message}>
+                  Are you sure you want to leave {courseKey}?
+                </Text>
+                <View style={styles.modalButtonsView}>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => setVisibleAlert((v) => !v)}
+                  >
+                    <Text style={styles.modalButtonText}>No, Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.leaveConfirmButton}
+                    onPress={() => {
+                      navigation.navigate("Tabs", {
+                        screen: "Courses",
+                        params: {
+                          user: { id: userId },
+                          action: {
+                            type: "leave",
+                            courseKey,
+                          },
+                        },
+                      });
+                    }}
+                  >
+                    <Text style={styles.modalButtonText}>
+                      Yes, Leave Course
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Overlay>
             <TouchableOpacity style={styles.buttonLeave}>
               <Text
                 style={styles.buttonLeaveText}
                 onPress={() => {
-                  navigation.navigate("Tabs", {
-                    screen: "Courses",
-                    params: {
-                      user: { id: userId },
-                      action: {
-                        type: "leave",
-                        courseKey,
-                      },
-                    },
-                  });
+                  setVisibleAlert(true);
                 }}
               >
                 Leave Course
@@ -376,5 +428,49 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  modal: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    width: "100%",
+  },
+  modalHeading: {
+    fontWeight: "bold",
+    margin: 10,
+    textAlign: "center",
+    fontSize: 20,
+  },
+  modalButtonsView: {
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  cancelButton: {
+    padding: 10,
+    color: "white",
+    backgroundColor: "gray",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  leaveConfirmButton: {
+    padding: 10,
+    color: "white",
+    backgroundColor: "#D72424",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  message: {
+    padding: 15,
+    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 5,
   },
 });

@@ -11,6 +11,7 @@
       },
       "W16A": {
         "participants": ["1", "2", "3", "4"],
+        "study_sessions": [],
         "tutor": "Eric Luo",
         "time": "Wednesday 4pm to 6pm"
       }
@@ -29,6 +30,7 @@
       },
       "W13A": {
         "participants": ["5", "6", "7", "8"],
+        "study_sessions": [],
         "tutor": "Eric Luo",
         "time": "Wednesday 1pm to 3pm"
       }
@@ -47,6 +49,7 @@
       },
       "W9A": {
         "participants": ["7", "8"],
+        "study_sessions": [],
         "tutor": "Eric Luo",
         "time": "Wednesday 9am to 11am"
       }

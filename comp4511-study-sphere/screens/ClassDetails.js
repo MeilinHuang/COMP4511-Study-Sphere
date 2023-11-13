@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
+import { Overlay } from "react-native-elements";
+import myStudy_sessions from "../database/study_sessions.json";
+import userIcon from "../assets/user.png";
 
 import warning from "../assets/warning.png";
 
@@ -29,14 +32,118 @@ export default function ClassDetails({ route, navigation }) {
       }),
     [title, userId, users, courses, courseKey, isMember, classKey]
   );
+  const [visibleAlert, setVisibleAlert] = useState(false);
+  const [nextStudySession, setNextStudySession] = useState(null);
+
+  const compareDates = (list_of_sessions, myStudy_sessions) => {
+    let currNextSessions = null;
+    for (const sessionId of list_of_sessions) {
+      const sessionIndex = myStudy_sessions.findIndex(
+        (ss) => sessionId === ss.id
+      );
+      if (sessionIndex !== -1) {
+        const [date, month, year] =
+          myStudy_sessions[sessionIndex].time.from.date.split("/");
+        const [currNextDate, currNextMonth, currNextYear] = currNextSessions
+          ? currNextSessions.split("/")
+          : [null, null, null];
+        const sessionTime = new Date(`${year}-${month}-${date}`).getTime();
+        const currNextSessionTime = currNextSessions
+          ? new Date(
+              `${currNextYear}-${currNextMonth}-${currNextDate}`
+            ).getTime()
+          : null;
+        const todayTime = new Date().getTime();
+        if (
+          currNextSessionTime &&
+          sessionTime > todayTime &&
+          sessionTime < currNextSessionTime
+        ) {
+          currNextSessions = myStudy_sessions[sessionIndex].time.from.date;
+        } else if (currNextSessionTime === null && sessionTime > todayTime) {
+          currNextSessions = myStudy_sessions[sessionIndex].time.from.date;
+        }
+      }
+    }
+    return currNextSessions;
+  };
+  useEffect(() => {
+    setNextStudySession(
+      compareDates(
+        courses[courseKey].classes[classKey].study_sessions,
+        myStudy_sessions
+      )
+    );
+  }, [myStudy_sessions, courses]);
   const Details = () => {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.containerInner}>
-          <View></View>
-          <View></View>
-          <TouchableOpacity></TouchableOpacity>
-          <TouchableOpacity></TouchableOpacity>
+          <View style={styles.detailsContainer}>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Tutored By: </Text>
+              <Text style={styles.detailsInfo}>
+                {courses[courseKey].classes[classKey].tutor}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Time: </Text>
+              <Text style={styles.detailsInfo}>
+                {courses[courseKey].classes[classKey].time}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Members: </Text>
+              <Text style={styles.detailsInfo}>
+                {courses[courseKey].classes[classKey].participants.length}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Next Study Session: </Text>
+              {nextStudySession ? (
+                <Text style={styles.detailsInfo}>{nextStudySession}</Text>
+              ) : (
+                <Text style={styles.detailsInfo}>
+                  No study sessions scheduled
+                </Text>
+              )}
+            </View>
+          </View>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.heading}>List of Members:</Text>
+            {courses[courseKey].classes[classKey].participants.map((p) => {
+              const userIndex = users.findIndex((u) => u.id === p);
+              let name = "Error. No name found.";
+              if (userIndex !== -1) {
+                name = users[userIndex].name;
+                if (p === userId) {
+                  name += " (You)";
+                }
+              }
+              return (
+                <View key={p} style={styles.userContainer}>
+                  <Image
+                    source={userIcon}
+                    accessible={false}
+                    style={styles.userIcon}
+                  />
+                  <Text style={styles.userName}>{name}</Text>
+                </View>
+              );
+            })}
+          </View>
+          <TouchableOpacity
+            style={styles.study_sessions_button}
+            onPress={() => {
+              navigation.navigate("Tabs", {
+                screen: "Study Sessions",
+              });
+            }}
+          >
+            <Text style={styles.study_sessions_button_text}>
+              Go to Study Sessions
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -78,20 +185,53 @@ export default function ClassDetails({ route, navigation }) {
           style={styles.background}
         >
           <View style={styles.topTab}>
+            <Overlay
+              isVisible={visibleAlert}
+              onBackdropPress={() => setVisibleAlert((v) => !v)}
+            >
+              <View style={styles.modal}>
+                <Text style={styles.modalHeading}>
+                  Please confirm before continuing.
+                </Text>
+                <Text style={styles.messageConfirm}>
+                  Are you sure you want to leave {courseKey}?
+                </Text>
+                <View style={styles.modalButtonsView}>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => setVisibleAlert((v) => !v)}
+                  >
+                    <Text style={styles.modalButtonText}>No, Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.leaveConfirmButton}
+                    onPress={() => {
+                      navigation.navigate("Classes", {
+                        title: `${courseKey.charAt(0).toUpperCase()}${courseKey
+                          .substr(1)
+                          .toLowerCase()} Classes`,
+                        userId,
+                        users,
+                        courses,
+                        courseKey,
+                        isMember: true,
+                        action: {
+                          type: "leave",
+                          classKey,
+                        },
+                      });
+                    }}
+                  >
+                    <Text style={styles.modalButtonText}>Yes, Leave Class</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Overlay>
             <TouchableOpacity style={styles.buttonLeave}>
               <Text
                 style={styles.buttonLeaveText}
                 onPress={() => {
-                  // navigation.navigate("Tabs", {
-                  //   screen: "Courses",
-                  //   params: {
-                  //     user: { id: userId },
-                  //     action: {
-                  //       type: "leave",
-                  //       courseKey,
-                  //     },
-                  //   },
-                  // });
+                  setVisibleAlert(true);
                 }}
               >
                 Leave Class
@@ -276,5 +416,96 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  modal: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    width: "100%",
+  },
+  modalHeading: {
+    fontWeight: "bold",
+    margin: 10,
+    textAlign: "center",
+    fontSize: 20,
+  },
+  modalButtonsView: {
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  cancelButton: {
+    padding: 10,
+    color: "white",
+    backgroundColor: "gray",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  leaveConfirmButton: {
+    padding: 10,
+    color: "white",
+    backgroundColor: "#D72424",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  messageConfirm: {
+    padding: 15,
+    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 5,
+  },
+  detailsContainer: {
+    justifyContent: "center",
+    borderColor: "#6A74CF",
+    borderWidth: 2,
+    marginTop: 20,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    padding: 20,
+    backgroundColor: "white",
+  },
+  detailsTitle: {
+    fontWeight: "bold",
+  },
+  detailsInfo: {
+    fontWeight: "light",
+  },
+  details: {
+    flexDirection: "row",
+    marginTop: 5,
+  },
+  userContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  userIcon: {
+    height: 30,
+    width: 30,
+  },
+  userName: {
+    fontWeight: "semibold",
+    marginLeft: 10,
+    fontWeight: 10,
+  },
+  study_sessions_button: {
+    margin: 20,
+    padding: 10,
+    backgroundColor: "#9747FF",
+    alignItems: "center",
+    borderRadius: 5,
+    borderColor: "white",
+    borderWidth: 2,
+  },
+  study_sessions_button_text: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

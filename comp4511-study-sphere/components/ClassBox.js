@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import image from "../assets/course_images/comp3121_icon.png";
+import { Overlay } from "react-native-elements";
 
 export default function ClassBox({
   courseKey,
@@ -16,118 +17,150 @@ export default function ClassBox({
   setMyCourses,
 }) {
   const [isMember, setIsMember] = useState(participants.includes(userId));
+  const [visibleAlert, setVisibleAlert] = useState(false);
 
   useEffect(() => {
     setIsMember(participants.includes(userId));
   }, [participants, userId]);
   return (
-    <TouchableOpacity
-      style={styles.container}
-      accessible={true}
-      accessibilityLabel=""
-      accessibilityHint=""
-      onPress={() =>
-        navigation.navigate("ClassDetails", {
-          title: `${courseKey.charAt(0).toUpperCase()}${courseKey
-            .substr(1)
-            .toLowerCase()} ${classKey}`,
-          userId,
-          myUsers,
-          courses: myCourses,
-          courseKey,
-          isMember,
-          classKey,
-        })
-      }
-    >
-      <View style={styles.informationBox}>
-        {image && (
-          <Image
-            accessible={false}
-            aria-hidden
-            source={image}
-            style={styles.image}
-          />
+    <View>
+      <Overlay
+        isVisible={visibleAlert}
+        onBackdropPress={() => setVisibleAlert((v) => !v)}
+      >
+        <View style={styles.modal}>
+          <Text style={styles.modalHeading}>
+            Please confirm before continuing.
+          </Text>
+          <Text style={styles.message}>
+            Are you sure you want to leave {courseKey} {classKey}?
+          </Text>
+          <View style={styles.modalButtonsView}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => setVisibleAlert((v) => !v)}
+            >
+              <Text style={styles.modalButtonText}>No, Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.leaveConfirmButton}
+              onPress={() => {
+                setIsMember(false);
+                const userIndex = myUsers.findIndex(
+                  (x) => x.id === userId.toString()
+                );
+                if (userIndex !== -1) {
+                  const updatedUsers = [...myUsers];
+                  if (courseKey in updatedUsers[userIndex].courses_classes) {
+                    updatedUsers[userIndex].courses_classes[courseKey] =
+                      updatedUsers[userIndex].courses_classes[courseKey].filter(
+                        (x) => x !== userId
+                      );
+                    setMyUsers(updatedUsers);
+                  }
+                }
+                if (courseKey in myCourses) {
+                  const newCourses = { ...myCourses };
+                  if (classKey in newCourses[courseKey].classes) {
+                    newCourses[courseKey].classes[classKey].participants =
+                      newCourses[courseKey].classes[
+                        classKey
+                      ].participants.filter((x) => x !== userId);
+                  }
+                  setMyCourses(newCourses);
+                }
+              }}
+            >
+              <Text style={styles.modalButtonText}>Yes, Leave Class</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Overlay>
+      <TouchableOpacity
+        style={styles.container}
+        accessible={true}
+        accessibilityLabel=""
+        accessibilityHint=""
+        onPress={() =>
+          navigation.navigate("ClassDetails", {
+            title: `${courseKey.charAt(0).toUpperCase()}${courseKey
+              .substr(1)
+              .toLowerCase()} ${classKey}`,
+            userId,
+            users: myUsers,
+            courses: myCourses,
+            courseKey,
+            isMember,
+            classKey,
+          })
+        }
+      >
+        <View style={styles.informationBox}>
+          {image && (
+            <Image
+              accessible={false}
+              aria-hidden
+              source={image}
+              style={styles.image}
+            />
+          )}
+          <View>
+            <Text style={{ fontWeight: "bold" }}>{classKey}</Text>
+            <Text>{classTutor}</Text>
+            <Text>{classTime}</Text>
+            <Text>{participants.length} Members</Text>
+          </View>
+        </View>
+        {!isMember ? (
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity
+              style={styles.buttonJoin}
+              accessibilityLabel={`Join ${classKey}`}
+              onPress={() => {
+                setIsMember(true);
+                const userIndex = myUsers.findIndex(
+                  (x) => x.id === userId.toString()
+                );
+                if (userIndex !== -1) {
+                  const updatedUsers = [...myUsers];
+                  if (courseKey in updatedUsers[userIndex].courses_classes) {
+                    updatedUsers[userIndex].courses_classes[courseKey] = [
+                      ...updatedUsers[userIndex].courses_classes[courseKey],
+                      classKey,
+                    ];
+                    setMyUsers(updatedUsers);
+                  }
+                }
+                if (courseKey in myCourses) {
+                  const newCourses = { ...myCourses };
+                  if (classKey in newCourses[courseKey].classes) {
+                    newCourses[courseKey].classes[classKey].participants = [
+                      ...newCourses[courseKey].classes[classKey].participants,
+                      userId,
+                    ];
+                  }
+                  setMyCourses(newCourses);
+                }
+              }}
+            >
+              <Text style={styles.buttonJoinText}>Join</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity
+              style={styles.buttonLeave}
+              accessibilityLabel={`Leave ${classKey}`}
+              onPress={() => {
+                setVisibleAlert(true);
+              }}
+            >
+              <Text style={styles.buttonLeaveText}>Leave</Text>
+            </TouchableOpacity>
+          </View>
         )}
-        <View>
-          <Text style={{ fontWeight: "bold" }}>{classKey}</Text>
-          <Text>{classTutor}</Text>
-          <Text>{classTime}</Text>
-          <Text>{participants.length} Members</Text>
-        </View>
-      </View>
-      {!isMember ? (
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={styles.buttonJoin}
-            accessibilityLabel={`Join ${classKey}`}
-            onPress={() => {
-              setIsMember(true);
-              const userIndex = myUsers.findIndex(
-                (x) => x.id === userId.toString()
-              );
-              if (userIndex !== -1) {
-                const updatedUsers = [...myUsers];
-                if (courseKey in updatedUsers[userIndex].courses_classes) {
-                  updatedUsers[userIndex].courses_classes[courseKey] = [
-                    ...updatedUsers[userIndex].courses_classes[courseKey],
-                    classKey,
-                  ];
-                  setMyUsers(updatedUsers);
-                }
-              }
-              if (courseKey in myCourses) {
-                const newCourses = { ...myCourses };
-                if (classKey in newCourses[courseKey].classes) {
-                  newCourses[courseKey].classes[classKey].participants = [
-                    ...newCourses[courseKey].classes[classKey].participants,
-                    userId,
-                  ];
-                }
-                setMyCourses(newCourses);
-              }
-            }}
-          >
-            <Text style={styles.buttonJoinText}>Join</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={styles.buttonLeave}
-            accessibilityLabel={`Leave ${classKey}`}
-            onPress={() => {
-              setIsMember(false);
-              const userIndex = myUsers.findIndex(
-                (x) => x.id === userId.toString()
-              );
-              if (userIndex !== -1) {
-                const updatedUsers = [...myUsers];
-                if (courseKey in updatedUsers[userIndex].courses_classes) {
-                  updatedUsers[userIndex].courses_classes[courseKey] =
-                    updatedUsers[userIndex].courses_classes[courseKey].filter(
-                      (x) => x !== userId
-                    );
-                  setMyUsers(updatedUsers);
-                }
-              }
-              if (courseKey in myCourses) {
-                const newCourses = { ...myCourses };
-                if (classKey in newCourses[courseKey].classes) {
-                  newCourses[courseKey].classes[classKey].participants =
-                    newCourses[courseKey].classes[classKey].participants.filter(
-                      (x) => x !== userId
-                    );
-                }
-                setMyCourses(newCourses);
-              }
-            }}
-          >
-            <Text style={styles.buttonLeaveText}>Leave</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
@@ -187,5 +220,49 @@ const styles = StyleSheet.create({
   buttonLeaveText: {
     color: "#D72424",
     fontWeight: "bold",
+  },
+  modal: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    width: "100%",
+  },
+  modalHeading: {
+    fontWeight: "bold",
+    margin: 10,
+    textAlign: "center",
+    fontSize: 20,
+  },
+  modalButtonsView: {
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  cancelButton: {
+    padding: 10,
+    color: "white",
+    backgroundColor: "gray",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  leaveConfirmButton: {
+    padding: 10,
+    color: "white",
+    backgroundColor: "#D72424",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  message: {
+    padding: 15,
+    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 5,
   },
 });

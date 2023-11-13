@@ -123,16 +123,16 @@ export default function Courses({ route, navigation, options }) {
           ].participants.filter((x) => x !== user.id);
           setCourses(newCourses);
         }
-        navigation.navigate("Classes", {
-          title: `${action.courseKey.charAt(0).toUpperCase()}${action.courseKey
-            .substr(1)
-            .toLowerCase()} Classes`,
-          userId: user.id,
-          users,
-          courses,
-          courseKey: action.courseKey,
-          isMember: false,
-        });
+        // navigation.navigate("Classes", {
+        //   title: `${action.courseKey.charAt(0).toUpperCase()}${action.courseKey
+        //     .substr(1)
+        //     .toLowerCase()} Classes`,
+        //   userId: user.id,
+        //   users,
+        //   courses,
+        //   courseKey: action.courseKey,
+        //   isMember: false,
+        // });
       }
     }
   }, [action]);
