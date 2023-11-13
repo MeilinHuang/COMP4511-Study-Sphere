@@ -33,7 +33,3 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-comp4511-study-sphere/package-lock.json
-comp4511-study-sphere/package.json
-comp4511-study-sphere/screens/Courses.js
