@@ -9,34 +9,52 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import icon from "../assets/icon.png";
-import users from "../database/users.json";
 
-const checkLogIn = (email, password, setErrorEmail, setErrorPassword) => {
+const checkLogIn = (
+  email,
+  password,
+  setErrorEmail,
+  setErrorPassword,
+  users,
+  setUserId
+) => {
   setErrorEmail(null);
   setErrorPassword(null);
   if (email.trim() === "") {
     setErrorEmail("Please enter an email");
-    return null;
+    return false;
   }
   if (password === "") {
     setErrorPassword("Please enter password");
-    return null;
+    return false;
   }
   for (const user of users) {
     if (user.email.toLowerCase() === email.toLowerCase()) {
       if (password === user.password) {
-        return user;
+        setUserId(user.id);
+        return true;
       } else {
         setErrorPassword("Incorrect Password");
-        return null;
+        return false;
       }
     }
   }
   setErrorEmail("Email not found");
-  return null;
+  return false;
 };
 
-export default function LogIn({ navigation, route }) {
+export default function LogIn({
+  navigation,
+  route,
+  users,
+  courses,
+  studySessions,
+  userId,
+  setUsers,
+  setCourses,
+  setStudySessions,
+  setUserId,
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(null);
@@ -103,14 +121,13 @@ export default function LogIn({ navigation, route }) {
               email,
               password,
               setErrorEmail,
-              setErrorPassword
+              setErrorPassword,
+              users,
+              setUserId
             );
             if (user) {
               navigation.navigate("Tabs", {
                 screen: "Courses",
-                params: {
-                  user: user,
-                },
               });
             }
           }}

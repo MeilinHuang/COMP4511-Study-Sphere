@@ -16,10 +16,12 @@ export default function CourseBox({
 }) {
   const images = require.context("../assets/course_images", true);
   let itemImg = images(`./${icon}`);
-  const [isMember, setIsMember] = useState(participants.includes(userId));
+  const [isMember, setIsMember] = useState(
+    courses[courseKey].participants.includes(userId)
+  );
   useEffect(() => {
-    setIsMember(participants.includes(userId));
-  }, [participants, userId]);
+    setIsMember(courses[courseKey].participants.includes(userId));
+  }, [courses[courseKey], userId]);
 
   const [visibleAlert, setVisibleAlert] = useState(false);
 
@@ -47,9 +49,7 @@ export default function CourseBox({
               style={styles.leaveConfirmButton}
               onPress={() => {
                 setIsMember(false);
-                const userIndex = users.findIndex(
-                  (x) => x.id === userId.toString()
-                );
+                const userIndex = users.findIndex((x) => x.id === userId);
                 if (userIndex !== -1) {
                   const updatedUsers = [...users];
                   if (updatedUsers[userIndex].courses_classes[courseKey]) {
@@ -89,11 +89,7 @@ export default function CourseBox({
             title: `${courseKey.charAt(0).toUpperCase()}${courseKey
               .substr(1)
               .toLowerCase()} Classes`,
-            userId: userId,
-            users,
-            courses,
             courseKey,
-            isMember,
           })
         }
       >

@@ -11,10 +11,10 @@ export default function ClassBox({
   participants,
   navigation,
   userId,
-  myUsers,
-  setMyUsers,
-  myCourses,
-  setMyCourses,
+  users,
+  setUsers,
+  courses,
+  setCourses,
 }) {
   const [isMember, setIsMember] = useState(participants.includes(userId));
   const [visibleAlert, setVisibleAlert] = useState(false);
@@ -46,28 +46,26 @@ export default function ClassBox({
               style={styles.leaveConfirmButton}
               onPress={() => {
                 setIsMember(false);
-                const userIndex = myUsers.findIndex(
-                  (x) => x.id === userId.toString()
-                );
+                const userIndex = users.findIndex((x) => x.id === userId);
                 if (userIndex !== -1) {
-                  const updatedUsers = [...myUsers];
+                  const updatedUsers = [...users];
                   if (courseKey in updatedUsers[userIndex].courses_classes) {
                     updatedUsers[userIndex].courses_classes[courseKey] =
                       updatedUsers[userIndex].courses_classes[courseKey].filter(
                         (x) => x !== userId
                       );
-                    setMyUsers(updatedUsers);
+                    setUsers(updatedUsers);
                   }
                 }
-                if (courseKey in myCourses) {
-                  const newCourses = { ...myCourses };
+                if (courseKey in courses) {
+                  const newCourses = { ...courses };
                   if (classKey in newCourses[courseKey].classes) {
                     newCourses[courseKey].classes[classKey].participants =
                       newCourses[courseKey].classes[
                         classKey
                       ].participants.filter((x) => x !== userId);
                   }
-                  setMyCourses(newCourses);
+                  setCourses(newCourses);
                 }
               }}
             >
@@ -86,9 +84,6 @@ export default function ClassBox({
             title: `${courseKey.charAt(0).toUpperCase()}${courseKey
               .substr(1)
               .toLowerCase()} ${classKey}`,
-            userId,
-            users: myUsers,
-            courses: myCourses,
             courseKey,
             isMember,
             classKey,
@@ -118,28 +113,28 @@ export default function ClassBox({
               accessibilityLabel={`Join ${classKey}`}
               onPress={() => {
                 setIsMember(true);
-                const userIndex = myUsers.findIndex(
+                const userIndex = users.findIndex(
                   (x) => x.id === userId.toString()
                 );
                 if (userIndex !== -1) {
-                  const updatedUsers = [...myUsers];
+                  const updatedUsers = [...users];
                   if (courseKey in updatedUsers[userIndex].courses_classes) {
                     updatedUsers[userIndex].courses_classes[courseKey] = [
                       ...updatedUsers[userIndex].courses_classes[courseKey],
                       classKey,
                     ];
-                    setMyUsers(updatedUsers);
+                    setUsers(updatedUsers);
                   }
                 }
-                if (courseKey in myCourses) {
-                  const newCourses = { ...myCourses };
+                if (courseKey in courses) {
+                  const newCourses = { ...courses };
                   if (classKey in newCourses[courseKey].classes) {
                     newCourses[courseKey].classes[classKey].participants = [
                       ...newCourses[courseKey].classes[classKey].participants,
                       userId,
                     ];
                   }
-                  setMyCourses(newCourses);
+                  setCourses(newCourses);
                 }
               }}
             >

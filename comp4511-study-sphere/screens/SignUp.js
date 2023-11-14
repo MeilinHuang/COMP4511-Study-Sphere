@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import users from "../database/users.json";
 import icon from "../assets/icon.png";
 
 const checkSignUp = (
@@ -22,7 +21,10 @@ const checkSignUp = (
   setErrorName,
   setErrorPassword,
   setErrorUserName,
-  setErrorConfirmPassword
+  setErrorConfirmPassword,
+  users,
+  setUsers,
+  setUserId
 ) => {
   setErrorEmail(null);
   setErrorPassword(null);
@@ -63,10 +65,35 @@ const checkSignUp = (
       return false;
     }
   }
+  const newId = (users.length + 1).toString();
+  const newUser = {
+    id: newId,
+    username: userName,
+    name,
+    email,
+    password,
+    courses_classes: [],
+    availabilities: [],
+  };
+  const newUsers = [...users];
+  newUsers.push(newUser);
+  setUsers(newUsers);
+  setUserId(newId);
   return true;
 };
 
-export default function SignUp({ navigation, route }) {
+export default function SignUp({
+  navigation,
+  route,
+  users,
+  courses,
+  studySessions,
+  userId,
+  setUsers,
+  setCourses,
+  setStudySessions,
+  setUserId,
+}) {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -189,23 +216,14 @@ export default function SignUp({ navigation, route }) {
                 setErrorName,
                 setErrorPassword,
                 setErrorUserName,
-                setErrorConfirmPassword
+                setErrorConfirmPassword,
+                users,
+                setUsers,
+                setUserId
               );
               if (user) {
-                const newUser = {
-                  id: "9",
-                  username: userName,
-                  name,
-                  email,
-                  password,
-                  courses_classes: [],
-                  availabilities: [],
-                };
                 navigation.navigate("Tabs", {
                   screen: "Courses",
-                  params: {
-                    user: newUser,
-                  },
                 });
               }
             }}

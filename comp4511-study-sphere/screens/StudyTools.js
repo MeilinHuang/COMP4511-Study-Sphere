@@ -14,7 +14,18 @@ import TodoBox from "../components/TodoBox";
 import { Dimensions } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-export default function StudyTools({ route, navigation }) {
+export default function StudyTools({
+  navigation,
+  route,
+  users,
+  courses,
+  studySessions,
+  userId,
+  setUsers,
+  setCourses,
+  setStudySessions,
+  setUserId,
+}) {
   const { title, dueDate, tag, img, body, payload } = route.params ?? {};
   const [todos, setTodos] = useState([]);
   const [inprogressTodos, setInprogressTodos] = useState([]);

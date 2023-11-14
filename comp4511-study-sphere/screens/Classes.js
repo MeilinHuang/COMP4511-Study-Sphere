@@ -21,10 +21,10 @@ const CurrTab = ({
   currClasses,
   navigation,
   userId,
-  myUsers,
-  setMyUsers,
-  myCourses,
-  setMyCourses,
+  users,
+  setUsers,
+  courses,
+  setCourses,
 }) => {
   const [search, setSearch] = useState("");
   return (
@@ -55,10 +55,10 @@ const CurrTab = ({
                 navigation={navigation}
                 userId={userId}
                 key={classKey}
-                myUsers={myUsers}
-                setMyUsers={setMyUsers}
-                myCourses={myCourses}
-                setMyCourses={setMyCourses}
+                users={users}
+                setUsers={setUsers}
+                courses={courses}
+                setCourses={setCourses}
               />
             );
           })}
@@ -67,99 +67,107 @@ const CurrTab = ({
   );
 };
 
-export default function Classes({ route, navigation }) {
-  const { title, userId, users, courses, courseKey, isMember, action } =
-    route.params;
-  const [myUsers, setMyUsers] = useState(users);
-  const [myCourses, setMyCourses] = useState(courses);
-  useEffect(
-    () => navigation.setOptions({ title, userId, users, courses, courseKey }),
-    [title, userId, users, courses, courseKey]
+export default function Classes({
+  navigation,
+  route,
+  users,
+  courses,
+  studySessions,
+  userId,
+  setUsers,
+  setCourses,
+  setStudySessions,
+  setUserId,
+}) {
+  const { title, courseKey } = route.params;
+  const [isMember, setIsMember] = useState(
+    courses[courseKey].participants.includes(userId)
   );
+  useEffect(() => navigation.setOptions({ title, courseKey }), [title]);
   const [visibleAlert, setVisibleAlert] = useState(false);
 
-  useEffect(() => {
-    if (action) {
-      if (action.type === "join") {
-        const userIndex = myUsers.findIndex((x) => x.id === userId);
-        if (userIndex !== -1) {
-          const updatedUsers = [...myUsers];
-          if (courseKey in updatedUsers[userIndex].courses_classes) {
-            updatedUsers[userIndex].courses_classes[courseKey] = [
-              ...updatedUsers[userIndex].courses_classes[courseKey],
-              action.classKey,
-            ];
-            setMyUsers(updatedUsers);
-          }
-        }
-        if (courseKey in myCourses) {
-          const newCourses = { ...myCourses };
-          if (action.classKey in newCourses[courseKey].classes) {
-            newCourses[courseKey].classes[action.classKey].participants = [
-              ...newCourses[courseKey].classes[action.classKey].participants,
-              userId,
-            ];
-          }
-          setMyCourses(newCourses);
-        }
-        navigation.navigate("ClassDetails", {
-          title: `${courseKey.charAt(0).toUpperCase()}${courseKey
-            .substr(1)
-            .toLowerCase()} ${action.classKey}`,
-          userId,
-          users: myUsers,
-          courses,
-          courseKey,
-          isMember: true,
-          classKey: action.classKey,
-        });
-      } else if (action.type === "leave") {
-        const userIndex = myUsers.findIndex((x) => x.id === userId);
-        if (userIndex !== -1) {
-          const updatedUsers = [...myUsers];
-          if (courseKey in updatedUsers[userIndex].courses_classes) {
-            updatedUsers[userIndex].courses_classes[courseKey] = updatedUsers[
-              userIndex
-            ].courses_classes[courseKey].filter((x) => x !== userId);
-            setMyUsers(updatedUsers);
-          }
-        }
-        if (courseKey in myCourses) {
-          const newCourses = { ...myCourses };
-          if (action.classKey in newCourses[courseKey].classes) {
-            newCourses[courseKey].classes[action.classKey].participants =
-              newCourses[courseKey].classes[
-                action.classKey
-              ].participants.filter((x) => x !== userId);
-          }
-          setMyCourses(newCourses);
-        }
-      }
-    }
-  }, [action]);
+  // useEffect(() => {
+  //   if (action) {
+  //     if (action.type === "join") {
+  //       const userIndex = myUsers.findIndex((x) => x.id === userId);
+  //       if (userIndex !== -1) {
+  //         const updatedUsers = [...myUsers];
+  //         if (courseKey in updatedUsers[userIndex].courses_classes) {
+  //           updatedUsers[userIndex].courses_classes[courseKey] = [
+  //             ...updatedUsers[userIndex].courses_classes[courseKey],
+  //             action.classKey,
+  //           ];
+  //           setMyUsers(updatedUsers);
+  //         }
+  //       }
+  //       if (courseKey in myCourses) {
+  //         const newCourses = { ...myCourses };
+  //         if (action.classKey in newCourses[courseKey].classes) {
+  //           newCourses[courseKey].classes[action.classKey].participants = [
+  //             ...newCourses[courseKey].classes[action.classKey].participants,
+  //             userId,
+  //           ];
+  //         }
+  //         setMyCourses(newCourses);
+  //       }
+  //       navigation.navigate("ClassDetails", {
+  //         title: `${courseKey.charAt(0).toUpperCase()}${courseKey
+  //           .substr(1)
+  //           .toLowerCase()} ${action.classKey}`,
+  //         userId,
+  //         users: myUsers,
+  //         courses,
+  //         courseKey,
+  //         isMember: true,
+  //         classKey: action.classKey,
+  //       });
+  //     } else if (action.type === "leave") {
+  //       const userIndex = myUsers.findIndex((x) => x.id === userId);
+  //       if (userIndex !== -1) {
+  //         const updatedUsers = [...myUsers];
+  //         if (courseKey in updatedUsers[userIndex].courses_classes) {
+  //           updatedUsers[userIndex].courses_classes[courseKey] = updatedUsers[
+  //             userIndex
+  //           ].courses_classes[courseKey].filter((x) => x !== userId);
+  //           setMyUsers(updatedUsers);
+  //         }
+  //       }
+  //       if (courseKey in myCourses) {
+  //         const newCourses = { ...myCourses };
+  //         if (action.classKey in newCourses[courseKey].classes) {
+  //           newCourses[courseKey].classes[action.classKey].participants =
+  //             newCourses[courseKey].classes[
+  //               action.classKey
+  //             ].participants.filter((x) => x !== userId);
+  //         }
+  //         setMyCourses(newCourses);
+  //       }
+  //     }
+  //   }
+  // }, [action]);
   const AllClasses = () => {
     return (
       <CurrTab
         courseKey={courseKey}
         screenName={"All Classes"}
-        currClasses={myCourses[courseKey].classes}
+        currClasses={courses[courseKey].classes}
         navigation={navigation}
         userId={userId}
-        myUsers={myUsers}
-        setMyUsers={setMyUsers}
-        myCourses={myCourses}
-        setMyCourses={setMyCourses}
+        users={users}
+        setUsers={setUsers}
+        courses={courses}
+        setCourses={setCourses}
       />
     );
   };
 
   const MyClasses = () => {
     const [myClasses, setMyClasses] = useState(
-      myClassesOnly(userId, myCourses[courseKey].classes)
+      myClassesOnly(userId, courses[courseKey].classes)
     );
     useEffect(() => {
-      setMyClasses(myClassesOnly(userId, myCourses[courseKey].classes));
-    }, [userId, myCourses[courseKey].classes]);
+      setMyClasses(myClassesOnly(userId, courses[courseKey].classes));
+    }, [userId, courses[courseKey].classes]);
     return (
       <CurrTab
         courseKey={courseKey}
@@ -167,10 +175,10 @@ export default function Classes({ route, navigation }) {
         currClasses={myClasses}
         navigation={navigation}
         userId={userId}
-        myUsers={myUsers}
-        setMyUsers={setMyUsers}
-        myCourses={myCourses}
-        setMyCourses={setMyCourses}
+        users={users}
+        setUsers={setUsers}
+        courses={courses}
+        setCourses={setCourses}
       />
     );
   };
@@ -226,15 +234,51 @@ export default function Classes({ route, navigation }) {
                   <TouchableOpacity
                     style={styles.leaveConfirmButton}
                     onPress={() => {
-                      navigation.navigate("Tabs", {
-                        screen: "Courses",
-                        params: {
-                          user: { id: userId },
-                          action: {
-                            type: "leave",
-                            courseKey,
-                          },
-                        },
+                      // navigation.navigate("Tabs", {
+                      //   screen: "Courses",
+                      //   params: {
+                      //     user: { id: userId },
+                      //     action: {
+                      //       type: "leave",
+                      //       courseKey,
+                      //     },
+                      //   },
+                      // });
+                      setVisibleAlert(false);
+                      setIsMember(false);
+                      setUsers((u) => {
+                        const userIndex = u.findIndex((x) => x.id === userId);
+                        if (userIndex !== -1) {
+                          const updatedUsers = [...u];
+                          if (
+                            updatedUsers[userIndex].courses_classes[courseKey]
+                          ) {
+                            delete updatedUsers[userIndex].courses_classes[
+                              courseKey
+                            ];
+                            return [...updatedUsers];
+                          }
+                        }
+                        return u;
+                      });
+                      setCourses((c) => {
+                        if (courseKey in c) {
+                          const newCourses = { ...c };
+                          for (const classInCourse of Object.keys(
+                            newCourses[courseKey].classes
+                          )) {
+                            newCourses[courseKey].classes[
+                              classInCourse
+                            ].participants = newCourses[courseKey].classes[
+                              classInCourse
+                            ].participants.filter((x) => x !== userId);
+                          }
+                          newCourses[courseKey].participants = newCourses[
+                            courseKey
+                          ].participants.filter((x) => x !== userId);
+                          return { ...newCourses };
+                        }
+                        return c;
                       });
                     }}
                   >
@@ -309,15 +353,42 @@ export default function Classes({ route, navigation }) {
           <TouchableOpacity
             style={styles.buttonJoin}
             onPress={() => {
-              navigation.navigate("Tabs", {
-                screen: "Courses",
-                params: {
-                  user: { id: userId },
-                  action: {
-                    type: "join",
-                    courseKey,
-                  },
-                },
+              // navigation.navigate("Tabs", {
+              //   screen: "Courses",
+              //   params: {
+              //     user: { id: userId },
+              //     action: {
+              //       type: "join",
+              //       courseKey,
+              //     },
+              //   },
+              // });
+              setVisibleAlert(false);
+              setIsMember(true);
+              setUsers((u) => {
+                const userIndex = users.findIndex((x) => x.id === userId);
+                if (userIndex !== -1) {
+                  const updatedUsers = [...u];
+                  if (!(courseKey in updatedUsers[userIndex].courses_classes)) {
+                    if (!updatedUsers[userIndex].courses_classes) {
+                      updatedUsers[userIndex].courses_classes = {};
+                    }
+                    updatedUsers[userIndex].courses_classes[courseKey] = [];
+                    return [...updatedUsers];
+                  }
+                  return u;
+                }
+              });
+              setCourses((c) => {
+                if (courseKey in c) {
+                  const newCourses = { ...c };
+                  newCourses[courseKey].participants = [
+                    ...newCourses[courseKey].participants,
+                    userId,
+                  ];
+                  return { ...newCourses };
+                }
+                return c;
               });
             }}
           >
