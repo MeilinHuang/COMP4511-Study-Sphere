@@ -13,6 +13,7 @@ import Create from "./screens/Create";
 import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
 import Settings from "./screens/Settings";
+import Timer from "./screens/Timer";
 
 function CourseScreen() {
   return (
@@ -81,14 +82,14 @@ function MyTabBar({ state, descriptors, navigation }) {
             // alignmentBaseline="middle"
             fill="#B0AFF1"
           >
-            Course
+            Courses
           </SvgText>
         </Svg>
       ),
       text: "Course",
       icon: "book-outline",
     },
-    StudySessions: {
+    "Study Sessions": {
       svg: (
         <Svg
           width="74"
@@ -152,7 +153,7 @@ function MyTabBar({ state, descriptors, navigation }) {
       text: "Availabilities",
       icon: "clock-outline",
     },
-    StudyTools: {
+    "Study Tools": {
       svg: (
         <Svg
           width="74"
@@ -289,19 +290,33 @@ const RootStack = createNativeStackNavigator();
 export default function App() {
   const BottomTabs = () => (
     <View style={styles.background}>
-      <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
+      <Tab.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: "#C1C3EC" },
+          tabBarActiveBackgroundColor: "#C1C3EC",
+          tabBarActiveTintColor: "black",
+        }}
+        tabBar={(props) => <MyTabBar {...props} />}
+      >
         <Tab.Screen name="Course" component={CourseScreen} />
-        <Tab.Screen name="StudySessions" component={StudySessions} />
+        <Tab.Screen name="Study Sessions" component={StudySessions} />
         <Tab.Screen name="Availabilities" component={Availabilities} />
-        <Tab.Screen name="StudyTools" component={StudyTools} />
+        <Tab.Screen name="Study Tools" component={StudyTools} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </View>
   );
   return (
     <View style={styles.background}>
-      <NavigationContainer style={styles.background}>
-        <RootStack.Navigator style={styles.background}>
+      <NavigationContainer>
+        <RootStack.Navigator
+          style={styles.background}
+          screenOptions={{
+            headerStyle: { backgroundColor: "#C1C3EC" },
+            tabBarActiveBackgroundColor: "#C1C3EC",
+            tabBarActiveTintColor: "black",
+          }}
+        >
           <RootStack.Screen
             name="Tabs"
             component={BottomTabs}
@@ -316,12 +331,18 @@ export default function App() {
           <RootStack.Screen
             name="Create"
             component={Create}
-            options={{ presentation: "modal" }}
+            options={{
+              presentation: "modal",
+            }}
           />
           <RootStack.Screen
             name="Edit"
             component={Edit}
             options={{ presentation: "modal" }}
+          />
+          <RootStack.Screen
+            name="Timer"
+            component={Timer}
           />
         </RootStack.Navigator>
       </NavigationContainer>

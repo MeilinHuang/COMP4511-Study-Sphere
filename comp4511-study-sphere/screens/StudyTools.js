@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import StoreService from "../services/StoreService";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,89 +16,175 @@ import { Dimensions } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function StudyTools({ route, navigation }) {
-  const { title, dueDate, tag, img, body, payload } = route.params ?? {};
+  const { title, dueDate, tag, img, body, duration, payload } = route.params ?? {};
   const [todos, setTodos] = useState([]);
   const [inprogressTodos, setInprogressTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [nextKey, setNextKey] = useState(0);
+  const [selectedTag, setSelectedTag] = useState([]);
+  const [tags, setTags] = useState([
+    {
+      name: "To-do",
+      color: "#FFE599",
+      todos: [],
+    },
+    {
+      name: "In Progress",
+      color: "#EA9999",
+      todos: [],
+    },
+    {
+      name: "Completed",
+      color: "#B6D7A8",
+      todos: [],
+    },
+    // {
+    //   name: "To-do",
+    //   color: "#FFE599",
+    //   todos: [{ title: "", dueDate: "", tag: "", img: "", body: "", key: "" }],
+    // },
+    // {
+    //   name: "In Progress",
+    //   color: "#EA9999",
+    //   todos: [{ title: "", dueDate: "", tag: "", img: "", body: "", key: "" }],
+    // },
+    // {
+    //   name: "Completed",
+    //   color: "#B6D7A8",
+    //   todos: [{ title: "", dueDate: "", tag: "", img: "", body: "", key: "" }],
+    // },
+  ]);
+
   const windowHeight = Dimensions.get("window").height;
 
-  const addToArray = (currTitle, currTag, currDueDate, currImg, currBody) => {
-    console.log("nextKey", nextKey);
-    if (currTag === "To-do") {
-      setTodos((prevtodos) => [
-        ...prevtodos,
-        {
-          title: currTitle,
-          dueDate: currDueDate,
-          tag: currTag,
-          img: currImg,
-          body: currBody,
-          key: nextKey,
-        },
-      ]);
+  const addToArray = (currTitle, currTag, currDueDate, currImg, currBody, currDuration) => {
+    setTags((prevTags) => {
+      const updatedTags = prevTags.map((elem) => {
+        if (elem.name === currTag) {
+          if (elem.todos) {
+            const updatedTodos = [
+              ...elem.todos,
+              {
+                title: currTitle,
+                dueDate: currDueDate,
+                tag: currTag,
+                img: currImg,
+                body: currBody,
+                duration: currDuration,
+                key: nextKey,
+              },
+            ];
+            return {
+              ...elem,
+              todos: updatedTodos,
+            };
+          } else {
+            return {
+              ...elem,
+              todos: [
+                {
+                  title: currTitle,
+                  dueDate: currDueDate,
+                  tag: currTag,
+                  img: currImg,
+                  body: currBody,
+                  duration: currDuration,
+                  key: nextKey,
+                },
+              ],
+            };
+          }
+        }
+        return elem;
+      });
       setNextKey((k) => k + 1);
-    } else if (currTag === "In progress") {
-      setInprogressTodos((prevtodos) => [
-        ...prevtodos,
-        {
-          title: currTitle,
-          dueDate: currDueDate,
-          tag: currTag,
-          img: currImg,
-          body: currBody,
-          key: nextKey,
-        },
-      ]);
-      setNextKey((k) => k + 1);
-    } else if (currTag === "Complete") {
-      setCompletedTodos((prevtodos) => [
-        ...prevtodos,
-        {
-          title: currTitle,
-          dueDate: currDueDate,
-          tag: currTag,
-          img: currImg,
-          body: currBody,
-          key: nextKey,
-        },
-      ]);
-      setNextKey((k) => k + 1);
-    }
+      return updatedTags;
+    });
   };
 
   const removeFromArray = (currTag, currKey) => {
-    if (currTag === "To-do") {
-      const newArray = [...todos].filter((x) => x.key !== currKey);
-      setTodos([...newArray]);
-    } else if (currTag === "In progress") {
-      const newArray = [...inprogressTodos].filter((x) => x.key !== currKey);
-      setInprogressTodos([...newArray]);
-    } else if (currTag === "Complete") {
-      const newArray = [...completedTodos].filter((x) => x.key !== currKey);
-      setCompletedTodos([...newArray]);
-    }
+    setTags((prevTags) => {
+      const updatedTags = prevTags.map((elem) => {
+        if (elem.name === currTag) {
+          const updatedTodos = elem.todos.filter(
+            (todo) => todo.key !== currKey
+          );
+          return {
+            ...elem,
+            todos: updatedTodos,
+          };
+        }
+        return elem;
+      });
+      return updatedTags;
+    });
   };
 
+  const toggleVisibility = (tag) => {
+    setSelectedTag((prevTags) => {
+      if (prevTags.indexOf(tag) !== -1) {
+        return prevTags.filter((t) => t !== tag);
+      } else {
+        return [...prevTags, tag];
+      }
+    });
+  };
+
+  const checkValidInput = (title, tag) => {
+    if (title !== "" && tag !== "") {
+      return true;
+    }
+    return false;
+  };
+
+  // useEffect(() => {
+  //   StoreService.getTags().then((storedTags) => {
+  //     if (storedTags && storedTags.length > 0) {
+  //       setTags(storedTags);
+  //     }
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   if (tags && tags.length > 0) {
+  //     StoreService.saveTags(tags);
+  //   }
+  // }, [tags]);
+
   useEffect(() => {
-    if (title && dueDate && tag && payload && body) {
+    console.log("Effect triggered with:", {
+      title,
+      dueDate,
+      tag,
+      payload,
+      img,
+      body,
+    });
+    if (title && dueDate && tag && payload && body && duration) {
       if (payload.action === "add") {
-        addToArray(title, tag, dueDate, img, body);
+        addToArray(title, tag, dueDate, img, body, duration);
+        if (!selectedTag.includes(tag)) {
+          toggleVisibility(tag)
+        }
       } else if (payload.action === "edit") {
         removeFromArray(payload.oldTag, payload.key);
-        addToArray(title, tag, dueDate, img, body);
+        addToArray(title, tag, dueDate, img, body, duration);
+        if (!selectedTag.includes(tag)) {
+          toggleVisibility(tag)
+        }
       } else if (payload.action === "delete") {
         removeFromArray(tag, payload.key);
       }
     }
-  }, [title, dueDate, tag, payload, img, body]);
+  }, [title, dueDate, tag, payload, img, body, duration]);
 
   // When todos screen first mounts load todos from store
   useEffect(() => {
     StoreService.getTodos().then((todos) => {
-      setTodos(todos.todos);
-      setInprogressTodos(todos.inprogress);
-      setCompletedTodos(todos.complete);
+      setTags(todos.tags);
+      // setTodos(todos.todos);
+      // setInprogressTodos(todos.inprogress);
+      // setCompletedTodos(todos.complete);
       setNextKey(todos.nextKey);
     });
   }, []);
@@ -106,13 +193,15 @@ export default function StudyTools({ route, navigation }) {
   useEffect(() => {
     if (nextKey) {
       StoreService.saveTodos({
-        todos,
-        inprogress: inprogressTodos,
-        complete: completedTodos,
+        tags,
+        // todos,
+        // inprogress: inprogressTodos,
+        // complete: completedTodos,
         nextKey,
       });
     }
-  }, [todos, inprogressTodos, completedTodos]);
+    // }, [tags, todos, inprogressTodos, completedTodos]);
+  }, [tags]);
 
   return (
     <View style={styles.containerInner}>
@@ -122,57 +211,71 @@ export default function StudyTools({ route, navigation }) {
         style={styles.background}
       >
         <ScrollView contentContainerStyle={styles.container}>
-          <View>
-            <Text style={styles.todoHeadings}>Todo:</Text>
-          </View>
-          {todos.map(({ title, dueDate, tag, img, body, key }, idx) => {
-            return (
-              <TodoBox
-                key={idx}
-                title={title}
-                dueDate={dueDate}
-                tag={tag}
-                myKey={key}
-                img={img}
-                body={body}
-                navigation={navigation}
-              />
-            );
-          })}
-          <View>
-            <Text style={styles.todoHeadings}>In progress:</Text>
-          </View>
-          {inprogressTodos.map(
-            ({ title, dueDate, tag, img, body, key }, idx) => (
-              <TodoBox
-                key={idx}
-                title={title}
-                dueDate={dueDate}
-                tag={tag}
-                myKey={key}
-                img={img}
-                body={body}
-                navigation={navigation}
-              />
-            )
-          )}
-          <View>
-            <Text style={styles.todoHeadings}>Completed:</Text>
-          </View>
-          {completedTodos.map(
-            ({ title, dueDate, tag, img, body, key }, idx) => (
-              <TodoBox
-                key={idx}
-                title={title}
-                dueDate={dueDate}
-                tag={tag}
-                myKey={key}
-                img={img}
-                body={body}
-                navigation={navigation}
-              />
-            )
-          )}
+          {tags.map((elem, index) => (
+            <View key={index}>
+              <TouchableOpacity
+                style={styles.tagHeadings}
+                onPress={() => toggleVisibility(elem.name)}
+              >
+                <Text style={{ fontSize: 20, backgroundColor: elem.color }}>
+                  {elem.name}
+                </Text>
+                {selectedTag.includes(elem.name) ? (
+                  <MaterialCommunityIcons
+                    name="chevron-down"
+                    size={20}
+                    color="black"
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="chevron-up"
+                    size={20}
+                    color="black"
+                  />
+                )}
+              </TouchableOpacity>
+              {selectedTag.includes(elem.name) &&
+                elem.todos.map(
+                  ({ title, dueDate, tag, img, body, duration, key }, idx) => {
+                    // console.log("Todo:", title, tag);
+                    return checkValidInput(title, tag) ? (
+                      <TodoBox
+                        key={idx}
+                        title={title}
+                        dueDate={dueDate}
+                        tag={tag}
+                        myKey={key}
+                        img={img}
+                        body={body}
+                        duration={duration}
+                        navigation={navigation}
+                      />
+                    ) : (
+                      <React.Fragment key={idx} />
+                    );
+                  }
+                )}
+              {/* {elem.todos.map(
+                ({ title, dueDate, tag, img, body, key }, idx) => {
+                  // console.log("Todo:", title, tag);
+                  return checkValidInput(title, tag) ? (
+                    <TodoBox
+                      key={idx}
+                      title={title}
+                      dueDate={dueDate}
+                      tag={tag}
+                      myKey={key}
+                      img={img}
+                      body={body}
+                      navigation={navigation}
+                    />
+                  ) : (
+                    <React.Fragment key={idx} />
+                  );
+                }
+              )} */}
+            </View>
+          ))}
         </ScrollView>
       </LinearGradient>
       <Pressable
@@ -212,14 +315,25 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginBottom: 20,
   },
-  todoHeadings: {
-    fontSize: 20,
-    padding: 10,
+  // tagHeadings: {
+  //   fontSize: 20,
+  //   padding: 10,
+  //   backgroundColor: "white",
+  //   shadowColor: "#171717",
+  //   shadowOffset: { width: -2, height: 4 },
+  //   shadowOpacity: 0.2,
+  //   shadowRadius: 3,
+  //   marginTop: 5,
+  // },
+  tagHeadings: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "white",
     shadowColor: "#171717",
-    shadowOffset: { width: -2, height: 4 },
+    shadowOffset: { width: -2, height: -1 },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
-    marginTop: 5,
+    // marginTop: 2,
+    padding: 10,
   },
 });
