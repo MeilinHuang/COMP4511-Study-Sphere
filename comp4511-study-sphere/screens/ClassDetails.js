@@ -250,15 +250,13 @@ export default function ClassDetails({
                 </View>
               </View>
             </Overlay>
-            <TouchableOpacity style={styles.buttonLeave}>
-              <Text
-                style={styles.buttonLeaveText}
-                onPress={() => {
-                  setVisibleAlert(true);
-                }}
-              >
-                Leave Class
-              </Text>
+            <TouchableOpacity
+              style={styles.buttonLeave}
+              onPress={() => {
+                setVisibleAlert(true);
+              }}
+            >
+              <Text style={styles.buttonLeaveText}>Leave Class</Text>
             </TouchableOpacity>
           </View>
           <TabView
