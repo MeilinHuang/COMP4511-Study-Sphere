@@ -387,7 +387,7 @@ export default function App() {
   return (
     <View style={styles.background}>
       {!isLoadedIntially ? (
-        <Text>Loading...</Text>
+        <Text style={styles.loading}>Loading...</Text>
       ) : (
         <NavigationContainer style={styles.background}>
           <RootStack.Navigator
@@ -552,5 +552,10 @@ const styles = StyleSheet.create({
   background: {
     height: "100%",
     width: "100%",
+  },
+  loading: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
