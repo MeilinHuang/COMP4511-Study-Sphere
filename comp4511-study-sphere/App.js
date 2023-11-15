@@ -255,31 +255,34 @@ export default function App() {
   const [courses, setCourses] = useState(dbCourses);
   const [studySessions, setStudySessions] = useState(dbStudySession);
   const [userId, setUserId] = useState(null);
+  const [isLoadedIntially, setIsLoadedIntially] = useState(false);
 
   // Load info from store
   useEffect(() => {
-    StoreService.getDB().then((db) => {
-      if ("users" in db && db.users) {
-        setUsers(db.users);
-      } else {
-        setUsers(dbUsers);
-      }
-      if ("courses" in db && db.courses) {
-        setCourses(db.courses);
-      } else {
-        setCourses(dbCourses);
-      }
-      if ("studySessions" in db && db.studySessions) {
-        setStudySessions(db.studySessions);
-      } else {
-        setStudySessions(dbStudySession);
-      }
-      if ("userId" in db && db.userId && db.userId !== "") {
-        setUserId(db.userId);
-      } else {
-        setUserId(null);
-      }
-    });
+    StoreService.getDB()
+      .then((db) => {
+        if ("users" in db && db.users) {
+          setUsers(db.users);
+        } else {
+          setUsers(dbUsers);
+        }
+        if ("courses" in db && db.courses) {
+          setCourses(db.courses);
+        } else {
+          setCourses(dbCourses);
+        }
+        if ("studySessions" in db && db.studySessions) {
+          setStudySessions(db.studySessions);
+        } else {
+          setStudySessions(dbStudySession);
+        }
+        if ("userId" in db && db.userId && db.userId !== "") {
+          setUserId(db.userId);
+        } else {
+          setUserId(null);
+        }
+      })
+      .then(() => setIsLoadedIntially(true));
   }, []);
 
   // Save info to store
@@ -383,150 +386,160 @@ export default function App() {
   };
   return (
     <View style={styles.background}>
-      <NavigationContainer style={styles.background}>
-        <RootStack.Navigator
-          style={styles.background}
-          screenOptions={{
-            headerStyle: { backgroundColor: "#C1C3EC" },
-            tabBarActiveBackgroundColor: "#C1C3EC",
-            headerTintColor: "black",
-          }}
-        >
-          <RootStack.Screen name="Login" options={{ headerShown: false }}>
-            {(props) => (
-              <LogIn
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="SignUp"
-            options={{ headerTitle: "Sign Up", headerBackTitle: "Log In" }}
-          >
-            {(props) => (
-              <SignUp
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="Tabs"
-            options={{ headerShown: false }}
+      {!isLoadedIntially ? (
+        <Text>Loading...</Text>
+      ) : (
+        <NavigationContainer style={styles.background}>
+          <RootStack.Navigator
+            initialRouteName={
+              userId && userId <= users.length ? "Tabs" : "Login"
+            }
             style={styles.background}
+            screenOptions={{
+              headerStyle: { backgroundColor: "#C1C3EC" },
+              tabBarActiveBackgroundColor: "#C1C3EC",
+              headerTintColor: "black",
+            }}
           >
-            {(props) => (
-              <BottomTabs
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="Detail" options={{ headerBackTitle: "Back" }}>
-            {(props) => (
-              <Detail
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="Classes"
-            options={{ headerBackTitle: "Back" }}
-          >
-            {(props) => (
-              <Classes
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="ClassDetails"
-            options={{ headerBackTitle: "Back" }}
-          >
-            {(props) => (
-              <ClassDetails
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="Create" options={{ presentation: "modal" }}>
-            {(props) => (
-              <Create
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="Edit" options={{ presentation: "modal" }}>
-            {(props) => (
-              <Edit
-                {...props}
-                users={users}
-                courses={courses}
-                studySessions={studySessions}
-                userId={userId}
-                setUsers={setUsers}
-                setCourses={setCourses}
-                setStudySessions={setStudySessions}
-                setUserId={setUserId}
-              />
-            )}
-          </RootStack.Screen>
-        </RootStack.Navigator>
-      </NavigationContainer>
+            <RootStack.Screen name="Login" options={{ headerShown: false }}>
+              {(props) => (
+                <LogIn
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="SignUp"
+              options={{ headerTitle: "Sign Up", headerBackTitle: "Log In" }}
+            >
+              {(props) => (
+                <SignUp
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Tabs"
+              options={{ headerShown: false }}
+              style={styles.background}
+            >
+              {(props) => (
+                <BottomTabs
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Detail"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <Detail
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Classes"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <Classes
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="ClassDetails"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <ClassDetails
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name="Create" options={{ presentation: "modal" }}>
+              {(props) => (
+                <Create
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name="Edit" options={{ presentation: "modal" }}>
+              {(props) => (
+                <Edit
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+          </RootStack.Navigator>
+        </NavigationContainer>
+      )}
     </View>
   );
 }
