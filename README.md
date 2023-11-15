@@ -5,3 +5,7 @@ Instructions to get started:
  - cd into comp4511-study-sphere/comp4511-study-sphere
  - npx expo install
  - npx expo start
+
+ Simulator instructions:
+ - XCode
+ - Use iPhone 15 - iOS 17.0
