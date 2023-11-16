@@ -2,36 +2,34 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Svg, { Path, Text as SvgText } from "react-native-svg";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import Courses from "./screens/Courses";
 import StudySessions from "./screens/StudySessions";
-import Availabilities from "./screens/Availabilities";
+import Availabilities from "./screens/StudySessions";
 import StudyTools from "./screens/StudyTools";
+import Settings from "./screens/Settings";
+
+import LogIn from "./screens/Login";
+import SignUp from "./screens/SignUp";
+import Classes from "./screens/Classes";
+import ClassDetails from "./screens/ClassDetails";
+
 import Create from "./screens/Create";
 import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
-import Settings from "./screens/Settings";
 import Timer from "./screens/Timer";
-import LogIn from "./screens/Login";
-import Classes from "./screens/Classes";
-import ClassDetails from "./screens/ClassDetails";
-import Courses from "./screens/Courses";
-import StudyTools from "./screens/StudyTools";
-import SignUp from "./screens/SignUp";
+
 import dbUsers from "./database/users.json";
 import dbCourses from "./database/courses.json";
 import dbStudySession from "./database/study_sessions.json";
 import StoreService from "./services/StoreService";
-import Svg, { Path, Text as SvgText } from "react-native-svg";
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
-    Course: {
+    Courses: {
       svg: (
         <Svg
           width="74"
@@ -258,7 +256,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   );
 }
 
-const Tab = createBottomTabNavigator();
+const Tabs = createBottomTabNavigator();
 const RootStack = createNativeStackNavigator();
 
 export default function App() {

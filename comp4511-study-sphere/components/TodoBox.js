@@ -49,7 +49,7 @@ export default function TodoBox(params) {
         />
       )}
       {/* {!params.img && <View style={{ width: 40, height: 40 }}></View>} */}
-      <View style={{padding: 2}}>
+      <View style={{ padding: 2 }}>
         {/* TASK NAME AND DAYSLEFT */}
         <View
           style={{
@@ -75,7 +75,7 @@ export default function TodoBox(params) {
         {/* BODY, DURATION AND ACTION ICONS*/}
         <View style={{ flexDirection: "row" }}>
           {/* BODY AND DURATION */}
-          <View style={{justifyContent:"space-evenly"}}>
+          <View style={{ justifyContent: "space-evenly" }}>
             <Text style={{ width: 240 }}>{params.body}</Text>
             <Text style={{ fontWeight: 500 }}>
               {params.duration ? `${params.duration} minutes` : "25 minutes"}
@@ -152,7 +152,8 @@ export default function TodoBox(params) {
                 </Pressable>
                 <Pressable
                   accessibilityLabel="Delete Todo"
-                  onPress={() =>
+                  onPress={() => {
+                    console.log("clicked");
                     params.navigation.navigate("Study Tools", {
                       title: params.title,
                       dueDate: params.dueDate,
@@ -163,8 +164,8 @@ export default function TodoBox(params) {
                         action: "delete",
                         key: params.myKey,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   <MaterialCommunityIcons
                     name="delete-circle-outline"

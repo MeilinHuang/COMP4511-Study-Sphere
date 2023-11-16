@@ -40,7 +40,7 @@ export default function Create({ route, navigation }) {
   // const [showPicker, setShowPicker] = useState(false);
 
   const [datePicker, setDatePickerVisibile] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date(null));
   const [formattedDate, setFormattedDate] = useState("");
 
   const pickImage = async () => {
@@ -227,7 +227,7 @@ export default function Create({ route, navigation }) {
           isVisible={datePicker}
           mode="datetime"
           display="inline"
-          date={selectedDate}
+          // date={selectedDate}
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
