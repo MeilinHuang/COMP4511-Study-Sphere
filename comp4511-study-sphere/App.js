@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-import Settings from "./screens/Settings";
+import Svg, { Path, Text as SvgText } from "react-native-svg";
+
+import Courses from "./screens/Courses";
 import StudySessions from "./screens/StudySessions";
-import Availabilities from "./screens/Availabilities";
+import Availabilities from "./screens/StudySessions";
+import StudyTools from "./screens/StudyTools";
+import Settings from "./screens/Settings";
+
+import LogIn from "./screens/Login";
+import SignUp from "./screens/SignUp";
+import Classes from "./screens/Classes";
+import ClassDetails from "./screens/ClassDetails";
+
 import Create from "./screens/Create";
 import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
-import LogIn from "./screens/Login";
-import Classes from "./screens/Classes";
-import ClassDetails from "./screens/ClassDetails";
-import Courses from "./screens/Courses";
-import StudyTools from "./screens/StudyTools";
-import SignUp from "./screens/SignUp";
+import Timer from "./screens/Timer";
+
 import dbUsers from "./database/users.json";
 import dbCourses from "./database/courses.json";
 import dbStudySession from "./database/study_sessions.json";
 import StoreService from "./services/StoreService";
-import Svg, { Path, Text as SvgText } from "react-native-svg";
-
-const Tabs = createBottomTabNavigator();
-const RootStack = createNativeStackNavigator();
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
@@ -41,8 +43,8 @@ function MyTabBar({ state, descriptors, navigation }) {
             fill="black"
           />
           <Path
-            d="M43.75 13.75H41.25V21.875L37.5 19.0625L33.75 21.875V13.75H26.25V36.25H43.75V13.75ZM36.25 13.75V16.875L37.5 15.9375L38.75 16.875V13.75H36.25ZM46.25 38.75H23.75V11.25H46.25V38.75Z"
-            fill="#B0AFF1"
+            d="M42.5 12.5C43.163 12.5 43.7989 12.7634 44.2678 13.2322C44.7366 13.7011 45 14.337 45 15V35C45 35.663 44.7366 36.2989 44.2678 36.7678C43.7989 37.2366 43.163 37.5 42.5 37.5H27.5C26.837 37.5 26.2011 37.2366 25.7322 36.7678C25.2634 36.2989 25 35.663 25 35V15C25 14.337 25.2634 13.7011 25.7322 13.2322C26.2011 12.7634 26.837 12.5 27.5 12.5H42.5ZM42.5 15H36.25V25L33.125 22.1875L30 25V15H27.5V35H42.5V15Z"
+            fill="#B0AFFF"
           />
           <SvgText
             x="50%"
@@ -56,7 +58,7 @@ function MyTabBar({ state, descriptors, navigation }) {
           </SvgText>
         </Svg>
       ),
-      text: "Courses",
+      text: "Course",
       icon: "book-outline",
     },
     "Study Sessions": {
@@ -243,12 +245,19 @@ function MyTabBar({ state, descriptors, navigation }) {
                 <Text style={{ fontSize: 9 }}>{tabIcon.text}</Text>
               </View>
             )}
+
+            {/* <Text style={{ color: isFocused ? "#673ab7" : "#222" }}>
+              {tabIcon.text}
+            </Text> */}
           </TouchableOpacity>
         );
       })}
     </View>
   );
 }
+
+const Tabs = createBottomTabNavigator();
+const RootStack = createNativeStackNavigator();
 
 export default function App() {
   const [users, setUsers] = useState(dbUsers);
@@ -552,6 +561,12 @@ const styles = StyleSheet.create({
   background: {
     height: "100%",
     width: "100%",
+  },
+  btmNavBackground: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 5,
+    color: "white",
   },
   loading: {
     flex: 1,
