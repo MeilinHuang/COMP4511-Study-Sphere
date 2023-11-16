@@ -16,28 +16,29 @@ import { Dimensions } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function StudyTools({ route, navigation }) {
-  const { title, dueDate, tag, img, body, duration, payload } = route.params ?? {};
+  const { title, dueDate, tag, img, body, duration, payload } =
+    route.params ?? {};
   const [todos, setTodos] = useState([]);
   const [inprogressTodos, setInprogressTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [nextKey, setNextKey] = useState(0);
   const [selectedTag, setSelectedTag] = useState([]);
   const [tags, setTags] = useState([
-    {
-      name: "To-do",
-      color: "#FFE599",
-      todos: [],
-    },
-    {
-      name: "In Progress",
-      color: "#EA9999",
-      todos: [],
-    },
-    {
-      name: "Completed",
-      color: "#B6D7A8",
-      todos: [],
-    },
+    // {
+    //   name: "To-do",
+    //   color: "#FFE599",
+    //   todos: [],
+    // },
+    // {
+    //   name: "In Progress",
+    //   color: "#EA9999",
+    //   todos: [],
+    // },
+    // {
+    //   name: "Completed",
+    //   color: "#B6D7A8",
+    //   todos: [],
+    // },
     // {
     //   name: "To-do",
     //   color: "#FFE599",
@@ -57,8 +58,33 @@ export default function StudyTools({ route, navigation }) {
 
   const windowHeight = Dimensions.get("window").height;
 
-  const addToArray = (currTitle, currTag, currDueDate, currImg, currBody, currDuration) => {
+  const addToArray = (
+    currTitle,
+    currTag,
+    currDueDate,
+    currImg,
+    currBody,
+    currDuration
+  ) => {
     setTags((prevTags) => {
+      if (prevTags.length === 0) {
+        return [
+          {
+            name: currTag,
+            color: "#FFE599",
+            todos: [
+              {
+                title: currTitle,
+                dueDate: currDueDate,
+                tag: currTag,
+                img: currImg,
+                body: currBody,
+                key: nextKey
+              }
+            ],
+          },
+        ];
+      }
       const updatedTags = prevTags.map((elem) => {
         if (elem.name === currTag) {
           if (elem.todos) {
@@ -152,25 +178,18 @@ export default function StudyTools({ route, navigation }) {
   // }, [tags]);
 
   useEffect(() => {
-    console.log("Effect triggered with:", {
-      title,
-      dueDate,
-      tag,
-      payload,
-      img,
-      body,
-    });
-    if (title && dueDate && tag && payload && body && duration) {
+    // if (title && dueDate && tag && payload && body) {
+    if (title && tag && payload) {
       if (payload.action === "add") {
         addToArray(title, tag, dueDate, img, body, duration);
         if (!selectedTag.includes(tag)) {
-          toggleVisibility(tag)
+          toggleVisibility(tag);
         }
       } else if (payload.action === "edit") {
         removeFromArray(payload.oldTag, payload.key);
         addToArray(title, tag, dueDate, img, body, duration);
         if (!selectedTag.includes(tag)) {
-          toggleVisibility(tag)
+          toggleVisibility(tag);
         }
       } else if (payload.action === "delete") {
         removeFromArray(tag, payload.key);
@@ -210,7 +229,10 @@ export default function StudyTools({ route, navigation }) {
         colors={["#B6B2E6", "#C5DDBA"]}
         style={styles.background}
       >
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView
+          contentContainerStyle={[styles.container, { height: windowHeight }]}
+        >
+          {/* {tags.map((elem, index) => ())} */}
           {tags.map((elem, index) => (
             <View key={index}>
               <TouchableOpacity
@@ -315,16 +337,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginBottom: 20,
   },
-  // tagHeadings: {
-  //   fontSize: 20,
-  //   padding: 10,
-  //   backgroundColor: "white",
-  //   shadowColor: "#171717",
-  //   shadowOffset: { width: -2, height: 4 },
-  //   shadowOpacity: 0.2,
-  //   shadowRadius: 3,
-  //   marginTop: 5,
-  // },
   tagHeadings: {
     flexDirection: "row",
     alignItems: "center",

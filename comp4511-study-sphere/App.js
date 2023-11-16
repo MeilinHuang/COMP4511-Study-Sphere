@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Svg, { Path, Text as SvgText } from "react-native-svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import Courses from "./screens/Courses";
 import StudySessions from "./screens/StudySessions";
 import Availabilities from "./screens/Availabilities";
 import StudyTools from "./screens/StudyTools";
@@ -14,46 +15,6 @@ import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
 import Settings from "./screens/Settings";
 import Timer from "./screens/Timer";
-
-function CourseScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Course!</Text>
-    </View>
-  );
-}
-
-function StudySessionsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Study Sessions!</Text>
-    </View>
-  );
-}
-
-function AvailabilitiesScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Availabilities!</Text>
-    </View>
-  );
-}
-
-function StudyToolsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Study Tools!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
@@ -298,7 +259,7 @@ export default function App() {
         }}
         tabBar={(props) => <MyTabBar {...props} />}
       >
-        <Tab.Screen name="Course" component={CourseScreen} />
+        <Tab.Screen name="Course" component={Courses} />
         <Tab.Screen name="Study Sessions" component={StudySessions} />
         <Tab.Screen name="Availabilities" component={Availabilities} />
         <Tab.Screen name="Study Tools" component={StudyTools} />
@@ -333,6 +294,16 @@ export default function App() {
             component={Create}
             options={{
               presentation: "modal",
+              // headerBackVisible: true,
+              // headerLeft: () => {
+              //   <TouchableOpacity onPress={() => {}}>
+              //     <MaterialCommunityIcons
+              //       name="close"
+              //       color="black"
+              //       size={20}
+              //     />
+              //   </TouchableOpacity>;
+              // },
             }}
           />
           <RootStack.Screen
@@ -340,10 +311,7 @@ export default function App() {
             component={Edit}
             options={{ presentation: "modal" }}
           />
-          <RootStack.Screen
-            name="Timer"
-            component={Timer}
-          />
+          <RootStack.Screen name="Timer" component={Timer} />
         </RootStack.Navigator>
       </NavigationContainer>
     </View>

@@ -6,6 +6,12 @@ const COMPLETED_STORE_KEY = "@complete";
 const NEXT_KEY = "@nextkey";
 const TAGS_STORE_KEY = "@tags";
 
+const defaultTags = [
+  { name: "To-do", color: "#FFE599", todos: [] },
+  { name: "In Progress", color: "#EA9999", todos: [] },
+  { name: "Completed", color: "#B6D7A8", todos: [] },
+];
+
 export default {
   // async getTags() {
   //   try {
@@ -22,20 +28,29 @@ export default {
   //     console.log("Failed to save tags", error);
   //   }
   // },
+
   async getTodos() {
     try {
-      const storedTags = await AsyncStorage.getItem(TAGS_STORE_KEY);
+      let storedTags = await AsyncStorage.getItem(TAGS_STORE_KEY);
       // const storedTodos = await AsyncStorage.getItem(TODOS_STORE_KEY);
       // const storedInprogress = await AsyncStorage.getItem(INPROGRESS_STORE_KEY);
       // const storedComplete = await AsyncStorage.getItem(COMPLETED_STORE_KEY);
       let nextKey = await AsyncStorage.getItem(NEXT_KEY);
+
+      if (storedTags === null) {
+        await AsyncStorage.setItem(TAGS_STORE_KEY, JSON.stringify(defaultTags));
+        storedTags = await AsyncStorage.getItem(TAGS_STORE_KEY);
+      }
+      
+
       const retval = {
-        tags: storedTags ? JSON.parse(storedTags) : [],
+        tags: JSON.parse(storedTags),
         // todos: storedTodos ? JSON.parse(storedTodos) : [],
         // inprogress: storedInprogress ? JSON.parse(storedInprogress) : [],
         // complete: storedComplete ? JSON.parse(storedComplete) : [],
         nextKey: nextKey ? Number(nextKey) : 0,
       };
+
       return retval;
     } catch (error) {
       console.log("Failed to get todos", error);

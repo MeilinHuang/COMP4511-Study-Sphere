@@ -24,11 +24,12 @@
     "react-native": "0.72.6",
     "react-native-calendar-picker": "^7.1.4",
     "react-native-element-dropdown": "^2.10.0",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-svg": "13.9.0",
-    "react-native-linear-gradient": "^2.8.3",
     "react-native-vector-icons": "^10.0.1",
     "react-navigation-switch": "^1.0.6",
+    "react-select": "^5.8.0",
     "undefined": "@expo/vector-icons/Ionicons"
   },
   "devDependencies": {

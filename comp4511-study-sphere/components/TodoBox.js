@@ -6,19 +6,15 @@ export default function TodoBox(params) {
   // console.log("params", params);
   const [daysLeft, setDaysLeft] = useState(null);
 
-  const informMessage = (day) => {
-    if (day === null) {
-      return { message: "-", color: "black" };
-    } else {
-      if (day === 0) {
-        return { message: "Due Today", color: "red" };
-      } else if (day === 1) {
-        return { message: "Due Tomorrow", color: "orange" };
-      } else if (day > 1) {
-        return { message: `${day} Days Left`, color: "green" };
-      } else if (day < 0) {
-        return { message: "Deadline passed", color: "gray" };
-      }
+  const informMessage = () => {
+    if (daysLeft === 0) {
+      return { message: "Due Today", color: "red" };
+    } else if (daysLeft === 1) {
+      return { message: "Due Tomorrow", color: "orange" };
+    } else if (daysLeft > 1) {
+      return { message: `${daysLeft} Days Left`, color: "green" };
+    } else if (daysLeft < 0) {
+      return { message: "Deadline passed", color: "gray" };
     }
   };
 
@@ -52,8 +48,9 @@ export default function TodoBox(params) {
           }}
         />
       )}
-      {!params.img && <View style={{ width: 40, height: 40 }}></View>}
-      <View style={{ padding: 2 }}>
+      {/* {!params.img && <View style={{ width: 40, height: 40 }}></View>} */}
+      <View style={{padding: 2}}>
+        {/* TASK NAME AND DAYSLEFT */}
         <View
           style={{
             flexDirection: "row",
@@ -65,22 +62,29 @@ export default function TodoBox(params) {
             {params.title}
           </Text>
           {daysLeft !== null && (
-            <Text style={{ color: informMessage(daysLeft).color }}>
-              {informMessage(daysLeft).message}
+            <Text
+              style={{
+                color: informMessage().color,
+                paddingLeft: params.img ? 0 : 60,
+              }}
+            >
+              {informMessage().message}
             </Text>
           )}
         </View>
+        {/* BODY, DURATION AND ACTION ICONS*/}
         <View style={{ flexDirection: "row" }}>
-          <View>
+          {/* BODY AND DURATION */}
+          <View style={{justifyContent:"space-evenly"}}>
             <Text style={{ width: 240 }}>{params.body}</Text>
-            <Text style={{ fontWeight: 500, bottom: -10 }}>
+            <Text style={{ fontWeight: 500 }}>
               {params.duration ? `${params.duration} minutes` : "25 minutes"}
             </Text>
           </View>
-
+          {/* ACTION ICONS */}
           {params.tag !== "Completed" ? (
             <View style={styles.buttonsContainer}>
-              <View>
+              <View style={{ paddingLeft: params.img ? 0 : 60 }}>
                 <Pressable
                   accessibilityLabel="Start timer"
                   onPress={() =>
@@ -90,6 +94,7 @@ export default function TodoBox(params) {
                       origTag: params.tag,
                       origKey: params.myKey,
                       origBody: params.body,
+                      origDuration: params.duration,
                       origImg: params.img,
                     })
                   }
@@ -134,6 +139,7 @@ export default function TodoBox(params) {
                       origTag: params.tag,
                       origKey: params.myKey,
                       origBody: params.body,
+                      origDuration: params.duration,
                       origImg: params.img,
                     })
                   }
@@ -169,7 +175,12 @@ export default function TodoBox(params) {
               </View>
             </View>
           ) : (
-            <View style={styles.buttonsContainer}>
+            <View
+              style={[
+                styles.buttonsContainer,
+                { paddingLeft: params.img ? 0 : 60 },
+              ]}
+            >
               <Pressable
                 accessibilityLabel="Unmark todo as completed"
                 onPress={() =>
@@ -232,8 +243,6 @@ const styles = StyleSheet.create({
     // width: "100%",
     // backgroundColor: "#C1C3EC",
     backgroundColor: "rgba(255, 255, 255, 0.5)",
-    // backgroundColor: "transparent",
-    // opacity: "50%",
     marginTop: 5,
     marginBottom: 5,
     marginLeft: 5,

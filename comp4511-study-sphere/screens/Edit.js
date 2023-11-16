@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  Animated
+  Animated,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Dropdown } from "react-native-element-dropdown";
@@ -26,7 +26,7 @@ const tagData = [
 ];
 
 export default function Edit({ route, navigation }) {
-  const { origTitle, origDueDate, origTag, origKey, origBody, origImg } =
+  const { origTitle, origDueDate, origTag, origKey, origBody, origDuration, origImg } =
     route.params ?? {};
   const [title, setTitle] = useState(origTitle ? origTitle : "");
   const [tag, setTag] = useState(origTag ? origTag : "To-do");
@@ -50,8 +50,9 @@ export default function Edit({ route, navigation }) {
 
   const [datePicker, setDatePickerVisibile] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
-    origDueDate ? new Date(origDueDate) : new Date()
+    origDueDate ? new Date(origDueDate) : null
   );
+  const [duration, setDuration] = useState(origDuration)
   const [formattedDate, setFormattedDate] = useState("");
 
   const pickImage = async () => {
@@ -90,7 +91,9 @@ export default function Edit({ route, navigation }) {
       minute: "numeric",
       hour12: true,
     };
-    const formatted = new Intl.DateTimeFormat("en-US", options).format(str);
+    const formatted = str
+      ? new Intl.DateTimeFormat("en-US", options).format(str)
+      : "";
     return formatted.replace(/, (\d{1,2})/, " $1").replace(/ at/, ",");
   };
 
@@ -98,12 +101,12 @@ export default function Edit({ route, navigation }) {
     ? changeDateFormat(selectedDate)
     : "Select date and time";
 
-  const [sliderValue, setSliderValue] = useState(0);
-  const animatedValue = new Animated.Value(0);
+  const [sliderValue, setSldierValue] = useState(0);
+  const animatedValue = new Animated.Value(duration);
   const [modalVisible, setModalVisible] = useState(false);
 
   const onSliderSliding = (value) => {
-    setSliderValue(value);
+    setDuration(value);
     animatedValue.setValue(value);
   };
 
@@ -122,9 +125,10 @@ export default function Edit({ route, navigation }) {
 
   const [numericInput, setNumericInput] = useState(0);
 
-  const handleNumericInput = (text) => {
+  const changeDurationFormat = (text) => {
     const numericText = text.replace(/[^0-9]/g, "");
-    setNumericInput(parseInt(numericText));
+    setDuration(parseInt(numericText));
+    // setNumericInput(parseInt(numericText));
   };
 
   return (
@@ -237,7 +241,7 @@ export default function Edit({ route, navigation }) {
               { marginLeft: animatedValue, marginBottom: 10 },
             ]}
           >
-            {sliderValue}
+            {duration}
           </Animated.Text>
           <Slider
             lowerLimit={1}
@@ -245,7 +249,7 @@ export default function Edit({ route, navigation }) {
             minimumValue={0}
             maximumValue={300}
             minimumTrackTintColor="#9B8CE6"
-            value={sliderValue}
+            value={duration}
             onValueChange={onSliderSliding}
           />
         </View>
@@ -256,15 +260,7 @@ export default function Edit({ route, navigation }) {
           onPress={openEditModal}
         />
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
@@ -277,8 +273,9 @@ export default function Edit({ route, navigation }) {
                 { width: 200, backgroundColor: "white" },
               ]}
               keyboardType="numeric"
-              value={numericInput}
-              onChangeText={handleNumericInput}
+              // value={numericInput.toString()}
+              value={duration.toString()}
+              onChangeText={changeDurationFormat}
               placeholder="Enter number"
             />
             <View
@@ -296,7 +293,8 @@ export default function Edit({ route, navigation }) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.cancelButton, { backgroundColor: "#5D69D7" }]}
-                onPress={() => confirmSliderChange(numericInput)}
+                onPress={() => confirmSliderChange(duration)}
+                // onPress={() => confirmSliderChange(numericInput)}
               >
                 <Text style={[styles.cancelButtonText, { color: "#fff" }]}>
                   Confirm
@@ -352,23 +350,50 @@ export default function Edit({ route, navigation }) {
           </TouchableOpacity>
         </View>
       )}
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: "#5D69D7" }]}
-        onPress={() => {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          navigation.navigate("Study Tools", {
-            title,
-            dueDate: selectedDate.toJSON(),
-            tag,
-            img,
-            body,
-            duration: sliderValue,
-            payload: { action: "edit", oldTag: origTag, key: origKey },
-          });
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          width: "100%",
         }}
       >
-        <Text style={[styles.buttonText, { color: "#fff" }]}>Save Changes</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            navigation.navigate("Study Tools", {
+              title,
+              dueDate: selectedDate ? selectedDate.toJSON() : "",
+              tag,
+              img,
+              body,
+              duration: duration,
+              payload: { action: "edit", oldTag: origTag, key: origKey },
+            });
+          }}
+        >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.cancelButton, { backgroundColor: "#5D69D7" }]}
+          onPress={() => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            navigation.navigate("Study Tools", {
+              title,
+              dueDate: selectedDate ? selectedDate.toJSON() : "",
+              tag,
+              img,
+              body,
+              duration: duration,
+              payload: { action: "edit", oldTag: origTag, key: origKey },
+            });
+          }}
+        >
+          <Text style={[styles.cancelButtonText, { color: "#fff" }]}>
+            Save Changes
+          </Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -397,8 +422,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 10,
   },
-  button: {
-    height: 50,
+  cancelButton: {
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 50,
@@ -407,10 +432,36 @@ const styles = StyleSheet.create({
     backgroundColor: "#efefef",
     paddingHorizontal: 20,
   },
-  buttonText: {
-    fontSize: 18,
+  cancelButtonText: {
+    fontSize: 16,
     fontWeight: "500",
     color: "#5D69D7",
+    padding: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
   browseButton: {
     height: 30,

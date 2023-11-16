@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Animated,
   Modal,
+  Alert,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Dropdown } from "react-native-element-dropdown";
@@ -25,6 +26,7 @@ const tagData = [
   { label: "To-do", value: "To-do" },
   { label: "In Progress", value: "In Progress" },
   { label: "Completed", value: "Completed" },
+  { label: "Create New Tag", value: "Create New Tag" },
 ];
 
 export default function Create({ route, navigation }) {
@@ -38,7 +40,7 @@ export default function Create({ route, navigation }) {
   // const [showPicker, setShowPicker] = useState(false);
 
   const [datePicker, setDatePickerVisibile] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
   const [formattedDate, setFormattedDate] = useState("");
 
   const pickImage = async () => {
@@ -141,19 +143,31 @@ export default function Create({ route, navigation }) {
     setNumericInput(parseInt(numericText));
   };
 
+  const handleCreateNewTag = (item) => {
+    if (item.value === "Create New Tag") {
+    } else {
+      setTag(item.value);
+      setIsFocusTag(false);
+    }
+  };
+
   // useEffect(() => {
   //   animatedValue.setValue(sliderValue);
   // }, [sliderValue]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text
-        aria-label="Label for Task"
-        nativeID="labelTask"
-        style={{ marginBottom: 10, fontSize: 16, fontWeight: 600 }}
-      >
-        Task
-      </Text>
+      <View style={{ flexDirection: "row" }}>
+        <Text
+          aria-label="Label for Task"
+          nativeID="labelTask"
+          style={{ marginBottom: 10, fontSize: 16, fontWeight: 600 }}
+        >
+          Task
+        </Text>
+        <Text style={{ color: "red" }}> *</Text>
+      </View>
+      {/* <MaterialCommunityIcons name="asterisk" color="red" size={10} /> */}
       <TextInput
         accessibilityLabel="Task"
         accessibilityHint="The todo's task"
@@ -162,14 +176,16 @@ export default function Create({ route, navigation }) {
         onChangeText={setTitle}
         style={styles.textInput}
       />
-      {/* <View style={styles.hr}></View> */}
-      <Text
-        aria-label="Label for Tag"
-        nativeID="labelTag"
-        style={{ marginBottom: 10, fontSize: 16, fontWeight: 600 }}
-      >
-        Tag
-      </Text>
+      <View style={{ flexDirection: "row" }}>
+        <Text
+          aria-label="Label for Tag"
+          nativeID="labelTag"
+          style={{ marginBottom: 10, fontSize: 16, fontWeight: 600 }}
+        >
+          Tag
+        </Text>
+        <Text style={{ color: "red" }}> *</Text>
+      </View>
       <Dropdown
         style={[styles.dropdown, isFocusTag && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
@@ -187,8 +203,7 @@ export default function Create({ route, navigation }) {
         onFocus={() => setIsFocusTag(true)}
         onBlur={() => setIsFocusTag(false)}
         onChange={(item) => {
-          setTag(item.value);
-          setIsFocusTag(false);
+          handleCreateNewTag(item);
         }}
       />
       <Text
@@ -338,15 +353,7 @@ export default function Create({ route, navigation }) {
           onPress={openEditModal}
         />
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
@@ -435,45 +442,52 @@ export default function Create({ route, navigation }) {
           </TouchableOpacity>
         </View>
       )}
-
-      {/* <Button title="Pick an image" onPress={pickImage} /> */}
-      {/* <View style={styles.hr}></View> */}
-      <TouchableOpacity
-        style={[styles.cancelButton, { backgroundColor: "#5D69D7" }]}
-        onPress={() => {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          navigation.navigate("Study Tools", {
-            title,
-            // dueDate: date,
-            dueDate: selectedDate.toJSON(),
-            tag,
-            body,
-            duration: sliderValue,
-            img,
-            payload: { action: "add" },
-          });
-        }}
-      >
-        <Text style={[styles.cancelButtonText, { color: "#fff" }]}>
-          Create Todo
-        </Text>
-      </TouchableOpacity>
-      {/* <Button
-        title="Create Todo"
-        style={styles.cancelButtonText}
-        onPress={() => {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          navigation.navigate("Study Tools", {
-            title,
-            // dueDate: date,
-            dueDate: selectedDate.toJSON(),
-            tag,
-            body,
-            img,
-            payload: { action: "add" },
-          });
-        }}
-      /> */}
+      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            navigation.navigate("Study Tools", {
+              title,
+              // dueDate: date,
+              dueDate: selectedDate ? selectedDate.toJSON() : "",
+              tag,
+              body,
+              duration: sliderValue,
+              img,
+              payload: { action: "cancel" },
+            });
+          }}
+        >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.cancelButton, { backgroundColor: "#5D69D7" }]}
+          onPress={() => {
+            if (title.trim() === "" || tag === null) {
+              Alert.alert("Error", "Please fill the required fields");
+            } else {
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success
+              );
+              navigation.navigate("Study Tools", {
+                title,
+                // dueDate: date,
+                dueDate: selectedDate ? selectedDate.toJSON() : "",
+                tag,
+                body,
+                duration: sliderValue,
+                img,
+                payload: { action: "add" },
+              });
+            }
+          }}
+        >
+          <Text style={[styles.cancelButtonText, { color: "#fff" }]}>
+            Create
+          </Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -502,12 +516,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 10,
   },
-  // datePicker: {
-  //   height: 120,
-  //   marginTop: 10,
-  // },
   cancelButton: {
-    height: 40,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 50,
@@ -517,9 +527,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   cancelButtonText: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "500",
     color: "#5D69D7",
+    padding: 20,
   },
   browseButton: {
     height: 30,
