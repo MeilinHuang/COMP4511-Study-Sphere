@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Svg, { Path, Text as SvgText } from "react-native-svg";
@@ -15,6 +17,17 @@ import Edit from "./screens/Edit";
 import Detail from "./screens/Detail";
 import Settings from "./screens/Settings";
 import Timer from "./screens/Timer";
+import LogIn from "./screens/Login";
+import Classes from "./screens/Classes";
+import ClassDetails from "./screens/ClassDetails";
+import Courses from "./screens/Courses";
+import StudyTools from "./screens/StudyTools";
+import SignUp from "./screens/SignUp";
+import dbUsers from "./database/users.json";
+import dbCourses from "./database/courses.json";
+import dbStudySession from "./database/study_sessions.json";
+import StoreService from "./services/StoreService";
+import Svg, { Path, Text as SvgText } from "react-native-svg";
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
@@ -249,71 +262,295 @@ const Tab = createBottomTabNavigator();
 const RootStack = createNativeStackNavigator();
 
 export default function App() {
-  const BottomTabs = () => (
-    <View style={styles.background}>
-      <Tab.Navigator
-        screenOptions={{
-          headerStyle: { backgroundColor: "#C1C3EC" },
-          tabBarActiveBackgroundColor: "#C1C3EC",
-          tabBarActiveTintColor: "black",
-        }}
-        tabBar={(props) => <MyTabBar {...props} />}
-      >
-        <Tab.Screen name="Course" component={Courses} />
-        <Tab.Screen name="Study Sessions" component={StudySessions} />
-        <Tab.Screen name="Availabilities" component={Availabilities} />
-        <Tab.Screen name="Study Tools" component={StudyTools} />
-        <Tab.Screen name="Settings" component={Settings} />
-      </Tab.Navigator>
-    </View>
-  );
-  return (
-    <View style={styles.background}>
-      <NavigationContainer>
-        <RootStack.Navigator
-          style={styles.background}
+  const [users, setUsers] = useState(dbUsers);
+  const [courses, setCourses] = useState(dbCourses);
+  const [studySessions, setStudySessions] = useState(dbStudySession);
+  const [userId, setUserId] = useState(null);
+  const [isLoadedIntially, setIsLoadedIntially] = useState(false);
+
+  // Load info from store
+  useEffect(() => {
+    StoreService.getDB()
+      .then((db) => {
+        if ("users" in db && db.users) {
+          setUsers(db.users);
+        } else {
+          setUsers(dbUsers);
+        }
+        if ("courses" in db && db.courses) {
+          setCourses(db.courses);
+        } else {
+          setCourses(dbCourses);
+        }
+        if ("studySessions" in db && db.studySessions) {
+          setStudySessions(db.studySessions);
+        } else {
+          setStudySessions(dbStudySession);
+        }
+        if ("userId" in db && db.userId && db.userId !== "") {
+          setUserId(db.userId);
+        } else {
+          setUserId(null);
+        }
+      })
+      .then(() => setIsLoadedIntially(true));
+  }, []);
+
+  // Save info to store
+  useEffect(() => {
+    StoreService.saveDB({
+      courses,
+      users,
+      studySessions,
+      userId: userId ? userId : "",
+    });
+  }, [users, courses, studySessions, userId]);
+
+  const BottomTabs = (params) => {
+    return (
+      <View style={styles.background}>
+        <Tabs.Navigator
+          tabBar={(props) => <MyTabBar {...props} />}
           screenOptions={{
             headerStyle: { backgroundColor: "#C1C3EC" },
             tabBarActiveBackgroundColor: "#C1C3EC",
             tabBarActiveTintColor: "black",
           }}
+          style={styles.background}
         >
-          <RootStack.Screen
-            name="Tabs"
-            component={BottomTabs}
-            options={{ headerShown: false }}
-            style={styles.background}
-          />
-          <RootStack.Screen
-            name="Detail"
-            component={Detail}
-            options={{ headerBackTitle: "Back" }}
-          />
-          <RootStack.Screen
-            name="Create"
-            component={Create}
+          <Tabs.Screen
+            name="Courses"
             options={{
-              presentation: "modal",
-              // headerBackVisible: true,
-              // headerLeft: () => {
-              //   <TouchableOpacity onPress={() => {}}>
-              //     <MaterialCommunityIcons
-              //       name="close"
-              //       color="black"
-              //       size={20}
-              //     />
-              //   </TouchableOpacity>;
-              // },
+              tabBarIcon: ({ size }) => (
+                <MaterialCommunityIcons
+                  name="book-outline"
+                  size={size}
+                  color="black"
+                />
+              ),
+              headerTitle: "Courses",
             }}
-          />
-          <RootStack.Screen
-            name="Edit"
-            component={Edit}
-            options={{ presentation: "modal" }}
-          />
-          <RootStack.Screen name="Timer" component={Timer} />
-        </RootStack.Navigator>
-      </NavigationContainer>
+            style={styles.background}
+          >
+            {(props) => <Courses {...props} {...params} />}
+          </Tabs.Screen>
+          <Tabs.Screen
+            name="Study Sessions"
+            options={{
+              tabBarIcon: ({ size }) => (
+                <MaterialCommunityIcons
+                  name="calendar-month-outline"
+                  size={size}
+                  color="black"
+                />
+              ),
+              headerTitle: "Study Sessions",
+            }}
+          >
+            {(props) => <StudySessions {...props} {...params} />}
+          </Tabs.Screen>
+          <Tabs.Screen
+            name="Availabilities"
+            options={{
+              tabBarIcon: ({ size }) => (
+                <MaterialCommunityIcons
+                  name="clock-outline"
+                  size={size}
+                  color="black"
+                />
+              ),
+              headerTitle: "Availabilities",
+            }}
+          >
+            {(props) => <Availabilities {...props} {...params} />}
+          </Tabs.Screen>
+          <Tabs.Screen
+            name="Study Tools"
+            options={{
+              tabBarIcon: ({ size }) => (
+                <MaterialCommunityIcons
+                  name="pencil-ruler"
+                  size={size}
+                  color="black"
+                />
+              ),
+              headerTitle: "Study Tools",
+            }}
+            style={styles.background}
+          >
+            {(props) => <StudyTools {...props} {...params} />}
+          </Tabs.Screen>
+          <Tabs.Screen
+            name="Settings"
+            options={{
+              tabBarIcon: ({ size }) => (
+                <MaterialCommunityIcons name="cog" size={size} color="black" />
+              ),
+              headerTitle: "Settings",
+            }}
+          >
+            {(props) => <Settings {...props} {...params} />}
+          </Tabs.Screen>
+        </Tabs.Navigator>
+      </View>
+    );
+  };
+  return (
+    <View style={styles.background}>
+      {!isLoadedIntially ? (
+        <Text style={styles.loading}>Loading...</Text>
+      ) : (
+        <NavigationContainer style={styles.background}>
+          <RootStack.Navigator
+            initialRouteName={
+              userId && userId <= users.length ? "Tabs" : "Login"
+            }
+            style={styles.background}
+            screenOptions={{
+              headerStyle: { backgroundColor: "#C1C3EC" },
+              tabBarActiveBackgroundColor: "#C1C3EC",
+              headerTintColor: "black",
+            }}
+          >
+            <RootStack.Screen name="Login" options={{ headerShown: false }}>
+              {(props) => (
+                <LogIn
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="SignUp"
+              options={{ headerTitle: "Sign Up", headerBackTitle: "Log In" }}
+            >
+              {(props) => (
+                <SignUp
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Tabs"
+              options={{ headerShown: false }}
+              style={styles.background}
+            >
+              {(props) => (
+                <BottomTabs
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Detail"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <Detail
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Classes"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <Classes
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="ClassDetails"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <ClassDetails
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name="Create" options={{ presentation: "modal" }}>
+              {(props) => (
+                <Create
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name="Edit" options={{ presentation: "modal" }}>
+              {(props) => (
+                <Edit
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+          </RootStack.Navigator>
+        </NavigationContainer>
+      )}
     </View>
   );
 }
@@ -321,9 +558,6 @@ export default function App() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    // backgroundColor: "linear-gradient(#e66465, #9198e5)",
-    // alignItems: 'center',
-    // justifyContent: 'center',
     height: "100%",
   },
   background: {
@@ -335,5 +569,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
     color: "white",
+  },
+  loading: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

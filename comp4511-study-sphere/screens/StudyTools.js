@@ -13,14 +13,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TodoBox from "../components/TodoBox";
 import { Dimensions } from "react-native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function StudyTools({ route, navigation }) {
   const { title, dueDate, tag, img, body, duration, payload } =
     route.params ?? {};
-  const [todos, setTodos] = useState([]);
-  const [inprogressTodos, setInprogressTodos] = useState([]);
-  const [completedTodos, setCompletedTodos] = useState([]);
+  // const [todos, setTodos] = useState([]);
+  // const [inprogressTodos, setInprogressTodos] = useState([]);
+  // const [completedTodos, setCompletedTodos] = useState([]);
   const [nextKey, setNextKey] = useState(0);
   const [selectedTag, setSelectedTag] = useState([]);
   const [tags, setTags] = useState([
