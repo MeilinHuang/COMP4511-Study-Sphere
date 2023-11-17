@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TextInput } from 'react-native';
 import { Divider } from '@rneui/themed';
 import { FontAwesome5 } from '@expo/vector-icons';
+import DateTimePicker from 'react-native-ui-datepicker';
+import dayjs from 'dayjs';
 
-const labels = ['Participant Information', 'Location'];
+const labels = ['Participant Information', 'Group Availabilities', 'Location'];
 
 const customStyles = {
   labelColor: '#000000',
@@ -37,6 +39,7 @@ export default function CreateStudySessionScreen({ navigation }) {
   const [currentPosition, setCurrentPosition] = useState(0);
   const [currentParticipant, setCurrentParticipant] = useState('');
   const [currParticipantArray, setCurrParticipantArray] = useState([]);
+  const [date, setDate] = useState(dayjs());
 
   const onPageChange = (position) => {
     setCurrentPosition(position);
@@ -63,29 +66,39 @@ export default function CreateStudySessionScreen({ navigation }) {
     // go ahead and remove this entity
     currentParticipants.splice(idx, 1);
     setCurrParticipantArray(currentParticipants);
-  }
+  };
 
   const getParticipantsAdded = () => {
     return (
       <View style={styles.bubbleParentContainer}>
-      {currParticipantArray.map((participant, idx) => (
-        <View style={styles.bubbleContainer} key={idx}>
-          <Pressable style={styles.purpleBubble}>
-            <View style={styles.bubbleContent}>
-              <Text style={styles.bubbleText}>{participant}</Text>
-              <Pressable style={styles.removeButton} onPress={() => removeParticipant(idx)}>
-                <MaterialIcons name='highlight-remove' size={30} color='white' />
-              </Pressable>
-            </View>
-          </Pressable>
-        </View>
-      ))}
-    </View>
+        {currParticipantArray.map((participant, idx) => (
+          <View style={styles.bubbleContainer} key={idx}>
+            <Pressable style={styles.purpleBubble}>
+              <View style={styles.bubbleContent}>
+                <Text style={styles.bubbleText}>{participant}</Text>
+                <Pressable
+                  style={styles.removeButton}
+                  onPress={() => removeParticipant(idx)}
+                >
+                  <MaterialIcons
+                    name='highlight-remove'
+                    size={30}
+                    color='white'
+                  />
+                </Pressable>
+              </View>
+            </Pressable>
+          </View>
+        ))}
+      </View>
     );
   };
 
-  console.log(currentParticipant);
-  console.log(currParticipantArray);
+  const navigateToAvailabilitesStep = () => {
+    setCurrentPosition(1);
+  };
+
+  console.log(date);
 
   return (
     <View style={styles.container}>
@@ -101,23 +114,71 @@ export default function CreateStudySessionScreen({ navigation }) {
           />
         </View>
         {customDivider()}
-        <View style={styles.formContainer}>
-          <Text style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}>
-            Add Participants:
-          </Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder='Enter a course or class or username'
-              value={currentParticipant}
-              onChangeText={(text) => setCurrentParticipant(text)}
-              style={styles.textInput}
-            />
-            <Pressable style={styles.addButton} onPress={addParticipantToArray}>
-              <FontAwesome5 name='plus' size={20} color='white' />
+        {currentPosition === 0 && (
+          <ScrollView>
+            <View style={styles.formContainer}>
+              <Text
+                style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
+              >
+                Add Participants:
+              </Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder='Enter a course or class or username'
+                  value={currentParticipant}
+                  onChangeText={(text) => setCurrentParticipant(text)}
+                  style={styles.textInput}
+                />
+                <Pressable
+                  style={styles.addButton}
+                  onPress={addParticipantToArray}
+                >
+                  <FontAwesome5 name='plus' size={20} color='white' />
+                </Pressable>
+              </View>
+              <View>{getParticipantsAdded()}</View>
+              <Text
+                style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
+              >
+                Select Date:
+              </Text>
+              <View style={{ backgroundColor: 'white', borderRadius: 15 }}>
+                <DateTimePicker
+                  value={date}
+                  mode='date'
+                  display='default'
+                  locale='en'
+                  onValueChange={(date) => setDate(dayjs(date))}
+                  displayFullDays={false}
+                  selectedItemColor='#4f46e5'
+                />
+              </View>
+              <Text
+                style={{
+                  marginTop: 10,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                }}
+              >
+                {`Selected, ${date.format('DD MMMM YYYY')}`}
+              </Text>
+            </View>
+            <Pressable
+              style={styles.nextPage}
+              onPress={navigateToAvailabilitesStep}
+            >
+              <Text style={styles.nextPageBtnText}>Group Availabilites</Text>
+              <MaterialIcons name='navigate-next' size={30} color='white' />
             </Pressable>
+          </ScrollView>
+        )}
+
+        {currentPosition === 1 && (
+          <View style={styles.containerForGroupAvailabilities}>
+            <Text>Hi!</Text>
           </View>
-          <View>{getParticipantsAdded()}</View>
-        </View>
+        )}
       </LinearGradient>
     </View>
   );
@@ -204,5 +265,20 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     marginLeft: 8,
+  },
+  nextPage: {
+    backgroundColor: '#4f46e5',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 13,
+    borderRadius: 20,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  nextPageBtnText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
