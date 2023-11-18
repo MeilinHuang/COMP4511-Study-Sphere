@@ -12,6 +12,9 @@ import { useCallback } from 'react';
 import { Button } from 'react-native-paper';
 import { TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import MapView from 'react-native-maps';
+import { Marker } from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
 
 const labels = ['Participant Information', 'Group Availabilities', 'Location'];
 
@@ -48,6 +51,7 @@ export default function CreateStudySessionScreen({ navigation }) {
   const [fromTime, setFromTime] = useState({ hours: 12, minutes: 0 });
   const [toTime, setToTime] = useState({ hours: 12, minutes: 0 });
   const [toTimeVisible, setToTimeVisible] = useState(false);
+  const [location, setLocation] = useState('');
 
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
@@ -61,6 +65,10 @@ export default function CreateStudySessionScreen({ navigation }) {
     },
     [setTimeVisible, setFromTime]
   );
+
+  const handleLocationChange = (location) => {
+    setLocation(location);
+  };
 
   const onToTimeDismiss = useCallback(() => {
     setToTimeVisible(false);
@@ -134,14 +142,49 @@ export default function CreateStudySessionScreen({ navigation }) {
 
   const navigateLocationStep = () => {
     setCurrentPosition(2);
-  }
+  };
+
+  /**
+   * The following helper function returns a jsx component for the back and next buttons
+   * in each step of the form
+   * @param {currentPosition, setCurrentPosition, onPressFunction, nextButtonText}
+   * @returns
+   */
+  const BackNextButton = ({
+    currentPosition,
+    setCurrentPosition,
+    onPressFunction,
+    nextButtonText,
+  }) => {
+    return (
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={[styles.backNextButton, { flex: 0.25, paddingRight: 4 }]}
+          onPress={() => setCurrentPosition(currentPosition - 1)}
+          disabled={currentPosition === 0}
+        >
+          <Ionicons name='arrow-back-sharp' size={24} color='white' />
+          <Text style={styles.nextPageBtnText}>Back</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.backNextButton, { flex: 0.75 }]}
+          onPress={onPressFunction}
+        >
+          <Text style={styles.nextPageBtnText}>{nextButtonText}</Text>
+          <MaterialIcons name='navigate-next' size={30} color='white' />
+        </Pressable>
+      </View>
+    );
+  };
+
+  console.log(location);
 
   /**
    * The following function takes the time format given in the date picker
    * and converts it to a string that has it well formatted
-   * @param {*} hrs 
-   * @param {*} min 
-   * @returns 
+   * @param {*} hrs
+   * @param {*} min
+   * @returns
    */
   const formatTime = (hrs, min) => {
     let hour = hrs % 12 || 12;
@@ -302,13 +345,61 @@ export default function CreateStudySessionScreen({ navigation }) {
                 )} - To ${formatTime(toTime.hours, toTime.minutes)}`}
               </Text>
             </View>
-            <Pressable
-              style={styles.nextPage}
-              onPress={navigateLocationStep}
-            >
-              <Text style={styles.nextPageBtnText}>Location</Text>
-              <MaterialIcons name='navigate-next' size={30} color='white' />
-            </Pressable>
+            <BackNextButton
+              currentPosition={currentPosition}
+              setCurrentPosition={setCurrentPosition}
+              onPressFunction={navigateLocationStep}
+              nextButtonText='Location'
+            />
+          </ScrollView>
+        )}
+        {currentPosition === 2 && (
+          <ScrollView>
+            <View style={styles.formContainer}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                }}
+              >
+                Book Location (Optional):
+              </Text>
+              <View style={styles.mapContainer}>
+                <View style={styles.searchBar}>
+                  <TextInput
+                    placeholder='Please enter a location'
+                    style={styles.searchInput}
+                    value={location}
+                    onChangeText={handleLocationChange}
+                  />
+                </View>
+                {/* Point at the UNSW library for now */}
+                <MapView
+                  style={styles.map}
+                  initialRegion={{
+                    latitude: -33.9173,
+                    longitude: 151.2335,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                  }}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: -33.9173,
+                      longitude: 151.2335,
+                    }}
+                    title='UNSW'
+                    description='University of New South Wales'
+                  />
+                </MapView>
+              </View>
+            </View>
+            <BackNextButton
+              currentPosition={currentPosition}
+              setCurrentPosition={setCurrentPosition}
+              onPressFunction={() => console.log(location)}
+              nextButtonText='Create Session'
+            />
           </ScrollView>
         )}
       </LinearGradient>
@@ -420,5 +511,52 @@ const styles = StyleSheet.create({
   },
   timeBtns: {
     flexDirection: 'row',
+  },
+  mapContainer: {
+    alignItems: 'center',
+    margin: 20,
+    // only way to fix weird radius issues
+    borderRadius: 40,
+    overflow: 'hidden',
+  },
+  map: {
+    width: '100%',
+    aspectRatio: 1,
+    margin: 10,
+  },
+  searchBar: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: '#ffffff',
+    padding: 10,
+    borderRadius: 8,
+    flexDirection: 'row',
+    zIndex: 1,
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  backNextContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  backNextButton: {
+    backgroundColor: '#4f46e5',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 13,
+    borderRadius: 20,
+    marginLeft: 5,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    marginHorizontal: 5,
   },
 });
