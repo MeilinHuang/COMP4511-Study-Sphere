@@ -8,6 +8,10 @@ import { Divider } from '@rneui/themed';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
+import { useCallback } from 'react';
+import { Button } from 'react-native-paper';
+import { TimePickerModal } from 'react-native-paper-dates';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const labels = ['Participant Information', 'Group Availabilities', 'Location'];
 
@@ -40,6 +44,36 @@ export default function CreateStudySessionScreen({ navigation }) {
   const [currentParticipant, setCurrentParticipant] = useState('');
   const [currParticipantArray, setCurrParticipantArray] = useState([]);
   const [date, setDate] = useState(dayjs());
+  const [timeVisible, setTimeVisible] = useState(false);
+  const [fromTime, setFromTime] = useState({ hours: 12, minutes: 0 });
+  const [toTime, setToTime] = useState({ hours: 12, minutes: 0 });
+  const [toTimeVisible, setToTimeVisible] = useState(false);
+
+  const onTimeDismiss = useCallback(() => {
+    setTimeVisible(false);
+  }, [setTimeVisible]);
+
+  const onTimeConfirm = useCallback(
+    ({ hours, minutes }) => {
+      setTimeVisible(false);
+      setFromTime({ hours, minutes });
+      console.log({ hours, minutes });
+    },
+    [setTimeVisible, setFromTime]
+  );
+
+  const onToTimeDismiss = useCallback(() => {
+    setToTimeVisible(false);
+  }, [setToTimeVisible]);
+
+  const onToTimeConfirm = useCallback(
+    ({ hours, minutes }) => {
+      setToTimeVisible(false);
+      setToTime({ hours, minutes });
+      console.log({ hours, minutes });
+    },
+    [setToTimeVisible, setToTime]
+  );
 
   const onPageChange = (position) => {
     setCurrentPosition(position);
@@ -98,7 +132,24 @@ export default function CreateStudySessionScreen({ navigation }) {
     setCurrentPosition(1);
   };
 
-  console.log(date);
+  const navigateLocationStep = () => {
+    setCurrentPosition(2);
+  }
+
+  /**
+   * The following function takes the time format given in the date picker
+   * and converts it to a string that has it well formatted
+   * @param {*} hrs 
+   * @param {*} min 
+   * @returns 
+   */
+  const formatTime = (hrs, min) => {
+    let hour = hrs % 12 || 12;
+    const minute = min < 10 ? `0${min}` : min;
+    const timeOfDay = hrs < 12 ? 'AM' : 'PM';
+
+    return `${hour}:${minute} ${timeOfDay}`;
+  };
 
   return (
     <View style={styles.container}>
@@ -175,9 +226,90 @@ export default function CreateStudySessionScreen({ navigation }) {
         )}
 
         {currentPosition === 1 && (
-          <View style={styles.containerForGroupAvailabilities}>
-            <Text>Hi!</Text>
-          </View>
+          <ScrollView style={styles.formContainer}>
+            <Text
+              style={{
+                marginBottom: 10,
+                fontSize: 20,
+                fontWeight: 'bold',
+              }}
+            >
+              Group Availability on {date.format('DD MMMM YYYY')}
+            </Text>
+            <Text
+              style={{
+                marginBottom: 10,
+                fontSize: 20,
+                fontWeight: 'bold',
+                marginTop: 20,
+              }}
+            >
+              Select Time:
+            </Text>
+            <View style={styles.selectTimeSection}>
+              <View style={styles.timeBtns}>
+                <Button
+                  onPress={() => setTimeVisible(true)}
+                  uppercase={false}
+                  mode='outlined'
+                  style={{
+                    backgroundColor: '#4f46e5',
+                    width: '50%',
+                    marginRight: 5,
+                  }}
+                  labelStyle={{ color: 'white' }}
+                >
+                  Select Start Time
+                </Button>
+                <TimePickerModal
+                  visible={timeVisible}
+                  onDismiss={onTimeDismiss}
+                  onConfirm={onTimeConfirm}
+                  hours={fromTime.hours}
+                  minutes={fromTime.minutes}
+                />
+                <Button
+                  onPress={() => setToTimeVisible(true)}
+                  uppercase={false}
+                  mode='outlined'
+                  style={{
+                    backgroundColor: '#4f46e5',
+                    width: '50%',
+                  }}
+                  labelStyle={{ color: 'white' }}
+                >
+                  Select Finish Time
+                </Button>
+                <TimePickerModal
+                  visible={toTimeVisible}
+                  onDismiss={onToTimeDismiss}
+                  onConfirm={onToTimeConfirm}
+                  hours={toTime.hours}
+                  minutes={toTime.minutes}
+                />
+              </View>
+              <Text
+                style={{
+                  marginTop: 20,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                }}
+              >
+                {`From ${formatTime(
+                  fromTime.hours,
+                  fromTime.minutes
+                )} - To ${formatTime(toTime.hours, toTime.minutes)}`}
+              </Text>
+            </View>
+            <Pressable
+              style={styles.nextPage}
+              onPress={navigateLocationStep}
+            >
+              <Text style={styles.nextPageBtnText}>Location</Text>
+              <MaterialIcons name='navigate-next' size={30} color='white' />
+            </Pressable>
+          </ScrollView>
         )}
       </LinearGradient>
     </View>
@@ -280,5 +412,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  selectTimeSection: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 10,
+  },
+  timeBtns: {
+    flexDirection: 'row',
   },
 });
