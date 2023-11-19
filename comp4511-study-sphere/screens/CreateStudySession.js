@@ -97,11 +97,38 @@ export default function CreateStudySessionScreen({ navigation }) {
         toTime: toTime,
       };
       // console.log(studySessionData)
-      await AsyncStorage.setItem(
-        'createSessionData',
-        JSON.stringify(studySessionData)
+      const currentSessionData = await AsyncStorage.getItem(
+        'createSessionData'
       );
-      console.log(await AsyncStorage.getItem('createSessionData'));
+      const parseSessionData = currentSessionData
+        ? JSON.parse(currentSessionData)
+        : [];
+
+      // we want to check if we already have existing sessions with
+      // the same location and date
+      const checkIsDuplicate = parseSessionData.some(
+        (data) =>
+          data.dateFormatted === studySessionData.dateFormatted &&
+          studySessionData.location === data.location &&
+          data.fromTime.hours === studySessionData.fromTime.hours &&
+          data.fromTime.minutes === studySessionData.fromTime.minutes &&
+          data.toTime.hours === studySessionData.toTime.hours &&
+          data.toTime.minutes === studySessionData.toTime.minutes
+      );
+
+      if (!checkIsDuplicate) {
+        const updatedSessionDataList = Array.isArray(parseSessionData)
+          ? [...parseSessionData, studySessionData]
+          : [studySessionData];
+
+        await AsyncStorage.setItem(
+          'createSessionData',
+          JSON.stringify(updatedSessionDataList)
+        );
+        navigation.navigate('Study Sessions');
+      } else {
+        alert('A study session of this time, date and location already exists!');
+      }
     } catch (e) {
       console.error('Error storing to async storage: ' + e);
     }
@@ -119,7 +146,7 @@ export default function CreateStudySessionScreen({ navigation }) {
     ({ hours, minutes }) => {
       setToTimeVisible(false);
       setToTime({ hours, minutes });
-      console.log({ hours, minutes });
+      // console.log({ hours, minutes });
     },
     [setToTimeVisible, setToTime]
   );
@@ -226,7 +253,7 @@ export default function CreateStudySessionScreen({ navigation }) {
     );
   };
 
-  console.log(location);
+  // console.log(location);
 
   /**
    * The following function takes the time format given in the date picker
@@ -576,6 +603,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
+    marginBottom: 10,
   },
   nextPageBtnText: {
     color: 'white',

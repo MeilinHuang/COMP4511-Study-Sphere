@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Modal, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SearchBar } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StudySessions({
   navigation,
@@ -34,6 +35,11 @@ export default function StudySessions({
   const layout = useWindowDimensions();
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false); // State for the modal
+  const [listOfStudySessions, setListOfStudySessions] = useState([]);
+
+  // useEffect(() => {
+  //   getCreatedStudySessions();
+  // }, []);
 
   const renderAllSessions = () => {
     return (
@@ -53,6 +59,7 @@ export default function StudySessions({
       </View>
     );
   };
+  console.log(listOfStudySessions);
 
   const renderMySessions = () => {
     return (
@@ -72,6 +79,24 @@ export default function StudySessions({
       </View>
     );
   };
+
+  const getCreatedStudySessions = async () => {
+    try {
+      const dataOfInterest = await AsyncStorage.getItem('createSessionData');
+      console.log(dataOfInterest)
+      // if (dataOfInterest) {
+      //   const dataParsed = JSON.parse(dataOfInterest);
+
+      //   setListOfStudySessions((prevStudySession) => [
+      //     ...prevStudySession,
+      //     dataParsed,
+      //   ]);
+      // }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  getCreatedStudySessions();
 
   const renderScene = SceneMap({
     first: renderAllSessions,
