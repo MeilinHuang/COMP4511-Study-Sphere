@@ -42,7 +42,7 @@ const customDivider = () => {
   );
 };
 
-export default function CreateStudySessionScreen({ navigation }) {
+export default function CreateStudySessionScreen({ navigation, userId }) {
   const [currentPosition, setCurrentPosition] = useState(0);
   const [currentParticipant, setCurrentParticipant] = useState('');
   const [currParticipantArray, setCurrParticipantArray] = useState([]);
@@ -54,10 +54,18 @@ export default function CreateStudySessionScreen({ navigation }) {
   const [location, setLocation] = useState('');
   const [courseArray, setCourseArray] = useState([]);
   const [enteredCourse, setEnteredCourse] = useState('');
+  const [title, setTitle] = useState('');
+
 
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
   }, [setTimeVisible]);
+
+  const clearAsyncStorage = async() => {
+    AsyncStorage.clear();
+  }
+  
+  // clearAsyncStorage();
 
   const onTimeConfirm = useCallback(
     ({ hours, minutes }) => {
@@ -88,6 +96,7 @@ export default function CreateStudySessionScreen({ navigation }) {
   const storeDataCreateSession = async () => {
     try {
       const studySessionData = {
+        title: title,
         location: location,
         course: courseArray[0],
         participants: currParticipantArray,
@@ -95,6 +104,8 @@ export default function CreateStudySessionScreen({ navigation }) {
         date: date,
         fromTime: fromTime,
         toTime: toTime,
+        owner: userId,
+        members: [userId]
       };
       // console.log(studySessionData)
       const currentSessionData = await AsyncStorage.getItem(
@@ -125,9 +136,12 @@ export default function CreateStudySessionScreen({ navigation }) {
           'createSessionData',
           JSON.stringify(updatedSessionDataList)
         );
+        console.log(await AsyncStorage.getItem('createSessionData'));
         navigation.navigate('Study Sessions');
       } else {
-        alert('A study session of this time, date and location already exists!');
+        alert(
+          'A study session of this time, date and location already exists!'
+        );
       }
     } catch (e) {
       console.error('Error storing to async storage: ' + e);
@@ -290,6 +304,17 @@ export default function CreateStudySessionScreen({ navigation }) {
               <Text
                 style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
               >
+                Add Title:
+              </Text>
+              <TextInput
+                placeholder='Enter session title'
+                value={title}
+                onChangeText={(text) => setTitle(text)}
+                style={styles.textInputFull}
+              />
+              <Text
+                style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
+              >
                 Add Participants:
               </Text>
               <View style={styles.inputContainer}>
@@ -318,7 +343,7 @@ export default function CreateStudySessionScreen({ navigation }) {
               <Text
                 style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
               >
-                Add Courses:
+                Add Course:
               </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -555,6 +580,19 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
+  },
+  textInputFull: {
+    height: 50,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 20,
+    padding: 10,
+    paddingHorizontal: 8,
+    marginBottom: 10,
+    fontSize: 16,
+    paddingLeft: 20,
+    width: '97%',
   },
   addButton: {
     backgroundColor: '#4f46e5',
