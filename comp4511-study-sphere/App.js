@@ -295,6 +295,7 @@ export default function App() {
       .then(() => setIsLoadedIntially(true));
   }, []);
 
+
   // Save info to store
   useEffect(() => {
     StoreService.saveDB({
@@ -559,7 +560,7 @@ export default function App() {
               }}
             >
               {/* Render the CreateStudySession component */}
-              {(props) => <CreateStudySessionScreen {...props} />}
+              {(props) => <CreateStudySessionScreen {...props} userId={userId} />}
             </RootStack.Screen>
           </RootStack.Navigator>
         </NavigationContainer>
