@@ -11,10 +11,10 @@ import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { Button } from 'react-native-paper';
 import { TimePickerModal } from 'react-native-paper-dates';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const labels = ['Participant Information', 'Group Availabilities', 'Location'];
 
@@ -52,6 +52,8 @@ export default function CreateStudySessionScreen({ navigation }) {
   const [toTime, setToTime] = useState({ hours: 12, minutes: 0 });
   const [toTimeVisible, setToTimeVisible] = useState(false);
   const [location, setLocation] = useState('');
+  const [courseArray, setCourseArray] = useState([]);
+  const [enteredCourse, setEnteredCourse] = useState('');
 
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
@@ -65,6 +67,14 @@ export default function CreateStudySessionScreen({ navigation }) {
     },
     [setTimeVisible, setFromTime]
   );
+
+  const storeDataCreateSession = async () => {
+    console.log(location);
+    console.log(currParticipantArray);
+    console.log(date);
+    console.log(fromTime);
+    console.log(toTime);
+  };
 
   const handleLocationChange = (location) => {
     setLocation(location);
@@ -95,6 +105,14 @@ export default function CreateStudySessionScreen({ navigation }) {
     return <Text>{pos + 1}</Text>;
   };
 
+  const handleAddCourse = () => {
+    if (enteredCourse) {
+      // only add one course
+      setCourseArray([enteredCourse]);
+      setEnteredCourse('');
+    }
+  };
+
   const addParticipantToArray = () => {
     if (currentParticipant) {
       setCurrParticipantArray([...currParticipantArray, currentParticipant]);
@@ -103,24 +121,24 @@ export default function CreateStudySessionScreen({ navigation }) {
     }
   };
 
-  const removeParticipant = (idx) => {
-    const currentParticipants = [...currParticipantArray];
+  const removeItemGivenIndex = (idx, setArrayState, arrayState) => {
+    const currentState = [...arrayState];
     // go ahead and remove this entity
-    currentParticipants.splice(idx, 1);
-    setCurrParticipantArray(currentParticipants);
+    currentState.splice(idx, 1);
+    setArrayState(currentState);
   };
 
-  const getParticipantsAdded = () => {
+  const getItemsAdded = (itemsArray, removeItemFunction) => {
     return (
       <View style={styles.bubbleParentContainer}>
-        {currParticipantArray.map((participant, idx) => (
+        {itemsArray.map((item, idx) => (
           <View style={styles.bubbleContainer} key={idx}>
             <Pressable style={styles.purpleBubble}>
               <View style={styles.bubbleContent}>
-                <Text style={styles.bubbleText}>{participant}</Text>
+                <Text style={styles.bubbleText}>{item}</Text>
                 <Pressable
                   style={styles.removeButton}
-                  onPress={() => removeParticipant(idx)}
+                  onPress={() => removeItemFunction(idx)}
                 >
                   <MaterialIcons
                     name='highlight-remove'
@@ -218,7 +236,7 @@ export default function CreateStudySessionScreen({ navigation }) {
               </Text>
               <View style={styles.inputContainer}>
                 <TextInput
-                  placeholder='Enter a course or class or username'
+                  placeholder='Please enter the name of users'
                   value={currentParticipant}
                   onChangeText={(text) => setCurrentParticipant(text)}
                   style={styles.textInput}
@@ -230,7 +248,36 @@ export default function CreateStudySessionScreen({ navigation }) {
                   <FontAwesome5 name='plus' size={20} color='white' />
                 </Pressable>
               </View>
-              <View>{getParticipantsAdded()}</View>
+              <View>
+                {getItemsAdded(currParticipantArray, (idx) =>
+                  removeItemGivenIndex(
+                    idx,
+                    setCurrParticipantArray,
+                    currParticipantArray
+                  )
+                )}
+              </View>
+              <Text
+                style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
+              >
+                Add Courses:
+              </Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder='Please enter the course'
+                  value={enteredCourse}
+                  onChangeText={(text) => setEnteredCourse(text)}
+                  style={styles.textInput}
+                />
+                <Pressable style={styles.addButton} onPress={handleAddCourse}>
+                  <FontAwesome5 name='plus' size={20} color='white' />
+                </Pressable>
+              </View>
+              <View>
+                {getItemsAdded(courseArray, (idx) =>
+                  removeItemGivenIndex(idx, setCourseArray, courseArray)
+                )}
+              </View>
               <Text
                 style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
               >
@@ -397,7 +444,7 @@ export default function CreateStudySessionScreen({ navigation }) {
             <BackNextButton
               currentPosition={currentPosition}
               setCurrentPosition={setCurrentPosition}
-              onPressFunction={() => console.log(location)}
+              onPressFunction={storeDataCreateSession}
               nextButtonText='Create Session'
             />
           </ScrollView>
