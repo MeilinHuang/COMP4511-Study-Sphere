@@ -63,17 +63,48 @@ export default function CreateStudySessionScreen({ navigation }) {
     ({ hours, minutes }) => {
       setTimeVisible(false);
       setFromTime({ hours, minutes });
-      console.log({ hours, minutes });
     },
     [setTimeVisible, setFromTime]
   );
 
+  /**
+   * The following returns data in the format of:
+   * {
+   *    location: string,
+   *    course: string,
+   *    participants: Array<String>
+   *    dateFormatted: string,
+   *    date: string,
+   *    fromTime: {
+   *      hours: number,
+   *      minutes: number
+   *    },
+   *    toTime: {
+   *      hours: number,
+   *      minutes: number
+   *    }
+   * }
+   */
   const storeDataCreateSession = async () => {
-    console.log(location);
-    console.log(currParticipantArray);
-    console.log(date);
-    console.log(fromTime);
-    console.log(toTime);
+    try {
+      const studySessionData = {
+        location: location,
+        course: courseArray[0],
+        participants: currParticipantArray,
+        dateFormatted: date.format('DD MMMM YYYY'),
+        date: date,
+        fromTime: fromTime,
+        toTime: toTime,
+      };
+      // console.log(studySessionData)
+      await AsyncStorage.setItem(
+        'createSessionData',
+        JSON.stringify(studySessionData)
+      );
+      console.log(await AsyncStorage.getItem('createSessionData'));
+    } catch (e) {
+      console.error('Error storing to async storage: ' + e);
+    }
   };
 
   const handleLocationChange = (location) => {
