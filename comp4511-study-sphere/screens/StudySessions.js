@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Modal, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
@@ -6,6 +6,9 @@ import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import StudySessionCard from '../components/StudySessionCard';
+import { ScrollView } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function StudySessions({
   navigation,
@@ -37,13 +40,19 @@ export default function StudySessions({
   const [modalVisible, setModalVisible] = useState(false); // State for the modal
   const [listOfStudySessions, setListOfStudySessions] = useState([]);
 
-  // useEffect(() => {
-  //   getCreatedStudySessions();
-  // }, []);
+  useEffect(() => {
+    getCreatedStudySessions();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getCreatedStudySessions();
+    }, [])
+  );
 
   const renderAllSessions = () => {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <SearchBar
           placeholder='Search for study sessions'
           onChangeText={setSearch}
@@ -56,14 +65,50 @@ export default function StudySessions({
           placeholderTextColor='#6A74CF'
           accessibilityRole='search'
         />
-      </View>
+        {listOfStudySessions.map((data, idx) => (
+          <StudySessionCard key={idx} studySessionInfo={data} userId={userId} />
+        ))}
+        <Pressable
+          accessibilityLabel='Logout'
+          onPress={() => navigation.navigate('Login')}
+          style={{
+            position: 'absolute',
+            top: 20,
+            right: 20,
+            paddingLeft: 10,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
+            Logout
+          </Text>
+        </Pressable>
+      </ScrollView>
     );
   };
-  console.log(listOfStudySessions);
+
+  // const getAllKeysAndValues = async () => {
+  //   try {
+  //     const allKeys = await AsyncStorage.getAllKeys();
+  //     const items = await AsyncStorage.multiGet(allKeys);
+
+  //     // Log or display the stored key-value pairs
+  //     items.forEach(([key, value]) => {
+  //       console.log(`Key: ${key}, Value: ${value}`);
+  //       // You can display this information in your app or handle it accordingly
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // };
+
+  // getAllKeysAndValues();
 
   const renderMySessions = () => {
+    const sessionsOwner = listOfStudySessions.filter(
+      (session) => session.owner === userId
+    );
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <SearchBar
           placeholder='Search for my study sessions'
           onChangeText={setSearch}
@@ -76,27 +121,26 @@ export default function StudySessions({
           placeholderTextColor='#6A74CF'
           accessibilityRole='search'
         />
-      </View>
+        {sessionsOwner.map((data, idx) => (
+          <StudySessionCard key={idx} studySessionInfo={data} userId={userId} />
+        ))}
+      </ScrollView>
     );
   };
+
+  console.log(listOfStudySessions);
 
   const getCreatedStudySessions = async () => {
     try {
       const dataOfInterest = await AsyncStorage.getItem('createSessionData');
-      console.log(dataOfInterest)
-      // if (dataOfInterest) {
-      //   const dataParsed = JSON.parse(dataOfInterest);
-
-      //   setListOfStudySessions((prevStudySession) => [
-      //     ...prevStudySession,
-      //     dataParsed,
-      //   ]);
-      // }
+      if (dataOfInterest) {
+        const parsedData = JSON.parse(dataOfInterest);
+        setListOfStudySessions(parsedData);
+      }
     } catch (e) {
       console.error(e);
     }
   };
-  getCreatedStudySessions();
 
   const renderScene = SceneMap({
     first: renderAllSessions,
