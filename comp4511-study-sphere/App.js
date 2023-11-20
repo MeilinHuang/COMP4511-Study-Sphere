@@ -8,7 +8,7 @@ import Svg, { Path, Text as SvgText } from 'react-native-svg';
 
 import Courses from './screens/Courses';
 import StudySessions from './screens/StudySessions';
-import Availabilities from './screens/StudySessions';
+import Availabilities from './screens/Availabilities';
 import StudyTools from './screens/StudyTools';
 import Settings from './screens/Settings';
 import CreateStudySessionScreen from './screens/CreateStudySession';
@@ -27,6 +27,7 @@ import dbUsers from './database/users.json';
 import dbCourses from './database/courses.json';
 import dbStudySession from './database/study_sessions.json';
 import StoreService from './services/StoreService';
+import StudySessionDetails from './screens/StudySessionDetails';
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
@@ -506,6 +507,24 @@ export default function App() {
             >
               {(props) => (
                 <ClassDetails
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name='StudySessionDetails'
+              options={{ headerBackTitle: 'Back' }}
+            >
+              {(props) => (
+                <StudySessionDetails
                   {...props}
                   users={users}
                   courses={courses}
