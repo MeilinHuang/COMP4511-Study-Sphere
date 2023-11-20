@@ -40,6 +40,7 @@ export default function StudySessions({
   const [modalVisible, setModalVisible] = useState(false); // State for the modal
   const [listOfStudySessions, setListOfStudySessions] = useState([]);
 
+  const userOfInterest = users.filter((user) => user.id === userId);
   useEffect(() => {
     getCreatedStudySessions();
   }, []);
@@ -49,6 +50,42 @@ export default function StudySessions({
       getCreatedStudySessions();
     }, [])
   );
+
+  const handleJoin = async (idx) => {
+    try {
+      const dataOfInterest = await AsyncStorage.getItem('createSessionData');
+      if (dataOfInterest) {
+        const parsedData = JSON.parse(dataOfInterest);
+        const updatedSessions = parsedData.map((data, sessionIdx) => {
+          if (sessionIdx === idx) {
+            return {
+              ...data,
+              participants: [
+                ...data.participants,
+                userOfInterest[0].name,
+              ],
+            };
+          }
+          return data;
+        });
+        await AsyncStorage.setItem(
+          'createSessionData',
+          JSON.stringify(updatedSessions)
+        );
+        setListOfStudySessions(updatedSessions);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLeave = (idx) => {
+    const updatedSession = [...listOfStudySessions];
+
+    const userIndex = updatedSession[idx].participants;
+    console.log(userIndex);
+  };
+  console.log(listOfStudySessions)
 
   const renderAllSessions = () => {
     return (
@@ -66,7 +103,15 @@ export default function StudySessions({
           accessibilityRole='search'
         />
         {listOfStudySessions.map((data, idx) => (
-          <StudySessionCard key={idx} studySessionInfo={data} userId={userId} />
+          <StudySessionCard
+            key={idx}
+            studySessionInfo={data}
+            userId={userId}
+            navigation={navigation}
+            sessionIdx={idx}
+            handleJoin={handleJoin}
+            handleLeave={handleLeave}
+          />
         ))}
         <Pressable
           accessibilityLabel='Logout'
@@ -122,13 +167,18 @@ export default function StudySessions({
           accessibilityRole='search'
         />
         {sessionsOwner.map((data, idx) => (
-          <StudySessionCard key={idx} studySessionInfo={data} userId={userId} />
+          <StudySessionCard
+            key={idx}
+            studySessionInfo={data}
+            userId={userId}
+            navigation={navigation}
+          />
         ))}
       </ScrollView>
     );
   };
 
-  console.log(listOfStudySessions);
+  // console.log(listOfStudySessions);
 
   const getCreatedStudySessions = async () => {
     try {
