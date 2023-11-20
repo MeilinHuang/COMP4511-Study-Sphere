@@ -15,6 +15,7 @@ import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { formatTime } from '../utils/helpers';
 
 const labels = ['Participant Information', 'Group Availabilities', 'Location'];
 
@@ -56,15 +57,14 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
   const [enteredCourse, setEnteredCourse] = useState('');
   const [title, setTitle] = useState('');
 
-
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
   }, [setTimeVisible]);
 
-  const clearAsyncStorage = async() => {
+  const clearAsyncStorage = async () => {
     AsyncStorage.clear();
-  }
-  
+  };
+
   // clearAsyncStorage();
 
   const onTimeConfirm = useCallback(
@@ -105,9 +105,9 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
         fromTime: fromTime,
         toTime: toTime,
         owner: userId,
-        members: [userId]
+        members: [userId],
       };
-      // console.log(studySessionData)
+
       const currentSessionData = await AsyncStorage.getItem(
         'createSessionData'
       );
@@ -136,7 +136,7 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
           'createSessionData',
           JSON.stringify(updatedSessionDataList)
         );
-        console.log(await AsyncStorage.getItem('createSessionData'));
+
         navigation.navigate('Study Sessions');
       } else {
         alert(
@@ -160,7 +160,6 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
     ({ hours, minutes }) => {
       setToTimeVisible(false);
       setToTime({ hours, minutes });
-      // console.log({ hours, minutes });
     },
     [setToTimeVisible, setToTime]
   );
@@ -268,21 +267,6 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
   };
 
   // console.log(location);
-
-  /**
-   * The following function takes the time format given in the date picker
-   * and converts it to a string that has it well formatted
-   * @param {*} hrs
-   * @param {*} min
-   * @returns
-   */
-  const formatTime = (hrs, min) => {
-    let hour = hrs % 12 || 12;
-    const minute = min < 10 ? `0${min}` : min;
-    const timeOfDay = hrs < 12 ? 'AM' : 'PM';
-
-    return `${hour}:${minute} ${timeOfDay}`;
-  };
 
   return (
     <View style={styles.container}>
