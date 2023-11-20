@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SearchBar } from 'react-native-elements';
+import { SearchBar } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StudySessionCard from '../components/StudySessionCard';
 import { ScrollView } from 'react-native';
@@ -36,7 +36,6 @@ export default function StudySessions({
     },
   ]);
   const layout = useWindowDimensions();
-  const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false); // State for the modal
   const [listOfStudySessions, setListOfStudySessions] = useState([]);
 
@@ -116,12 +115,18 @@ export default function StudySessions({
   };
 
   const renderAllSessions = () => {
+    const [search, setSearch] = useState("");
+    const filteredSessions = listOfStudySessions.filter(
+      (data) =>
+        data.title.toLowerCase().includes(search.toLowerCase()) 
+    );
+
     return (
       <ScrollView style={styles.container}>
         <SearchBar
           placeholder='Search for study sessions'
-          onChangeText={setSearch}
           value={search}
+          onChangeText={setSearch} 
           lightTheme
           round
           containerStyle={styles.searchContainer}
@@ -130,9 +135,10 @@ export default function StudySessions({
           placeholderTextColor='#6A74CF'
           accessibilityRole='search'
         />
-        {listOfStudySessions.map((data, idx) => (
+        {/* This a search button functionality */}
+        {filteredSessions.map((data, idx) => (
           <StudySessionCard
-            key={idx}
+            key={idx} 
             studySessionInfo={data}
             userId={userId}
             navigation={navigation}
@@ -160,10 +166,17 @@ export default function StudySessions({
   };
 
   const renderMySessions = () => {
+    const [search, setSearch] = useState("");
+    
     const sessionsOwner = listOfStudySessions.filter(
       (session) => session.members.includes(userId)
     );
-    
+
+    const filteredSessions = sessionsOwner.filter(
+      (data) =>
+        data.title.toLowerCase().includes(search.toLowerCase()) 
+    );
+
     return (
       <ScrollView style={styles.container}>
         <SearchBar
@@ -178,12 +191,15 @@ export default function StudySessions({
           placeholderTextColor='#6A74CF'
           accessibilityRole='search'
         />
-        {sessionsOwner.map((data, idx) => (
+        {filteredSessions.map((data, idx) => (
           <StudySessionCard
             key={idx}
             studySessionInfo={data}
             userId={userId}
             navigation={navigation}
+            sessionIdx={idx}
+            handleJoin={handleJoin}
+            handleLeave={handleLeave}
           />
         ))}
       </ScrollView>

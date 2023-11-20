@@ -5,7 +5,14 @@ import { Overlay } from 'react-native-elements';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-au';
 
-export default function StudySessionCard({ studySessionInfo, userId, navigation, sessionIdx, handleJoin, handleLeave }) {
+export default function StudySessionCard({
+  studySessionInfo,
+  userId,
+  navigation,
+  sessionIdx,
+  handleJoin,
+  handleLeave,
+}) {
   const {
     course,
     location,
@@ -16,7 +23,6 @@ export default function StudySessionCard({ studySessionInfo, userId, navigation,
     title,
     members,
   } = studySessionInfo;
-
 
   const dayOfWeek = dayjs(date).locale('en-au').format('ddd');
   const shortHandDate = dayjs(date).locale('en-au').format('D/MM');
@@ -30,7 +36,20 @@ export default function StudySessionCard({ studySessionInfo, userId, navigation,
   }, [members, userId]);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('StudySessionDetails', { studySessionInfo, userId })}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        if (isMember) {
+          // TODO: Issue of passing a function to navigate
+          navigation.navigate('StudySessionDetails', {
+            studySessionInfo,
+            userId,
+            sessionIdx,
+            handleLeave,
+          });
+        }
+      }}
+    >
       <View style={styles.informationBox}>
         <View style={styles.timeBox}>
           <Text style={styles.dayText}>{dayOfWeek}</Text>
@@ -203,7 +222,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   modalButtonText: {
-    color: 'black', 
+    color: 'black',
     fontWeight: 'bold',
   },
   modalButtonTextLeave: {
@@ -225,6 +244,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   overlay: {
-    borderRadius: 10
-  }
+    borderRadius: 10,
+  },
 });

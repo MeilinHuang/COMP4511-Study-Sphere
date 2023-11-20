@@ -12,6 +12,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { Overlay } from "react-native-elements";
 import userIcon from "../assets/user.png";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 import warning from "../assets/warning.png";
 

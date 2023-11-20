@@ -13,8 +13,11 @@ import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { Overlay } from 'react-native-elements';
 import userIcon from '../assets/user.png';
 import { formatTime } from '../utils/helpers';
+import { LogBox } from 'react-native';
 
-import warning from '../assets/warning.png';
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 export default function StudySessionDetails({
   navigation,
@@ -22,73 +25,119 @@ export default function StudySessionDetails({
   users,
   userId,
 }) {
-  const { studySessionInfo } = route.params;
-  console.log(studySessionInfo.owner);
+  
+  const { studySessionInfo, sessionIdx, handleLeave } = route.params;
   const owner = users.filter((user) => user.id === studySessionInfo.owner);
-  console.log(owner[0].name);
+  const [visibleAlert, setVisibleAlert] = useState(false);
+  navigation.setOptions({ title: studySessionInfo.title });
+
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.containerInner}>
-        <View style={styles.detailsContainer}>
-          <View style={styles.details}>
-            <Text style={styles.detailsTitle}>Course: </Text>
-            <Text style={styles.detailsInfo}>{studySessionInfo.course}</Text>
+    <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
+      <View style={styles.container}>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.buttonLeave}
+            onPress={() => setVisibleAlert(true)}
+          >
+            <Text style={styles.buttonLeaveText}>Leave</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView contentContainerStyle={styles.containerInner}>
+          <View style={styles.detailsContainer}>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Course: </Text>
+              <Text style={styles.detailsInfo}>{studySessionInfo.course}</Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Date: </Text>
+              <Text style={styles.detailsInfo}>
+                {studySessionInfo.dateFormatted}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Time: </Text>
+              <Text style={styles.detailsInfo}>
+                {`${formatTime(
+                  studySessionInfo.fromTime.hours,
+                  studySessionInfo.fromTime.minutes
+                )} - ${formatTime(
+                  studySessionInfo.toTime.hours,
+                  studySessionInfo.toTime.minutes
+                )}`}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Members: </Text>
+              <Text style={styles.detailsInfo}>
+                {studySessionInfo.participants.length + 1}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Location: </Text>
+              <Text style={styles.detailsInfo}>
+                {studySessionInfo.location}
+              </Text>
+            </View>
           </View>
-          <View style={styles.details}>
-            <Text style={styles.detailsTitle}>Date: </Text>
-            <Text style={styles.detailsInfo}>
-              {studySessionInfo.dateFormatted}
-            </Text>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.heading}>List of Members:</Text>
+            {studySessionInfo.participants.map((participant, idx) => {
+              return (
+                <View key={idx} style={styles.userContainer}>
+                  <Image
+                    source={userIcon}
+                    accessible={false}
+                    style={styles.userIcon}
+                  />
+                  <Text style={styles.userName}>{participant}</Text>
+                </View>
+              );
+            })}
+            <View style={styles.userContainer}>
+              <Image
+                source={userIcon}
+                accessible={false}
+                style={styles.userIcon}
+              />
+              <Text style={styles.userName}>{owner[0].name} (Owner)</Text>
+            </View>
           </View>
-          <View style={styles.details}>
-            <Text style={styles.detailsTitle}>Time: </Text>
-            <Text style={styles.detailsInfo}>
-              {`${formatTime(
-                studySessionInfo.fromTime.hours,
-                studySessionInfo.fromTime.minutes
-              )} - ${formatTime(
-                studySessionInfo.toTime.hours,
-                studySessionInfo.toTime.minutes
-              )}`}
-            </Text>
-          </View>
-          <View style={styles.details}>
-            <Text style={styles.detailsTitle}>Members: </Text>
-            <Text style={styles.detailsInfo}>
-              {studySessionInfo.participants.length + 1}
-            </Text>
-          </View>
-          <View style={styles.details}>
-            <Text style={styles.detailsTitle}>Location: </Text>
-            <Text style={styles.detailsInfo}>{studySessionInfo.location}</Text>
+        </ScrollView>
+      </View>
+      <Overlay
+        isVisible={visibleAlert}
+        onBackdropPress={() => setVisibleAlert(false)}
+        overlayStyle={styles.overlay}
+      >
+        <View style={styles.modal}>
+          <Text style={styles.modalHeading}>
+            Please confirm before continuing.
+          </Text>
+          <Text style={styles.message}>
+            Are you sure you want to leave this study session?
+          </Text>
+          <View style={styles.modalButtonsView}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => setVisibleAlert(false)}
+            >
+              <Text style={styles.modalButtonText}>No, Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.leaveConfirmButton}
+              onPress={() => {
+                setVisibleAlert(false);
+                handleLeave(sessionIdx);
+                navigation.navigate('Study Sessions');
+              }}
+            >
+              <Text style={styles.modalButtonTextLeave}>Yes, Leave</Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.detailsContainer}>
-          <Text style={styles.heading}>List of Members:</Text>
-          {studySessionInfo.participants.map((participant, idx) => {
-            return (
-              <View key={idx} style={styles.userContainer}>
-                <Image
-                  source={userIcon}
-                  accessible={false}
-                  style={styles.userIcon}
-                />
-                <Text style={styles.userName}>{participant}</Text>
-              </View>
-            );
-          })}
-          <View style={styles.userContainer}>
-            <Image
-              source={userIcon}
-              accessible={false}
-              style={styles.userIcon}
-            />
-            <Text style={styles.userName}>{owner[0].name} (Owner)</Text>
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+      </Overlay>
+    </LinearGradient>
   );
 }
 
@@ -215,20 +264,23 @@ const styles = StyleSheet.create({
   cancelButton: {
     padding: 10,
     color: 'white',
-    backgroundColor: 'gray',
     borderColor: 'black',
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: 'white',
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  modalButtonTextLeave: {
+    color: '#D72424',
     fontWeight: 'bold',
   },
   leaveConfirmButton: {
     padding: 10,
     color: 'white',
-    backgroundColor: '#D72424',
-    borderColor: 'black',
+    backgroundColor: 'white',
+    borderColor: '#D72424',
     borderWidth: 2,
     borderRadius: 5,
   },
@@ -289,5 +341,8 @@ const styles = StyleSheet.create({
   study_sessions_button_text: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  overlay: {
+    borderRadius: 10,
   },
 });
