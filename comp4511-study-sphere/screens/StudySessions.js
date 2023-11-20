@@ -159,27 +159,11 @@ export default function StudySessions({
     );
   };
 
-  // const getAllKeysAndValues = async () => {
-  //   try {
-  //     const allKeys = await AsyncStorage.getAllKeys();
-  //     const items = await AsyncStorage.multiGet(allKeys);
-
-  //     // Log or display the stored key-value pairs
-  //     items.forEach(([key, value]) => {
-  //       console.log(`Key: ${key}, Value: ${value}`);
-  //       // You can display this information in your app or handle it accordingly
-  //     });
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
-
-  // getAllKeysAndValues();
-
   const renderMySessions = () => {
     const sessionsOwner = listOfStudySessions.filter(
-      (session) => session.owner === userId
+      (session) => session.members.includes(userId)
     );
+    
     return (
       <ScrollView style={styles.container}>
         <SearchBar
@@ -205,8 +189,6 @@ export default function StudySessions({
       </ScrollView>
     );
   };
-
-  // console.log(listOfStudySessions);
 
   const getCreatedStudySessions = async () => {
     try {
