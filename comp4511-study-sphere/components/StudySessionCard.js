@@ -5,7 +5,7 @@ import { Overlay } from 'react-native-elements';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-au';
 
-export default function StudySessionCard({ studySessionInfo, userId }) {
+export default function StudySessionCard({ studySessionInfo, userId, navigation, sessionIdx, handleJoin, handleLeave }) {
   const {
     course,
     location,
@@ -17,7 +17,6 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
     members,
   } = studySessionInfo;
 
-  console.log(members[0] === userId);
 
   const dayOfWeek = dayjs(date).locale('en-au').format('ddd');
   const shortHandDate = dayjs(date).locale('en-au').format('D/MM');
@@ -31,7 +30,7 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
   }, [members, userId]);
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('StudySessionDetails', { studySessionInfo, userId })}>
       <View style={styles.informationBox}>
         <View style={styles.timeBox}>
           <Text style={styles.dayText}>{dayOfWeek}</Text>
@@ -46,9 +45,9 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
               <Entypo name='location-pin' size={17} color='black' />
             </Text>
           ) : null}
-          <Text>{participants.length} Members</Text>
+          {/* Counting the owner as well?! */}
+          <Text>{participants.length + 1} Members</Text>
         </View>
-        {/* <View style={{ flex: 1 }} /> */}
       </View>
       {!isMember ? (
         <View style={styles.buttonsContainer}>
@@ -56,6 +55,7 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
             style={styles.buttonJoin}
             onPress={() => {
               setIsMember(true);
+              handleJoin(sessionIdx);
             }}
           >
             <Text style={styles.buttonJoinText}>Join</Text>
@@ -65,7 +65,7 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.buttonLeave}
-            onPress={() => setVisibleAlert(true)} // Open the confirmation modal
+            onPress={() => setVisibleAlert(true)}
           >
             <Text style={styles.buttonLeaveText}>Leave</Text>
           </TouchableOpacity>
@@ -74,6 +74,7 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
       <Overlay
         isVisible={visibleAlert}
         onBackdropPress={() => setVisibleAlert(false)}
+        overlayStyle={styles.overlay}
       >
         <View style={styles.modal}>
           <Text style={styles.modalHeading}>
@@ -94,9 +95,10 @@ export default function StudySessionCard({ studySessionInfo, userId }) {
               onPress={() => {
                 setIsMember(false);
                 setVisibleAlert(false);
+                handleLeave(sessionIdx)
               }}
             >
-              <Text style={styles.modalButtonText}>Yes, Leave</Text>
+              <Text style={styles.modalButtonTextLeave}>Yes, Leave</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -195,20 +197,24 @@ const styles = StyleSheet.create({
   cancelButton: {
     padding: 10,
     color: 'white',
-    backgroundColor: 'gray',
+    // backgroundColor: 'gray',
     borderColor: 'black',
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: 'white',
+    color: 'black', 
+    fontWeight: 'bold',
+  },
+  modalButtonTextLeave: {
+    color: '#D72424',
     fontWeight: 'bold',
   },
   leaveConfirmButton: {
     padding: 10,
     color: 'white',
-    backgroundColor: '#D72424',
-    borderColor: 'black',
+    backgroundColor: 'white',
+    borderColor: '#D72424',
     borderWidth: 2,
     borderRadius: 5,
   },
@@ -218,4 +224,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 5,
   },
+  overlay: {
+    borderRadius: 10
+  }
 });
