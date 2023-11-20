@@ -83,13 +83,37 @@ export default function StudySessions({
     }
   };
 
-  const handleLeave = (idx) => {
-    const updatedSession = [...listOfStudySessions];
+  const handleLeave = async (idx) => {
+    try {
+      const dataOfInterest = await AsyncStorage.getItem('createSessionData');
 
-    const userIndex = updatedSession[idx].participants;
-    console.log(userIndex);
+      if (dataOfInterest) {
+        const parsedData = JSON.parse(dataOfInterest);
+        const updatedSessions = parsedData.map((data, sessionIdx) => {
+          if (sessionIdx === idx) {
+            // update the members by filtering out any entries that have the userId
+            // update the participants by filtering out any entries that have the user's name
+            return {
+              ...data,
+              members: data.members.filter((member) => userId !== member),
+              participants: data.participants.filter(
+                (participant) => userOfInterest[0].name !== participant
+              ),
+            };
+          }
+          return data;
+        });
+
+        await AsyncStorage.setItem(
+          'createSessionData',
+          JSON.stringify(updatedSessions)
+        );
+        setListOfStudySessions(updatedSessions);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
-  console.log(listOfStudySessions);
 
   const renderAllSessions = () => {
     return (

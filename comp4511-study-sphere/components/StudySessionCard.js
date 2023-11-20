@@ -95,7 +95,7 @@ export default function StudySessionCard({ studySessionInfo, userId, navigation,
               onPress={() => {
                 setIsMember(false);
                 setVisibleAlert(false);
-                handleLeave(sessionIdx)
+                handleLeave(sessionIdx);
               }}
             >
               <Text style={styles.modalButtonTextLeave}>Yes, Leave</Text>
