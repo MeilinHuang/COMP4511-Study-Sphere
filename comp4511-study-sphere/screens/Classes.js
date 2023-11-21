@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   Text,
@@ -7,13 +7,13 @@ import {
   useWindowDimensions,
   TouchableOpacity,
   Image,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import { SearchBar, Overlay } from "react-native-elements";
-import { filterFn, myClassesOnly } from "../utils/helpers";
-import ClassBox from "../components/ClassBox";
-import warning from "../assets/warning.png";
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import { SearchBar, Overlay } from 'react-native-elements';
+import { filterFn, myClassesOnly } from '../utils/helpers';
+import ClassBox from '../components/ClassBox';
+import warning from '../assets/warning.png';
 
 const CurrTab = ({
   courseKey,
@@ -26,7 +26,7 @@ const CurrTab = ({
   courses,
   setCourses,
 }) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.containerInner}>
@@ -39,8 +39,8 @@ const CurrTab = ({
           containerStyle={styles.searchContainer}
           inputContainerStyle={styles.innerSearchContainer}
           inputStyle={styles.searchPlaceholder}
-          placeholderTextColor="#6A74CF"
-          accessibilityRole="search"
+          placeholderTextColor='#6A74CF'
+          accessibilityRole='search'
         />
         {Object.entries(currClasses)
           .filter(([key, val]) => filterFn(search, key, val.time))
@@ -149,7 +149,7 @@ export default function Classes({
     return (
       <CurrTab
         courseKey={courseKey}
-        screenName={"All Classes"}
+        screenName={'All Classes'}
         currClasses={courses[courseKey].classes}
         navigation={navigation}
         userId={userId}
@@ -171,7 +171,7 @@ export default function Classes({
     return (
       <CurrTab
         courseKey={courseKey}
-        screenName={"My Classes"}
+        screenName={'My Classes'}
         currClasses={myClasses}
         navigation={navigation}
         userId={userId}
@@ -193,14 +193,14 @@ export default function Classes({
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
-      key: "first",
-      title: "All Classes",
-      accessibilityLabel: "Viewing all Classes",
+      key: 'first',
+      title: 'All Classes',
+      accessibilityLabel: 'Viewing all Classes',
     },
     {
-      key: "second",
-      title: "My Classes",
-      accessibilityLabel: "Viewing my joined Classes",
+      key: 'second',
+      title: 'My Classes',
+      accessibilityLabel: 'Viewing my joined Classes',
     },
   ]);
 
@@ -209,13 +209,14 @@ export default function Classes({
       {isMember ? (
         <LinearGradient
           // Background Linear Gradient
-          colors={["#B6B2E6", "#C5DDBA"]}
+          colors={['#B6B2E6', '#C5DDBA']}
           style={styles.background}
         >
           <View style={styles.topTab}>
             <Overlay
               isVisible={visibleAlert}
               onBackdropPress={() => setVisibleAlert((v) => !v)}
+              overlayStyle={styles.overlay}
             >
               <View style={styles.modal}>
                 <Text style={styles.modalHeading}>
@@ -282,7 +283,7 @@ export default function Classes({
                       });
                     }}
                   >
-                    <Text style={styles.modalButtonText}>
+                    <Text style={styles.modalButtonTextLeave}>
                       Yes, Leave Course
                     </Text>
                   </TouchableOpacity>
@@ -313,9 +314,9 @@ export default function Classes({
                     <Text
                       style={{
                         ...styles.tabLabel,
-                        color: `${focused ? "white" : "black"}`,
-                        backgroundColor: `${focused ? "black" : "transparent"}`,
-                        borderColor: `${focused ? "white" : "transparent"}`,
+                        color: `${focused ? 'white' : 'black'}`,
+                        backgroundColor: `${focused ? 'black' : 'transparent'}`,
+                        borderColor: `${focused ? 'white' : 'transparent'}`,
                         width: Number((layout.width / 2).toFixed() - 4),
                       }}
                     >
@@ -330,7 +331,7 @@ export default function Classes({
       ) : (
         <LinearGradient
           // Background Linear Gradient
-          colors={["#B6B2E6", "#C5DDBA"]}
+          colors={['#B6B2E6', '#C5DDBA']}
           style={styles.background}
         >
           <View style={styles.accessDeniedView}>
@@ -400,19 +401,19 @@ export default function Classes({
 
 const styles = StyleSheet.create({
   containerInner: {
-    minHeight: "100%",
-    width: "100%",
+    minHeight: '100%',
+    width: '100%',
   },
   container: {
     flex: 1,
-    width: "100%",
+    width: '100%',
   },
   background: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   shadowProp: {
-    shadowColor: "#171717",
+    shadowColor: '#171717',
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 1,
@@ -425,40 +426,40 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderWidth: 1,
     borderRadius: 10,
-    borderStyle: "solid",
-    textAlign: "center",
-    overflow: "hidden",
-    fontWeight: "bold",
+    borderStyle: 'solid',
+    textAlign: 'center',
+    overflow: 'hidden',
+    fontWeight: 'bold',
   },
   topTab: {
-    backgroundColor: "#c1c3ec",
+    backgroundColor: '#c1c3ec',
   },
   searchContainer: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderBottomWidth: 0,
     borderTopWidth: 0,
   },
-  innerSearchContainer: { backgroundColor: "white" },
-  searchPlaceholder: { fontWeight: "bold" },
+  innerSearchContainer: { backgroundColor: 'white' },
+  searchPlaceholder: { fontWeight: 'bold' },
   accessDeniedView: {
     margin: 20,
     padding: 10,
     borderRadius: 10,
-    borderColor: "#6A74CF",
+    borderColor: '#6A74CF',
     borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   heading: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   icon_message_box: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 10,
   },
   icon: {
@@ -468,78 +469,84 @@ const styles = StyleSheet.create({
   message: {
     flex: 1,
     padding: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   buttonJoin: {
     padding: 10,
-    color: "white",
+    color: 'white',
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: "white",
-    backgroundColor: "#22810B",
+    borderColor: 'white',
+    backgroundColor: '#22810B',
     marginHorizontal: 20,
   },
   buttonLeave: {
     padding: 10,
-    color: "white",
+    color: 'white',
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: "white",
-    backgroundColor: "#D72424",
+    borderColor: 'white',
+    backgroundColor: '#D72424',
     // marginHorizontal: 10,
   },
   buttonJoinText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   buttonLeaveText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modal: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 5,
-    width: "100%",
+    width: '100%',
   },
   modalHeading: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     margin: 10,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 20,
   },
   modalButtonsView: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
+    width: '80%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   cancelButton: {
     padding: 10,
-    color: "white",
-    backgroundColor: "gray",
-    borderColor: "black",
+    color: 'white',
+    borderColor: 'black',
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'black',
+    fontWeight: 'bold',
   },
   leaveConfirmButton: {
     padding: 10,
-    color: "white",
-    backgroundColor: "#D72424",
-    borderColor: "black",
+    color: 'white',
+    backgroundColor: 'white',
+    borderColor: '#D72424',
     borderWidth: 2,
     borderRadius: 5,
   },
   message: {
     padding: 15,
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 5,
+  },
+  overlay: {
+    borderRadius: 10,
+  },
+  modalButtonTextLeave: {
+    color: '#D72424',
+    fontWeight: 'bold',
   },
 });

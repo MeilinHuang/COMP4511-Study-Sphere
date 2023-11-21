@@ -69,3 +69,18 @@ export const myClassesOnly = (myId, classes) => {
   }
   return retval;
 };
+
+/**
+   * The following function takes the time format given in the date picker
+   * and converts it to a string that has it well formatted
+   * @param {*} hrs
+   * @param {*} min
+   * @returns
+   */
+export const formatTime = (hrs, min) => {
+  let hour = hrs % 12 || 12;
+  const minute = min < 10 ? `0${min}` : min;
+  const timeOfDay = hrs < 12 ? 'AM' : 'PM';
+
+  return `${hour}:${minute} ${timeOfDay}`;
+};
