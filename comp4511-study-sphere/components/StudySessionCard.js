@@ -40,7 +40,6 @@ export default function StudySessionCard({
       style={styles.container}
       onPress={() => {
         if (isMember) {
-          // TODO: Issue of passing a function to navigate
           navigation.navigate('StudySessionDetails', {
             studySessionInfo,
             userId,
