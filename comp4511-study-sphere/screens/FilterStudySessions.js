@@ -92,6 +92,17 @@ export default function FilterStudySessions({ navigation, route }) {
     );
   };
 
+  const sendFilteredDataParent = () => {
+    const filteredRequest = {
+      filteredCourse: courseArray,
+      filteredDate: selectedDate,
+      filteredTimeFrom: fromTime,
+      filteredTimeTo: toTime,
+    }
+
+    route.params.applyFilters(filteredRequest);
+  }
+
   return (
     <ScrollView style={styles.container}>
       <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
@@ -215,6 +226,8 @@ export default function FilterStudySessions({ navigation, route }) {
               console.log(
                 `Selected Course: ${courseArray}\nSelected Date: ${selectedDate}\nSelected Start Time: ${fromTime}\nSelected To Time: ${toTime}`
               );
+              sendFilteredDataParent();
+              navigation.navigate('Study Sessions');
             }}
           >
             <Text style={styles.nextPageBtnText}>Filter Results</Text>
