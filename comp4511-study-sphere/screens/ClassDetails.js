@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   Text,
@@ -7,18 +7,18 @@ import {
   useWindowDimensions,
   TouchableOpacity,
   Image,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import { Overlay } from "react-native-elements";
-import userIcon from "../assets/user.png";
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import { Overlay } from 'react-native-elements';
+import userIcon from '../assets/user.png';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-import warning from "../assets/warning.png";
+import warning from '../assets/warning.png';
 
 export default function ClassDetails({
   navigation,
@@ -46,9 +46,9 @@ export default function ClassDetails({
       );
       if (sessionIndex !== -1) {
         const [date, month, year] =
-          myStudy_sessions[sessionIndex].time.from.date.split("/");
+          myStudy_sessions[sessionIndex].time.from.date.split('/');
         const [currNextDate, currNextMonth, currNextYear] = currNextSessions
-          ? currNextSessions.split("/")
+          ? currNextSessions.split('/')
           : [null, null, null];
         const sessionTime = new Date(`${year}-${month}-${date}`).getTime();
         const currNextSessionTime = currNextSessions
@@ -116,11 +116,11 @@ export default function ClassDetails({
             <Text style={styles.heading}>List of Members:</Text>
             {courses[courseKey].classes[classKey].participants.map((p) => {
               const userIndex = users.findIndex((u) => u.id === p);
-              let name = "Error. No name found.";
+              let name = 'Error. No name found.';
               if (userIndex !== -1) {
                 name = users[userIndex].name;
                 if (p === userId) {
-                  name += " (You)";
+                  name += ' (You)';
                 }
               }
               return (
@@ -138,8 +138,8 @@ export default function ClassDetails({
           <TouchableOpacity
             style={styles.study_sessions_button}
             onPress={() => {
-              navigation.navigate("Tabs", {
-                screen: "Study Sessions",
+              navigation.navigate('Tabs', {
+                screen: 'Study Sessions',
               });
             }}
           >
@@ -168,14 +168,14 @@ export default function ClassDetails({
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
-      key: "first",
-      title: "Details",
-      accessibilityLabel: "Class Details",
+      key: 'first',
+      title: 'Details',
+      accessibilityLabel: 'Class Details',
     },
     {
-      key: "second",
-      title: "Resources",
-      accessibilityLabel: "Class Resources",
+      key: 'second',
+      title: 'Resources',
+      accessibilityLabel: 'Class Resources',
     },
   ]);
 
@@ -184,13 +184,14 @@ export default function ClassDetails({
       {isClassMember ? (
         <LinearGradient
           // Background Linear Gradient
-          colors={["#B6B2E6", "#C5DDBA"]}
+          colors={['#B6B2E6', '#C5DDBA']}
           style={styles.background}
         >
           <View style={styles.topTab}>
             <Overlay
               isVisible={visibleAlert}
               onBackdropPress={() => setVisibleAlert((v) => !v)}
+              overlayStyle={styles.overlay}
             >
               <View style={styles.modal}>
                 <Text style={styles.modalHeading}>
@@ -250,7 +251,9 @@ export default function ClassDetails({
                       }
                     }}
                   >
-                    <Text style={styles.modalButtonText}>Yes, Leave Class</Text>
+                    <Text style={styles.modalButtonTextLeave}>
+                      Yes, Leave Class
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -279,9 +282,9 @@ export default function ClassDetails({
                     <Text
                       style={{
                         ...styles.tabLabel,
-                        color: `${focused ? "white" : "black"}`,
-                        backgroundColor: `${focused ? "black" : "transparent"}`,
-                        borderColor: `${focused ? "white" : "transparent"}`,
+                        color: `${focused ? 'white' : 'black'}`,
+                        backgroundColor: `${focused ? 'black' : 'transparent'}`,
+                        borderColor: `${focused ? 'white' : 'transparent'}`,
                         width: Number((layout.width / 2).toFixed() - 4),
                       }}
                     >
@@ -296,7 +299,7 @@ export default function ClassDetails({
       ) : (
         <LinearGradient
           // Background Linear Gradient
-          colors={["#B6B2E6", "#C5DDBA"]}
+          colors={['#B6B2E6', '#C5DDBA']}
           style={styles.background}
         >
           <View style={styles.accessDeniedView}>
@@ -311,7 +314,7 @@ export default function ClassDetails({
                 style={styles.icon}
               />
               <Text style={styles.message}>
-                Before accessing resources and details for {courseKey}{" "}
+                Before accessing resources and details for {courseKey}{' '}
                 {classKey} you must join the class.
               </Text>
             </View>
@@ -368,19 +371,19 @@ export default function ClassDetails({
 
 const styles = StyleSheet.create({
   containerInner: {
-    minHeight: "100%",
-    width: "100%",
+    minHeight: '100%',
+    width: '100%',
   },
   container: {
     flex: 1,
-    width: "100%",
+    width: '100%',
   },
   background: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   shadowProp: {
-    shadowColor: "#171717",
+    shadowColor: '#171717',
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 1,
@@ -393,41 +396,41 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderWidth: 1,
     borderRadius: 10,
-    borderStyle: "solid",
-    textAlign: "center",
-    overflow: "hidden",
-    fontWeight: "bold",
+    borderStyle: 'solid',
+    textAlign: 'center',
+    overflow: 'hidden',
+    fontWeight: 'bold',
   },
   topTab: {
-    backgroundColor: "#c1c3ec",
+    backgroundColor: '#c1c3ec',
   },
   searchContainer: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderBottomWidth: 0,
     borderTopWidth: 0,
   },
-  innerSearchContainer: { backgroundColor: "white" },
-  searchPlaceholder: { fontWeight: "bold" },
+  innerSearchContainer: { backgroundColor: 'white' },
+  searchPlaceholder: { fontWeight: 'bold' },
   accessDeniedView: {
     margin: 20,
     padding: 10,
     borderRadius: 10,
-    borderColor: "#6A74CF",
+    borderColor: '#6A74CF',
     borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     // textWrap: "wrap",
   },
   heading: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   icon_message_box: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 10,
     // textWrap: "wrap",
   },
@@ -438,108 +441,114 @@ const styles = StyleSheet.create({
   message: {
     flex: 1,
     padding: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   buttonJoin: {
     padding: 10,
-    color: "white",
+    color: 'white',
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: "white",
-    backgroundColor: "#22810B",
+    borderColor: 'white',
+    backgroundColor: '#22810B',
     marginHorizontal: 20,
   },
   buttonLeave: {
     padding: 10,
-    color: "white",
+    color: 'white',
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: "white",
-    backgroundColor: "#D72424",
+    borderColor: 'white',
+    backgroundColor: '#D72424',
     // marginHorizontal: 10,
   },
   buttonJoinText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   buttonLeaveText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modal: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 5,
-    width: "100%",
+    width: '100%',
   },
   modalHeading: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     margin: 10,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 20,
   },
   modalButtonsView: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
+    width: '80%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   cancelButton: {
     padding: 10,
-    color: "white",
-    backgroundColor: "gray",
-    borderColor: "black",
+    color: 'white',
+    borderColor: 'black',
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'black',
+    fontWeight: 'bold',
   },
   leaveConfirmButton: {
     padding: 10,
-    color: "white",
-    backgroundColor: "#D72424",
-    borderColor: "black",
+    color: 'white',
+    backgroundColor: 'white',
+    borderColor: '#D72424',
     borderWidth: 2,
     borderRadius: 5,
+  },
+  overlay: {
+    borderRadius: 10,
+  },
+  modalButtonTextLeave: {
+    color: '#D72424',
+    fontWeight: 'bold',
   },
   messageConfirm: {
     padding: 15,
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 5,
   },
   detailsContainer: {
-    justifyContent: "center",
-    borderColor: "#6A74CF",
+    justifyContent: 'center',
+    borderColor: '#6A74CF',
     borderWidth: 2,
     marginTop: 20,
     marginHorizontal: 20,
     borderRadius: 10,
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     // textWrap: "wrap",
   },
   detailsTitle: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     // textWrap: "wrap",
   },
   detailsInfo: {
-    fontWeight: "light",
+    fontWeight: 'light',
     // textWrap: "wrap",
   },
   details: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 5,
     // textWrap: "wrap",
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   userContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 5,
     // textWrap: "wrap",
   },
@@ -548,20 +557,20 @@ const styles = StyleSheet.create({
     width: 30,
   },
   userName: {
-    fontWeight: "semibold",
+    fontWeight: 'semibold',
     marginLeft: 10,
   },
   study_sessions_button: {
     margin: 20,
     padding: 10,
-    backgroundColor: "#9747FF",
-    alignItems: "center",
+    backgroundColor: '#9747FF',
+    alignItems: 'center',
     borderRadius: 5,
-    borderColor: "white",
+    borderColor: 'white',
     borderWidth: 2,
   },
   study_sessions_button_text: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
