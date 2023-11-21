@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   message: {
-    flex: 1,
+    // flex: 1,
     padding: 10,
     textAlign: 'center',
   },

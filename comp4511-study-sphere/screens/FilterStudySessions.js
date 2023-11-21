@@ -101,7 +101,7 @@ export default function FilterStudySessions({ navigation, route }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
         <View style={styles.formContainer}>
           <Text
@@ -231,7 +231,7 @@ export default function FilterStudySessions({ navigation, route }) {
           </Pressable>
         </View>
       </LinearGradient>
-    </ScrollView>
+    </View>
   );
 }
 
