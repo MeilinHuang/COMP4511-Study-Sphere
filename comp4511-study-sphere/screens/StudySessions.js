@@ -184,7 +184,7 @@ export default function StudySessions({
     receivedFilters.filteredTimeFrom ||
     receivedFilters.filteredTimeTo;
 
-  console.log(checkFilterApplied);
+  // console.log(checkFilterApplied);
 
   /**
    * Checks if there has been a filter applied, if so
@@ -267,6 +267,13 @@ export default function StudySessions({
       </ScrollView>
     );
   };
+
+  const checkAsyncStorage = async () => {
+    console.log(await AsyncStorage.getItem(
+      "buttonColorsByDate"
+    ))
+  }
+
 
   const renderMySessions = () => {
     const [search, setSearch] = useState('');

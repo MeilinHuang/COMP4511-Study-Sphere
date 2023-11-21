@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,6 +23,7 @@ import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatTime } from '../utils/helpers';
+import CalendarPicker from 'react-native-calendar-picker';
 
 const labels = ['Participant Information', 'Group Availabilities', 'Location'];
 
@@ -56,6 +64,11 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
   const [courseArray, setCourseArray] = useState([]);
   const [enteredCourse, setEnteredCourse] = useState('');
   const [title, setTitle] = useState('');
+  const today = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [buttonColorsByDate, setButtonColorsByDate] = useState({});
+
+  // console.log(buttonColorsByDate)
 
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
@@ -106,6 +119,7 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
         toTime: toTime,
         owner: userId,
         members: [userId],
+        availabilityColors: buttonColorsByDate
       };
 
       const currentSessionData = await AsyncStorage.getItem(
@@ -266,6 +280,74 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
     );
   };
 
+  const changeDate = (date) => {
+    const dateString = new Date(date).toISOString().split('T')[0];
+    setSelectedDate(dateString);
+    if (!(dateString in buttonColorsByDate)) {
+      setButtonColorsByDate({
+        ...buttonColorsByDate,
+        [dateString]: {
+          '7 AM': 'green',
+          '8 AM': 'green',
+          '9 AM': 'green',
+          '10 AM': 'green',
+          '11 AM': 'green',
+          '12 PM': 'green',
+          '1 PM': 'green',
+          '2 PM': 'green',
+          '3 PM': 'green',
+          '4 PM': 'green',
+          '5 PM': 'green',
+        },
+      });
+    }
+    setSelectedDate(dateString);
+  };
+
+  const changeButtonColor = (buttonTitle) => {
+    if (selectedDate) {
+      const color1 = buttonColorsByDate[selectedDate];
+      const color2 = color1[buttonTitle];
+      let color3;
+      if (color2 === 'green') {
+        color3 = 'red';
+      } else {
+        color3 = 'green';
+      }
+      setButtonColorsByDate((prevColorsByDate) => ({
+        ...prevColorsByDate,
+        [selectedDate]: {
+          ...prevColorsByDate[selectedDate],
+          [buttonTitle]: color3,
+        },
+      }));
+    }
+  };
+
+  const getAvailabilityText = (color) => {
+    let result;
+    if (color === 'green') {
+      result = 'Available';
+    } else {
+      result = 'Unavailable';
+    }
+    return result;
+  };
+
+  const dateFormat = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const buttonstyle = (color) => ({
+    ...styles.timeSlot,
+    backgroundColor: color === 'green' ? '#DFF2BF' : '#FFB6B6',
+    paddingVertical: 25,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 10
+  });
+
   // console.log(location);
 
   return (
@@ -393,6 +475,41 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
             >
               Group Availability on {date.format('DD MMMM YYYY')}
             </Text>
+            <View style={styles.selectTimeSection}>
+              <View style={styles.calendarContainer}>
+                <CalendarPicker
+                  onDateChange={changeDate}
+                  width={300}
+                  selectedStartDate={new Date(selectedDate)}
+                />
+              </View>
+
+              {selectedDate && buttonColorsByDate[selectedDate] && (
+                <View>
+                  <Text style={styles.dateText}>
+                    {dateFormat(selectedDate)}
+                  </Text>
+                  {Object.keys(buttonColorsByDate[selectedDate]).map(
+                    (timeSlot, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={buttonstyle(
+                          buttonColorsByDate[selectedDate][timeSlot]
+                        )}
+                        onPress={() => changeButtonColor(timeSlot)}
+                      >
+                        <Text style={styles.timeText}>
+                          {timeSlot} -{' '}
+                          {getAvailabilityText(
+                            buttonColorsByDate[selectedDate][timeSlot]
+                          )}
+                        </Text>
+                      </TouchableOpacity>
+                    )
+                  )}
+                </View>
+              )}
+            </View>
             <Text
               style={{
                 marginBottom: 10,
@@ -686,5 +803,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
     marginHorizontal: 5,
+    marginBottom: 20
+  },
+  calendarContainer: {
+    marginVertical: 10,
+    alignSelf: "center",
+    width: 350,
+  },
+  dateText: {
+    marginVertical: 6,
+    fontSize: 16,
+    textAlign: "center",
+  },
+  timeText: {
+    fontSize: 16,
+    color: "#5C5C5C",
+    alignSelf: "flex-start",
+    position: "absolute",
+    top: 5,
+    left: 5,
   },
 });
