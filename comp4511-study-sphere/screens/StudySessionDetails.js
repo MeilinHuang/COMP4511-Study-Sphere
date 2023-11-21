@@ -4,12 +4,10 @@ import {
   Text,
   View,
   StyleSheet,
-  useWindowDimensions,
   TouchableOpacity,
   Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { Overlay } from 'react-native-elements';
 import userIcon from '../assets/user.png';
 import { formatTime } from '../utils/helpers';
@@ -19,13 +17,7 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-export default function StudySessionDetails({
-  navigation,
-  route,
-  users,
-  userId,
-}) {
-  
+export default function StudySessionDetails({ navigation, route, users }) {
   const { studySessionInfo, sessionIdx, handleLeave } = route.params;
   const owner = users.filter((user) => user.id === studySessionInfo.owner);
   const [visibleAlert, setVisibleAlert] = useState(false);
@@ -33,7 +25,6 @@ export default function StudySessionDetails({
   useEffect(() => {
     navigation.setOptions({ title: studySessionInfo.title });
   }, [navigation, studySessionInfo.title]);
-
 
   return (
     <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
@@ -78,9 +69,13 @@ export default function StudySessionDetails({
             </View>
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>Location: </Text>
-              <Text style={styles.detailsInfo}>
-                {studySessionInfo.location}
-              </Text>
+              {studySessionInfo.location ? (
+                <Text style={styles.detailsInfo}>
+                  {studySessionInfo.location}
+                </Text>
+              ) : (
+                <Text style={styles.detailsInfo}>Owner hasn't specified a location!</Text>
+              )}
             </View>
           </View>
           <View style={styles.detailsContainer}>
@@ -194,7 +189,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    // textWrap: "wrap",
   },
   heading: {
     fontWeight: 'bold',
@@ -207,7 +201,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    // textWrap: "wrap",
   },
   icon: {
     width: 40,
@@ -234,7 +227,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'white',
     backgroundColor: '#D72424',
-    // marginHorizontal: 10,
   },
   buttonJoinText: {
     color: 'white',
@@ -302,27 +294,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     backgroundColor: 'white',
-    // textWrap: "wrap",
   },
   detailsTitle: {
     fontWeight: 'bold',
-    // textWrap: "wrap",
   },
   detailsInfo: {
     fontWeight: 'light',
-    // textWrap: "wrap",
   },
   details: {
     flexDirection: 'row',
     marginTop: 5,
-    // textWrap: "wrap",
     flexWrap: 'wrap',
   },
   userContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
-    // textWrap: "wrap",
   },
   userIcon: {
     height: 30,

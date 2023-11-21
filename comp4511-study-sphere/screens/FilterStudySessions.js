@@ -1,12 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Modal,
-  Pressable,
-  ScrollView,
-} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Text, View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from 'react-native-ui-datepicker';
 import { TimePickerModal } from 'react-native-paper-dates';
@@ -25,7 +18,6 @@ LogBox.ignoreLogs([
 export default function FilterStudySessions({ navigation, route }) {
   const [timeVisible, setTimeVisible] = useState(false);
   const [toTimeVisible, setToTimeVisible] = useState(false);
-
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [fromTime, setFromTime] = useState({ hours: 12, minutes: 0 });
   const [toTime, setToTime] = useState({ hours: 12, minutes: 0 });
@@ -103,10 +95,10 @@ export default function FilterStudySessions({ navigation, route }) {
       filteredDate: selectedDate,
       filteredTimeFrom: fromTime,
       filteredTimeTo: toTime,
-    }
+    };
 
     route.params.applyFilters(filteredRequest);
-  }
+  };
 
   return (
     <ScrollView style={styles.container}>

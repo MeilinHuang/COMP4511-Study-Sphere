@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Modal, Pressable } from 'react-native';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useWindowDimensions } from 'react-native';
@@ -13,18 +13,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import moment from 'moment/moment';
 import { MaterialIcons } from '@expo/vector-icons';
 
-export default function StudySessions({
-  navigation,
-  route,
-  users,
-  courses,
-  studySessions,
-  userId,
-  setUsers,
-  setCourses,
-  setStudySessions,
-  setUserId,
-}) {
+export default function StudySessions({ navigation, users, userId }) {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
@@ -184,8 +173,6 @@ export default function StudySessions({
     receivedFilters.filteredTimeFrom ||
     receivedFilters.filteredTimeTo;
 
-  // console.log(checkFilterApplied);
-
   /**
    * Checks if there has been a filter applied, if so
    * go ahead and display the filter button
@@ -216,6 +203,11 @@ export default function StudySessions({
       </Pressable>
     </Pressable>
   );
+
+  const logout = () => {
+    navigation.navigate('Login');
+  };
+  // logout();
 
   const renderAllSessions = () => {
     const [search, setSearch] = useState('');
@@ -269,11 +261,8 @@ export default function StudySessions({
   };
 
   const checkAsyncStorage = async () => {
-    console.log(await AsyncStorage.getItem(
-      "buttonColorsByDate"
-    ))
-  }
-
+    console.log(await AsyncStorage.getItem('buttonColorsByDate'));
+  };
 
   const renderMySessions = () => {
     const [search, setSearch] = useState('');

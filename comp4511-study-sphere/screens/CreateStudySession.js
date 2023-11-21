@@ -68,8 +68,6 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
   const [selectedDate, setSelectedDate] = useState(today);
   const [buttonColorsByDate, setButtonColorsByDate] = useState({});
 
-  // console.log(buttonColorsByDate)
-
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
   }, [setTimeVisible]);
@@ -77,8 +75,6 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
   const clearAsyncStorage = async () => {
     AsyncStorage.clear();
   };
-
-  // clearAsyncStorage();
 
   const onTimeConfirm = useCallback(
     ({ hours, minutes }) => {
@@ -107,6 +103,11 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
    * }
    */
   const storeDataCreateSession = async () => {
+
+    if (!title || currParticipantArray <= 0 || courseArray.length <= 0) {
+      alert('Please fill in all required fields!');
+      return;
+    }
     try {
       const studySessionData = {
         title: title,
@@ -348,8 +349,6 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
     borderRadius: 10
   });
 
-  // console.log(location);
-
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
@@ -377,6 +376,7 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
                 value={title}
                 onChangeText={(text) => setTitle(text)}
                 style={styles.textInputFull}
+                required={true}
               />
               <Text
                 style={{ marginBottom: 10, fontSize: 20, fontWeight: 'bold' }}
