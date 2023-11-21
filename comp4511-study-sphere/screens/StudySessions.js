@@ -10,6 +10,8 @@ import StudySessionCard from '../components/StudySessionCard';
 import { ScrollView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import moment from 'moment/moment';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function StudySessions({
   navigation,
@@ -37,8 +39,13 @@ export default function StudySessions({
     },
   ]);
   const layout = useWindowDimensions();
-  const [modalVisible, setModalVisible] = useState(false); // State for the modal
   const [listOfStudySessions, setListOfStudySessions] = useState([]);
+  const [receivedFilters, setReceivedFilters] = useState({
+    filteredCourse: [],
+    filteredDate: null,
+    filteredTimeFrom: null,
+    filteredTimeTo: null,
+  });
 
   const userOfInterest = users.filter((user) => user.id === userId);
   useEffect(() => {
@@ -83,6 +90,10 @@ export default function StudySessions({
     }
   };
 
+  const setFiltersWhenSent = (filters) => {
+    setReceivedFilters(filters);
+  };
+
   const handleLeave = async (idx) => {
     try {
       const dataOfInterest = await AsyncStorage.getItem('createSessionData');
@@ -117,25 +128,106 @@ export default function StudySessions({
 
   const renderAllSessions = () => {
     const [search, setSearch] = useState('');
-    const filteredSessions = listOfStudySessions.filter((data) =>
+    const searchedSessions = listOfStudySessions.filter((data) =>
       data.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const filterSessions = listOfStudySessions.filter((data) => {
+      const filterByCourse =
+        receivedFilters.filteredCourse.length === 0 ||
+        receivedFilters.filteredCourse.includes(data.course);
+
+      const filterByDates =
+        new Date(receivedFilters.filteredDate).toDateString() ===
+          new Date(data.date).toDateString() || !receivedFilters.filteredDate;
+
+      const fromTime = moment(data.date).set({
+        hour: data.fromTime?.hours || 0,
+        minute: data.fromTime?.minutes || 0,
+      });
+      const toTime = moment(data.date).set({
+        hour: data.toTime?.hours || 0,
+        minute: data.toTime?.minutes || 0,
+      });
+      const filteredFromTime = moment(
+        new Date(receivedFilters.filteredDate)
+      ).set({
+        hour: receivedFilters.filteredTimeFrom?.hours || 0,
+        minute: receivedFilters.filteredTimeFrom?.minutes || 0,
+      });
+      const filteredToTime = moment(new Date(receivedFilters.filteredDate)).set(
+        {
+          hour: receivedFilters.filteredTimeTo?.hours || 23,
+          minute: receivedFilters.filteredTimeTo?.minutes || 59,
+        }
+      );
+
+      //     fromTime ---------- toTime
+      // filteredFrom --------------------- filteredTo
+      // Only accept if the time from and toTime are between the filtered range
+      const filterByTime =
+        (!receivedFilters.filteredTimeFrom ||
+          fromTime.isSameOrAfter(filteredFromTime)) &&
+        (!receivedFilters.filteredTimeTo ||
+          toTime.isSameOrBefore(filteredToTime));
+
+      return filterByCourse && filterByDates && filterByTime;
+    });
+
+    const removeFilters = () => {
+      const initialState = {
+        filteredCourse: [],
+        filteredDate: null,
+        filteredTimeFrom: null,
+        filteredTimeTo: null,
+      };
+      setReceivedFilters(initialState);
+    };
+
+    // checks if the at least one value is returned
+    // for the filter request
+    const checkFilterApplied =
+      receivedFilters.filteredCourse.length > 0 ||
+      receivedFilters.filteredDate ||
+      receivedFilters.filteredTimeFrom ||
+      receivedFilters.filteredTimeTo;
+
+    console.log(checkFilterApplied);
+
+    /**
+     * Checks if there has been a filter applied, if so
+     * go ahead and display the filter button
+     */
+    const clearFiltersButton = checkFilterApplied ? (
+      <Pressable style={[styles.filterContainer]} onPress={removeFilters}>
+        <Text style={styles.filterText}>Clear Existing Filters</Text>
+        <Pressable onPress={removeFilters}>
+          <MaterialIcons name='delete' size={20} color='black' />
+        </Pressable>
+      </Pressable>
+    ) : null;
+
+    const filterButton = checkFilterApplied ? (
+      clearFiltersButton
+    ) : (
+      <Pressable
+        onPress={() =>
+          navigation.navigate('Filter Study Sessions', {
+            applyFilters: setFiltersWhenSent,
+          })
+        }
+        style={styles.filterContainer}
+      >
+        <Text style={styles.filterText}>Filter Sessions</Text>
+        <Pressable onPress={() => navigation.navigate('Filter Study Sessions')}>
+          <FontAwesome5 name='filter' size={20} color='black' />
+        </Pressable>
+      </Pressable>
     );
 
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.filterContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('Filter Study Sessions')}
-            style={styles.filterContainer}
-          >
-            <Text style={styles.filterText}>Filter Sessions</Text>
-            <Pressable
-              onPress={() => navigation.navigate('Filter Study Sessions')}
-            >
-              <FontAwesome5 name='filter' size={20} color='black' />
-            </Pressable>
-          </Pressable>
-        </View>
+        <View style={styles.filterContainer}>{filterButton}</View>
 
         <SearchBar
           placeholder='Search for study sessions'
@@ -150,18 +242,30 @@ export default function StudySessions({
           accessibilityRole='search'
         />
 
-        {/* This a search button functionality */}
-        {filteredSessions.map((data, idx) => (
-          <StudySessionCard
-            key={idx}
-            studySessionInfo={data}
-            userId={userId}
-            navigation={navigation}
-            sessionIdx={idx}
-            handleJoin={handleJoin}
-            handleLeave={handleLeave}
-          />
-        ))}
+        {/* if filters are applied then go ahead and display the filteredSessions else the searchSessions */}
+        {checkFilterApplied
+          ? filterSessions.map((data, idx) => (
+              <StudySessionCard
+                key={idx}
+                studySessionInfo={data}
+                userId={userId}
+                navigation={navigation}
+                sessionIdx={idx}
+                handleJoin={handleJoin}
+                handleLeave={handleLeave}
+              />
+            ))
+          : searchedSessions.map((data, idx) => (
+              <StudySessionCard
+                key={idx}
+                studySessionInfo={data}
+                userId={userId}
+                navigation={navigation}
+                sessionIdx={idx}
+                handleJoin={handleJoin}
+                handleLeave={handleLeave}
+              />
+            ))}
       </ScrollView>
     );
   };
@@ -173,23 +277,23 @@ export default function StudySessions({
       session.members.includes(userId)
     );
 
-    const filteredSessions = sessionsOwner.filter((data) =>
+    const searchedSessions = sessionsOwner.filter((data) =>
       data.title.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
       <ScrollView style={styles.container}>
         <Pressable
+          onPress={() => navigation.navigate('Filter Study Sessions')}
+          style={styles.filterContainer}
+        >
+          <Text style={styles.filterText}>Filter Sessions</Text>
+          <Pressable
             onPress={() => navigation.navigate('Filter Study Sessions')}
-            style={styles.filterContainer}
           >
-            <Text style={styles.filterText}>Filter Sessions</Text>
-            <Pressable
-              onPress={() => navigation.navigate('Filter Study Sessions')}
-            >
-              <FontAwesome5 name='filter' size={20} color='black' />
-            </Pressable>
+            <FontAwesome5 name='filter' size={20} color='black' />
           </Pressable>
+        </Pressable>
         <SearchBar
           placeholder='Search for my study sessions'
           onChangeText={setSearch}
@@ -202,7 +306,7 @@ export default function StudySessions({
           placeholderTextColor='#6A74CF'
           accessibilityRole='search'
         />
-        {filteredSessions.map((data, idx) => (
+        {searchedSessions.map((data, idx) => (
           <StudySessionCard
             key={idx}
             studySessionInfo={data}
