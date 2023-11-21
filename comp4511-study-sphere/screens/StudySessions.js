@@ -4,11 +4,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SearchBar } from "react-native-elements";
+import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StudySessionCard from '../components/StudySessionCard';
 import { ScrollView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function StudySessions({
   navigation,
@@ -115,18 +116,31 @@ export default function StudySessions({
   };
 
   const renderAllSessions = () => {
-    const [search, setSearch] = useState("");
-    const filteredSessions = listOfStudySessions.filter(
-      (data) =>
-        data.title.toLowerCase().includes(search.toLowerCase()) 
+    const [search, setSearch] = useState('');
+    const filteredSessions = listOfStudySessions.filter((data) =>
+      data.title.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
       <ScrollView style={styles.container}>
+        <View style={styles.filterContainer}>
+          <Pressable
+            onPress={() => navigation.navigate('Filter Study Sessions')}
+            style={styles.filterContainer}
+          >
+            <Text style={styles.filterText}>Filter Sessions</Text>
+            <Pressable
+              onPress={() => navigation.navigate('Filter Study Sessions')}
+            >
+              <FontAwesome5 name='filter' size={20} color='black' />
+            </Pressable>
+          </Pressable>
+        </View>
+
         <SearchBar
           placeholder='Search for study sessions'
           value={search}
-          onChangeText={setSearch} 
+          onChangeText={setSearch}
           lightTheme
           round
           containerStyle={styles.searchContainer}
@@ -135,10 +149,11 @@ export default function StudySessions({
           placeholderTextColor='#6A74CF'
           accessibilityRole='search'
         />
+
         {/* This a search button functionality */}
         {filteredSessions.map((data, idx) => (
           <StudySessionCard
-            key={idx} 
+            key={idx}
             studySessionInfo={data}
             userId={userId}
             navigation={navigation}
@@ -147,38 +162,34 @@ export default function StudySessions({
             handleLeave={handleLeave}
           />
         ))}
-        <Pressable
-          accessibilityLabel='Logout'
-          onPress={() => navigation.navigate('Login')}
-          style={{
-            position: 'absolute',
-            top: 20,
-            right: 20,
-            paddingLeft: 10,
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
-            Logout
-          </Text>
-        </Pressable>
       </ScrollView>
     );
   };
 
   const renderMySessions = () => {
-    const [search, setSearch] = useState("");
-    
-    const sessionsOwner = listOfStudySessions.filter(
-      (session) => session.members.includes(userId)
+    const [search, setSearch] = useState('');
+
+    const sessionsOwner = listOfStudySessions.filter((session) =>
+      session.members.includes(userId)
     );
 
-    const filteredSessions = sessionsOwner.filter(
-      (data) =>
-        data.title.toLowerCase().includes(search.toLowerCase()) 
+    const filteredSessions = sessionsOwner.filter((data) =>
+      data.title.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
       <ScrollView style={styles.container}>
+        <Pressable
+            onPress={() => navigation.navigate('Filter Study Sessions')}
+            style={styles.filterContainer}
+          >
+            <Text style={styles.filterText}>Filter Sessions</Text>
+            <Pressable
+              onPress={() => navigation.navigate('Filter Study Sessions')}
+            >
+              <FontAwesome5 name='filter' size={20} color='black' />
+            </Pressable>
+          </Pressable>
         <SearchBar
           placeholder='Search for my study sessions'
           onChangeText={setSearch}
@@ -325,5 +336,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+    paddingRight: 6,
+  },
+  filterText: {
+    fontWeight: 'bold',
+    marginRight: 5,
+    textDecorationLine: 'underline',
   },
 });
