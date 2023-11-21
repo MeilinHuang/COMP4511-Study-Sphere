@@ -28,6 +28,7 @@ import dbCourses from './database/courses.json';
 import dbStudySession from './database/study_sessions.json';
 import StoreService from './services/StoreService';
 import StudySessionDetails from './screens/StudySessionDetails';
+import FilterStudySessions from './screens/FilterStudySessions';
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
@@ -535,6 +536,14 @@ export default function App() {
                   setStudySessions={setStudySessions}
                   setUserId={setUserId}
                 />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name='Filter Study Sessions'
+              options={{ headerBackTitle: 'Back' }}
+            >
+              {(props) => (
+                <FilterStudySessions {...props} />
               )}
             </RootStack.Screen>
             <RootStack.Screen name='Create' options={{ presentation: 'modal' }}>
