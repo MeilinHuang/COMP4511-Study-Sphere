@@ -16,6 +16,11 @@ import { Button } from 'react-native-paper';
 import { formatTime } from '../utils/helpers';
 import { TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 export default function FilterStudySessions({ navigation, route }) {
   const [timeVisible, setTimeVisible] = useState(false);

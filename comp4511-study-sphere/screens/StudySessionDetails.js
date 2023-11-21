@@ -29,7 +29,10 @@ export default function StudySessionDetails({
   const { studySessionInfo, sessionIdx, handleLeave } = route.params;
   const owner = users.filter((user) => user.id === studySessionInfo.owner);
   const [visibleAlert, setVisibleAlert] = useState(false);
-  navigation.setOptions({ title: studySessionInfo.title });
+
+  useEffect(() => {
+    navigation.setOptions({ title: studySessionInfo.title });
+  }, [navigation, studySessionInfo.title]);
 
 
   return (
