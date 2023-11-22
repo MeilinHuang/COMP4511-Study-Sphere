@@ -17,6 +17,7 @@ import { Dimensions } from "react-native";
 export default function StudyTools({ route, navigation }) {
   const { title, dueDate, tag, img, body, duration, payload } =
     route.params ?? {};
+  // console.log(title, "title");
   // const [todos, setTodos] = useState([]);
   // const [inprogressTodos, setInprogressTodos] = useState([]);
   // const [completedTodos, setCompletedTodos] = useState([]);
@@ -78,8 +79,8 @@ export default function StudyTools({ route, navigation }) {
                 tag: currTag,
                 img: currImg,
                 body: currBody,
-                key: nextKey
-              }
+                key: nextKey,
+              },
             ],
           },
         ];
@@ -178,8 +179,10 @@ export default function StudyTools({ route, navigation }) {
 
   useEffect(() => {
     // if (title && dueDate && tag && payload && body) {
+    // print("hi");
     if (title && tag && payload) {
       if (payload.action === "add") {
+        // console.log("working?", title, tag, dueDate, img, body, duration);
         addToArray(title, tag, dueDate, img, body, duration);
         if (!selectedTag.includes(tag)) {
           toggleVisibility(tag);

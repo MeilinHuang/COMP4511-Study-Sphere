@@ -172,7 +172,10 @@ export default function Create({ route, navigation }) {
         accessibilityHint="The todo's task"
         placeholder="Enter a Task Name"
         value={title}
-        onChangeText={setTitle}
+        onChangeText={(t) => {
+          setTitle(t);
+          // console.log(t, "t");
+        }}
         style={styles.textInput}
       />
       <View style={{ flexDirection: "row" }}>
@@ -345,12 +348,20 @@ export default function Create({ route, navigation }) {
             onValueChange={onSliderSliding}
           />
         </View>
-        <MaterialCommunityIcons
+        <TouchableOpacity
+          style={[styles.browseButton]}
+          onPress={() => setVisibleAlert((v) => !v)}
+        >
+          <Text style={[styles.browseButtonText]}>
+            Edit
+          </Text>
+        </TouchableOpacity>
+        {/* <MaterialCommunityIcons
           name="pencil"
           size={15}
           color="black"
           onPress={openEditModal}
-        />
+        /> */}›
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
@@ -469,6 +480,14 @@ export default function Create({ route, navigation }) {
               Haptics.notificationAsync(
                 Haptics.NotificationFeedbackType.Success
               );
+              // console.log(
+              //   "pressed create",
+              //   title,
+              //   selectedDate,
+              //   tag,
+              //   body,
+              //   sliderValue
+              // );
               navigation.navigate("Study Tools", {
                 title,
                 // dueDate: date,
@@ -574,8 +593,8 @@ const styles = StyleSheet.create({
   },
   editButton: {
     borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    // padding: 10,
+    // elevation: 2,
   },
   editButtonOpen: {
     backgroundColor: "#F194FF",

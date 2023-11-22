@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import image from "../assets/course_images/comp3121_icon.png";
-import { Overlay } from "react-native-elements";
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import image from '../assets/course_images/comp3121_icon.png';
+import { Overlay } from 'react-native-elements';
 
 export default function ClassBox({
   courseKey,
@@ -27,6 +27,7 @@ export default function ClassBox({
       <Overlay
         isVisible={visibleAlert}
         onBackdropPress={() => setVisibleAlert((v) => !v)}
+        overlayStyle={styles.overlay}
       >
         <View style={styles.modal}>
           <Text style={styles.modalHeading}>
@@ -69,7 +70,7 @@ export default function ClassBox({
                 }
               }}
             >
-              <Text style={styles.modalButtonText}>Yes, Leave Class</Text>
+              <Text style={styles.modalButtonTextLeave}>Yes, Leave Class</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -77,10 +78,10 @@ export default function ClassBox({
       <TouchableOpacity
         style={styles.container}
         accessible={true}
-        accessibilityLabel=""
-        accessibilityHint=""
+        accessibilityLabel=''
+        accessibilityHint=''
         onPress={() =>
-          navigation.navigate("ClassDetails", {
+          navigation.navigate('ClassDetails', {
             title: `${courseKey.charAt(0).toUpperCase()}${courseKey
               .substr(1)
               .toLowerCase()} ${classKey}`,
@@ -100,7 +101,7 @@ export default function ClassBox({
             />
           )}
           <View>
-            <Text style={{ fontWeight: "bold" }}>{classKey}</Text>
+            <Text style={{ fontWeight: 'bold' }}>{classKey}</Text>
             <Text>{classTutor}</Text>
             <Text>{classTime}</Text>
             <Text>{participants.length} Members</Text>
@@ -161,103 +162,109 @@ export default function ClassBox({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    overflowWrap: "break-word",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    overflowWrap: 'break-word',
     // width: "100%",
-    backgroundColor: "#C1C3EC",
+    backgroundColor: '#C1C3EC',
     marginTop: 5,
     marginLeft: 5,
     marginRight: 5,
     padding: 10,
-    borderColor: "#6A74CF",
+    borderColor: '#6A74CF',
     borderWidth: 1,
     borderRadius: 10,
   },
   buttonsContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   informationBox: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     gap: 10,
-    flexWrap: "wrap",
-    overflowWrap: "break-word",
+    flexWrap: 'wrap',
+    overflowWrap: 'break-word',
   },
   image: {
     height: 40,
     width: 40,
-    alignSelf: "center",
+    alignSelf: 'center',
     borderRadius: 20,
   },
   buttonJoin: {
     padding: 10,
-    color: "#22810B",
+    color: '#22810B',
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: "#22810B",
-    backgroundColor: "white",
+    borderColor: '#22810B',
+    backgroundColor: 'white',
   },
   buttonLeave: {
     padding: 10,
-    color: "#D72424",
+    color: '#D72424',
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: "#D72424",
-    backgroundColor: "white",
+    borderColor: '#D72424',
+    backgroundColor: 'white',
   },
   buttonJoinText: {
-    color: "#22810B",
-    fontWeight: "bold",
+    color: '#22810B',
+    fontWeight: 'bold',
   },
   buttonLeaveText: {
-    color: "#D72424",
-    fontWeight: "bold",
+    color: '#D72424',
+    fontWeight: 'bold',
   },
   modal: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 5,
-    width: "100%",
+    width: '100%',
   },
   modalHeading: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     margin: 10,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 20,
   },
   modalButtonsView: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
+    width: '80%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   cancelButton: {
     padding: 10,
-    color: "white",
-    backgroundColor: "gray",
-    borderColor: "black",
+    color: 'white',
+    borderColor: 'black',
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'black',
+    fontWeight: 'bold',
   },
   leaveConfirmButton: {
     padding: 10,
-    color: "white",
-    backgroundColor: "#D72424",
-    borderColor: "black",
+    color: 'white',
+    backgroundColor: 'white',
+    borderColor: '#D72424',
     borderWidth: 2,
     borderRadius: 5,
+  },
+  overlay: {
+    borderRadius: 10,
+  },
+  modalButtonTextLeave: {
+    color: '#D72424',
+    fontWeight: 'bold',
   },
   message: {
     padding: 15,
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 5,
   },
 });

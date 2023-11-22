@@ -8,9 +8,10 @@ import Svg, { Path, Text as SvgText } from "react-native-svg";
 
 import Courses from "./screens/Courses";
 import StudySessions from "./screens/StudySessions";
-import Availabilities from "./screens/StudySessions";
+import Availabilities from "./screens/Availabilities";
 import StudyTools from "./screens/StudyTools";
 import Settings from "./screens/Settings";
+import CreateStudySessionScreen from "./screens/CreateStudySession";
 
 import LogIn from "./screens/Login";
 import SignUp from "./screens/SignUp";
@@ -26,6 +27,8 @@ import dbUsers from "./database/users.json";
 import dbCourses from "./database/courses.json";
 import dbStudySession from "./database/study_sessions.json";
 import StoreService from "./services/StoreService";
+import StudySessionDetails from "./screens/StudySessionDetails";
+import FilterStudySessions from "./screens/FilterStudySessions";
 
 function MyTabBar({ state, descriptors, navigation }) {
   const tabIcons = {
@@ -330,7 +333,7 @@ export default function App() {
             }}
             style={styles.background}
           >
-            {(props) => <Courses {...props} {...params} />}
+            {(props) => <Courses {...params} {...props} />}
           </Tabs.Screen>
           <Tabs.Screen
             name="Study Sessions"
@@ -345,7 +348,7 @@ export default function App() {
               headerTitle: "Study Sessions",
             }}
           >
-            {(props) => <StudySessions {...props} {...params} />}
+            {(props) => <StudySessions {...params} {...props} />}
           </Tabs.Screen>
           <Tabs.Screen
             name="Availabilities"
@@ -360,7 +363,7 @@ export default function App() {
               headerTitle: "Availabilities",
             }}
           >
-            {(props) => <Availabilities {...props} {...params} />}
+            {(props) => <Availabilities {...params} {...props} />}
           </Tabs.Screen>
           <Tabs.Screen
             name="Study Tools"
@@ -387,7 +390,7 @@ export default function App() {
               headerTitle: "Settings",
             }}
           >
-            {(props) => <Settings {...props} {...params} />}
+            {(props) => <Settings {...params} {...props} />}
           </Tabs.Screen>
         </Tabs.Navigator>
       </View>
@@ -516,6 +519,30 @@ export default function App() {
                 />
               )}
             </RootStack.Screen>
+            <RootStack.Screen
+              name="StudySessionDetails"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => (
+                <StudySessionDetails
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Filter Study Sessions"
+              options={{ headerBackTitle: "Back" }}
+            >
+              {(props) => <FilterStudySessions {...props} />}
+            </RootStack.Screen>
             <RootStack.Screen name="Create" options={{ presentation: "modal" }}>
               {(props) => (
                 <Create
@@ -562,6 +589,22 @@ export default function App() {
                   setStudySessions={setStudySessions}
                   setUserId={setUserId}
                 />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="CreateStudySession"
+              options={{
+                // tabBarIcon: ({ size }) => (
+                //   // Custom icon or MaterialCommunityIcons
+                //   // Add your preferred icon here
+                //   <MaterialCommunityIcons name='plus' size={size} color='black' />
+                // ),
+                headerTitle: "Create Study Session",
+              }}
+            >
+              {/* Render the CreateStudySession component */}
+              {(props) => (
+                <CreateStudySessionScreen {...props} userId={userId} />
               )}
             </RootStack.Screen>
           </RootStack.Navigator>

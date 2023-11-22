@@ -30,6 +30,7 @@ export default function CourseBox({
       <Overlay
         isVisible={visibleAlert}
         onBackdropPress={() => setVisibleAlert((v) => !v)}
+        overlayStyle={styles.overlay}
       >
         <View style={styles.modal}>
           <Text style={styles.modalHeading}>
@@ -74,7 +75,7 @@ export default function CourseBox({
                 }
               }}
             >
-              <Text style={styles.modalButtonText}>Yes, Leave Course</Text>
+              <Text style={styles.modalButtonTextLeave}>Yes, Leave Course</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -236,20 +237,19 @@ const styles = StyleSheet.create({
   cancelButton: {
     padding: 10,
     color: "white",
-    backgroundColor: "gray",
     borderColor: "black",
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
   },
   leaveConfirmButton: {
     padding: 10,
     color: "white",
-    backgroundColor: "#D72424",
-    borderColor: "black",
+    backgroundColor: "white",
+    borderColor: "#D72424",
     borderWidth: 2,
     borderRadius: 5,
   },
@@ -258,5 +258,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     marginBottom: 5,
+  },
+  overlay: {
+    borderRadius: 10,
+  },
+  modalButtonTextLeave: {
+    color: "#D72424",
+    fontWeight: "bold",
   },
 });
