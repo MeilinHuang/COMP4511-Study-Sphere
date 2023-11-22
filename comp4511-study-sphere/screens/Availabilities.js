@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Availabilities({
   navigation,
@@ -125,50 +126,61 @@ export default function Availabilities({
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <Text style={styles.title}>Choose a date to view availability</Text>
-        <View style={styles.calendarContainer}>
-          <CalendarPicker
-            onDateChange={changeDate}
-            width={300}
-            selectedStartDate={new Date(selectedDate)}
-          />
-        </View>
+      <LinearGradient
+        // Background Linear Gradient
+        colors={["#B6B2E6", "#C5DDBA"]}
+        style={styles.background}
+      >
+        <ScrollView>
+          <Text style={styles.title}>Choose a date to view availability</Text>
+          <View style={styles.calendarContainer}>
+            <CalendarPicker
+              onDateChange={changeDate}
+              width={300}
+              selectedStartDate={new Date(selectedDate)}
+            />
+          </View>
 
-        {selectedDate && buttonColorsByDate[selectedDate] && (
-          <View>
-            <Text style={styles.dateText}>{dateFormat(selectedDate)}</Text>
-            {Object.keys(buttonColorsByDate[selectedDate]).map(
-              (timeSlot, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={buttonstyle(
-                    buttonColorsByDate[selectedDate][timeSlot]
-                  )}
-                  onPress={() => changeButtonColor(timeSlot)}
-                >
-                  <Text style={styles.timeText}>
-                    {timeSlot} -{" "}
-                    {getAvailabilityText(
+          {selectedDate && buttonColorsByDate[selectedDate] && (
+            <View>
+              <Text style={styles.dateText}>{dateFormat(selectedDate)}</Text>
+              {Object.keys(buttonColorsByDate[selectedDate]).map(
+                (timeSlot, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={buttonstyle(
                       buttonColorsByDate[selectedDate][timeSlot]
                     )}
-                  </Text>
-                </TouchableOpacity>
-              )
-            )}
-          </View>
-        )}
-      </ScrollView>
+                    onPress={() => changeButtonColor(timeSlot)}
+                  >
+                    <Text style={styles.timeText}>
+                      {timeSlot} -{" "}
+                      {getAvailabilityText(
+                        buttonColorsByDate[selectedDate][timeSlot]
+                      )}
+                    </Text>
+                  </TouchableOpacity>
+                )
+              )}
+            </View>
+          )}
+        </ScrollView>
+      </LinearGradient>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
     flex: 1,
-    padding: 10,
+    width: "100%",
+  },
+  background: {
+    height: "100%",
+    width: "100%",
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10
   },
 
   title: {
