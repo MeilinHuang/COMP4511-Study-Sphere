@@ -218,6 +218,7 @@ export default function StudyTools({ route, navigation }) {
         nextKey,
       });
     }
+    console.log(tags)
     // }, [tags, todos, inprogressTodos, completedTodos]);
   }, [tags]);
 
@@ -232,6 +233,7 @@ export default function StudyTools({ route, navigation }) {
           contentContainerStyle={[styles.container, { height: windowHeight }]}
         >
           {/* {tags.map((elem, index) => ())} */}
+          {/* {console.log(tags)} */}
           {tags.map((elem, index) => (
             <View key={index}>
               <TouchableOpacity

@@ -376,7 +376,7 @@ export default function App() {
             }}
             style={styles.background}
           >
-            {(props) => <StudyTools {...props} {...params} />}
+            {(props) => <StudyTools {...params} {...props} />}
           </Tabs.Screen>
           <Tabs.Screen
             name="Settings"
@@ -534,6 +534,21 @@ export default function App() {
             <RootStack.Screen name="Edit" options={{ presentation: "modal" }}>
               {(props) => (
                 <Edit
+                  {...props}
+                  users={users}
+                  courses={courses}
+                  studySessions={studySessions}
+                  userId={userId}
+                  setUsers={setUsers}
+                  setCourses={setCourses}
+                  setStudySessions={setStudySessions}
+                  setUserId={setUserId}
+                />
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name="Timer" options={{ presentation: "card" }}>
+              {(props) => (
+                <Timer
                   {...props}
                   users={users}
                   courses={courses}

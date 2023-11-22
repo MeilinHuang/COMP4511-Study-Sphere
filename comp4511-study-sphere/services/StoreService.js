@@ -64,6 +64,7 @@ export default {
         await AsyncStorage.setItem(TAGS_STORE_KEY, JSON.stringify(defaultTags));
         storedTags = await AsyncStorage.getItem(TAGS_STORE_KEY);
       }
+
       
 
       const retval = {
