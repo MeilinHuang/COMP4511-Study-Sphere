@@ -333,7 +333,8 @@ export default function Create({ route, navigation }) {
           <Animated.Text
             style={[
               styles.sliderText,
-              { marginLeft: animatedValue, marginBottom: 10 }, sliderValue >= 280 && {marginLeft: 280}
+              { marginLeft: animatedValue, marginBottom: 10 },
+              sliderValue >= 280 && { marginLeft: 280 },
             ]}
           >
             {sliderValue}
@@ -350,11 +351,9 @@ export default function Create({ route, navigation }) {
         </View>
         <TouchableOpacity
           style={[styles.browseButton]}
-          onPress={() => setVisibleAlert((v) => !v)}
+          onPress={() => setModalVisible(true)}
         >
-          <Text style={[styles.browseButtonText]}>
-            Edit
-          </Text>
+          <Text style={[styles.browseButtonText]}>Edit</Text>
         </TouchableOpacity>
         {/* <MaterialCommunityIcons
           name="pencil"

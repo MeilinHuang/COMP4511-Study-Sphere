@@ -108,7 +108,7 @@ export default function Edit({ route, navigation }) {
     ? changeDateFormat(selectedDate)
     : "Select date and time";
 
-  const [sliderValue, setSldierValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState(0);
   const animatedValue = new Animated.Value(duration);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -140,7 +140,6 @@ export default function Edit({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-
       <Text
         aria-label="Label for Task"
         nativeID="labelTask"
@@ -247,6 +246,7 @@ export default function Edit({ route, navigation }) {
             style={[
               styles.sliderText,
               { marginLeft: animatedValue, marginBottom: 10 },
+              duration >= 280 && { marginLeft: 280 },
             ]}
           >
             {duration}
@@ -261,12 +261,18 @@ export default function Edit({ route, navigation }) {
             onValueChange={onSliderSliding}
           />
         </View>
-        <MaterialCommunityIcons
+        <TouchableOpacity
+          style={[styles.browseButton]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={[styles.browseButtonText]}>Edit</Text>
+        </TouchableOpacity>
+        {/* <MaterialCommunityIcons
           name="pencil"
           size={15}
           color="black"
           onPress={openEditModal}
-        />
+        /> */}
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
@@ -370,13 +376,13 @@ export default function Edit({ route, navigation }) {
           onPress={() => {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             navigation.navigate("Study Tools", {
-              title,
-              dueDate: selectedDate ? selectedDate.toJSON() : "",
-              tag,
-              img,
-              body,
-              duration: duration,
-              payload: { action: "edit", oldTag: origTag, key: origKey },
+              title: origTitle,
+              dueDate: origDueDate,
+              tag: origTag,
+              img: origImg,
+              body: origBody,
+              duration: origDuration,
+              payload: { action: "cancel" },
             });
           }}
         >
