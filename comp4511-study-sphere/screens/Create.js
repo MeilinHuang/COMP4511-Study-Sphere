@@ -172,7 +172,10 @@ export default function Create({ route, navigation }) {
         accessibilityHint="The todo's task"
         placeholder="Enter a Task Name"
         value={title}
-        onChangeText={setTitle}
+        onChangeText={(t) => {
+          setTitle(t);
+          // console.log(t, "t");
+        }}
         style={styles.textInput}
       />
       <View style={{ flexDirection: "row" }}>
@@ -469,6 +472,14 @@ export default function Create({ route, navigation }) {
               Haptics.notificationAsync(
                 Haptics.NotificationFeedbackType.Success
               );
+              // console.log(
+              //   "pressed create",
+              //   title,
+              //   selectedDate,
+              //   tag,
+              //   body,
+              //   sliderValue
+              // );
               navigation.navigate("Study Tools", {
                 title,
                 // dueDate: date,

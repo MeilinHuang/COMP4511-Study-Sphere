@@ -26,8 +26,15 @@ const tagData = [
 ];
 
 export default function Edit({ route, navigation }) {
-  const { origTitle, origDueDate, origTag, origKey, origBody, origDuration, origImg } =
-    route.params ?? {};
+  const {
+    origTitle,
+    origDueDate,
+    origTag,
+    origKey,
+    origBody,
+    origDuration,
+    origImg,
+  } = route.params ?? {};
   const [title, setTitle] = useState(origTitle ? origTitle : "");
   const [tag, setTag] = useState(origTag ? origTag : "To-do");
   const [body, setBody] = useState(origBody ? origBody : "");
@@ -52,7 +59,7 @@ export default function Edit({ route, navigation }) {
   const [selectedDate, setSelectedDate] = useState(
     origDueDate ? new Date(origDueDate) : null
   );
-  const [duration, setDuration] = useState(origDuration)
+  const [duration, setDuration] = useState(origDuration);
   const [formattedDate, setFormattedDate] = useState("");
 
   const pickImage = async () => {
@@ -60,7 +67,7 @@ export default function Edit({ route, navigation }) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       // base64: true,
     });
-    console.log(result.assets);
+    // console.log(result.assets);
     if (!result.canceled) {
       setImg(result.assets[0].uri);
     }

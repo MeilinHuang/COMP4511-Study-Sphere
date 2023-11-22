@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { Overlay } from 'react-native-elements';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { Overlay } from "react-native-elements";
 
 export default function CourseBox({
   courseKey,
@@ -14,7 +14,7 @@ export default function CourseBox({
   courses,
   setCourses,
 }) {
-  const images = require.context('../assets/course_images', true);
+  const images = require.context("../assets/course_images", true);
   let itemImg = images(`./${icon}`);
   const [isMember, setIsMember] = useState(
     courses[courseKey].participants.includes(userId)
@@ -83,10 +83,10 @@ export default function CourseBox({
       <TouchableOpacity
         style={styles.container}
         accessible={true}
-        accessibilityLabel=''
-        accessibilityHint=''
+        accessibilityLabel=""
+        accessibilityHint=""
         onPress={() =>
-          navigation.navigate('Classes', {
+          navigation.navigate("Classes", {
             title: `${courseKey.charAt(0).toUpperCase()}${courseKey
               .substr(1)
               .toLowerCase()} Classes`,
@@ -104,7 +104,7 @@ export default function CourseBox({
             />
           )}
           <View>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: "bold" }}>
               {courseKey.charAt(0).toUpperCase() +
                 courseKey.substr(1).toLowerCase()}
             </Text>
@@ -162,108 +162,108 @@ export default function CourseBox({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
     // width: "100%",
-    backgroundColor: '#C1C3EC',
+    backgroundColor: "#C1C3EC",
     marginTop: 5,
     marginLeft: 5,
     marginRight: 5,
     padding: 10,
-    borderColor: '#6A74CF',
+    borderColor: "#6A74CF",
     borderWidth: 1,
     borderRadius: 10,
   },
   buttonsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   informationBox: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     gap: 10,
-    flexWrap: 'wrap',
-    overflowWrap: 'break-word',
-    width: '70%',
+    flexWrap: "wrap",
+    overflowWrap: "break-word",
+    width: "70%",
   },
   image: {
     height: 40,
     width: 40,
-    alignSelf: 'center',
+    alignSelf: "center",
     borderRadius: 20,
   },
   buttonJoin: {
     padding: 10,
-    color: '#22810B',
+    color: "#22810B",
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: '#22810B',
-    backgroundColor: 'white',
+    borderColor: "#22810B",
+    backgroundColor: "white",
   },
   buttonLeave: {
     padding: 10,
-    color: '#D72424',
+    color: "#D72424",
     borderRadius: 7,
     borderWidth: 2,
-    borderColor: '#D72424',
-    backgroundColor: 'white',
+    borderColor: "#D72424",
+    backgroundColor: "white",
   },
   buttonJoinText: {
-    color: '#22810B',
-    fontWeight: 'bold',
+    color: "#22810B",
+    fontWeight: "bold",
   },
   buttonLeaveText: {
-    color: '#D72424',
-    fontWeight: 'bold',
+    color: "#D72424",
+    fontWeight: "bold",
   },
   modal: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 5,
-    width: '100%',
+    width: "100%",
   },
   modalHeading: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     margin: 10,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 20,
   },
   modalButtonsView: {
-    width: '80%',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
   cancelButton: {
     padding: 10,
-    color: 'white',
-    borderColor: 'black',
+    color: "white",
+    borderColor: "black",
     borderWidth: 2,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
   },
   leaveConfirmButton: {
     padding: 10,
-    color: 'white',
-    backgroundColor: 'white',
-    borderColor: '#D72424',
+    color: "white",
+    backgroundColor: "white",
+    borderColor: "#D72424",
     borderWidth: 2,
     borderRadius: 5,
   },
   message: {
     padding: 15,
     fontSize: 20,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 5,
   },
   overlay: {
     borderRadius: 10,
   },
   modalButtonTextLeave: {
-    color: '#D72424',
-    fontWeight: 'bold',
+    color: "#D72424",
+    fontWeight: "bold",
   },
 });

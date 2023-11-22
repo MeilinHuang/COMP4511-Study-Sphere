@@ -1,18 +1,18 @@
-import React, { useCallback, useState } from 'react';
-import { Text, View, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import DateTimePicker from 'react-native-ui-datepicker';
-import { TimePickerModal } from 'react-native-paper-dates';
-import { FontAwesome5 } from '@expo/vector-icons';
-import dayjs from 'dayjs';
-import { Button } from 'react-native-paper';
-import { formatTime } from '../utils/helpers';
-import { TextInput } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { LogBox } from 'react-native';
+import React, { useCallback, useState } from "react";
+import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import DateTimePicker from "react-native-ui-datepicker";
+import { TimePickerModal } from "react-native-paper-dates";
+import { FontAwesome5 } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import { Button } from "react-native-paper";
+import { formatTime } from "../utils/helpers";
+import { TextInput } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { LogBox } from "react-native";
 
 LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
+  "Non-serializable values were found in the navigation state",
 ]);
 
 export default function FilterStudySessions({ navigation, route }) {
@@ -22,7 +22,7 @@ export default function FilterStudySessions({ navigation, route }) {
   const [fromTime, setFromTime] = useState({ hours: 12, minutes: 0 });
   const [toTime, setToTime] = useState({ hours: 12, minutes: 0 });
   const [courseArray, setCourseArray] = useState([]);
-  const [enteredCourse, setEnteredCourse] = useState('');
+  const [enteredCourse, setEnteredCourse] = useState("");
 
   const onTimeDismiss = useCallback(() => {
     setTimeVisible(false);
@@ -52,7 +52,7 @@ export default function FilterStudySessions({ navigation, route }) {
     if (enteredCourse) {
       // only add one course
       setCourseArray([enteredCourse]);
-      setEnteredCourse('');
+      setEnteredCourse("");
     }
   };
 
@@ -76,9 +76,9 @@ export default function FilterStudySessions({ navigation, route }) {
                   onPress={() => removeItemFunction(idx)}
                 >
                   <MaterialIcons
-                    name='highlight-remove'
+                    name="highlight-remove"
                     size={30}
-                    color='white'
+                    color="white"
                   />
                 </Pressable>
               </View>
@@ -102,26 +102,26 @@ export default function FilterStudySessions({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
+      <LinearGradient colors={["#B6B2E6", "#C5DDBA"]} style={styles.background}>
         <View style={styles.formContainer}>
           <Text
             style={{
               marginBottom: 10,
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}
           >
             Select course to filter:
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
-              placeholder='Please enter the course'
+              placeholder="Please enter the course"
               value={enteredCourse}
               onChangeText={(text) => setEnteredCourse(text)}
               style={styles.textInput}
             />
             <Pressable style={styles.addButton} onPress={handleAddCourse}>
-              <FontAwesome5 name='plus' size={20} color='white' />
+              <FontAwesome5 name="plus" size={20} color="white" />
             </Pressable>
           </View>
           <View>
@@ -133,20 +133,20 @@ export default function FilterStudySessions({ navigation, route }) {
             style={{
               marginBottom: 10,
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             }}
           >
             Select date to filter:
           </Text>
-          <View style={{ backgroundColor: 'white', borderRadius: 15 }}>
+          <View style={{ backgroundColor: "white", borderRadius: 15 }}>
             <DateTimePicker
               value={selectedDate}
-              mode='date'
-              display='default'
-              locale='en'
+              mode="date"
+              display="default"
+              locale="en"
               onValueChange={(date) => setSelectedDate(dayjs(date))}
               displayFullDays={false}
-              selectedItemColor='#4f46e5'
+              selectedItemColor="#4f46e5"
             />
           </View>
 
@@ -154,7 +154,7 @@ export default function FilterStudySessions({ navigation, route }) {
             style={{
               marginBottom: 10,
               fontSize: 20,
-              fontWeight: 'bold',
+              fontWeight: "bold",
               marginTop: 20,
             }}
           >
@@ -165,13 +165,13 @@ export default function FilterStudySessions({ navigation, route }) {
               <Button
                 onPress={() => setTimeVisible(true)}
                 uppercase={false}
-                mode='outlined'
+                mode="outlined"
                 style={{
-                  backgroundColor: '#4f46e5',
-                  width: '50%',
+                  backgroundColor: "#4f46e5",
+                  width: "50%",
                   marginRight: 5,
                 }}
-                labelStyle={{ color: 'white' }}
+                labelStyle={{ color: "white" }}
               >
                 Select Start Time
               </Button>
@@ -185,12 +185,12 @@ export default function FilterStudySessions({ navigation, route }) {
               <Button
                 onPress={() => setToTimeVisible(true)}
                 uppercase={false}
-                mode='outlined'
+                mode="outlined"
                 style={{
-                  backgroundColor: '#4f46e5',
-                  width: '50%',
+                  backgroundColor: "#4f46e5",
+                  width: "50%",
                 }}
-                labelStyle={{ color: 'white' }}
+                labelStyle={{ color: "white" }}
               >
                 Select Finish Time
               </Button>
@@ -206,8 +206,8 @@ export default function FilterStudySessions({ navigation, route }) {
               style={{
                 marginTop: 20,
                 fontSize: 20,
-                fontWeight: 'bold',
-                textAlign: 'center',
+                fontWeight: "bold",
+                textAlign: "center",
               }}
             >
               {`From ${formatTime(
@@ -220,11 +220,11 @@ export default function FilterStudySessions({ navigation, route }) {
           <Pressable
             style={[styles.backNextButton]}
             onPress={() => {
-              console.log(
-                `Selected Course: ${courseArray}\nSelected Date: ${selectedDate}\nSelected Start Time: ${fromTime}\nSelected To Time: ${toTime}`
-              );
+              // console.log(
+              //   `Selected Course: ${courseArray}\nSelected Date: ${selectedDate}\nSelected Start Time: ${fromTime}\nSelected To Time: ${toTime}`
+              // );
               sendFilteredDataParent();
-              navigation.navigate('Study Sessions');
+              navigation.navigate("Study Sessions");
             }}
           >
             <Text style={styles.nextPageBtnText}>Filter Results</Text>
@@ -238,17 +238,17 @@ export default function FilterStudySessions({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   background: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   textInput: {
     height: 50,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 20,
     padding: 10,
     paddingHorizontal: 8,
@@ -264,21 +264,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   addButton: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: "#4f46e5",
     borderRadius: 20,
     height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 20,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   purpleBubble: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: "#4f46e5",
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -286,42 +286,42 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   bubbleText: {
-    color: 'white',
+    color: "white",
     fontSize: 15,
   },
   bubbleParentContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   bubbleContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   bubbleContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   removeButton: {
     marginLeft: 8,
   },
   nextPageBtnText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   selectTimeSection: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 10,
     marginBottom: 50,
   },
   timeBtns: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   backNextButton: {
-    backgroundColor: '#4f46e5',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#4f46e5",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 13,
     borderRadius: 20,
     marginLeft: 5,
