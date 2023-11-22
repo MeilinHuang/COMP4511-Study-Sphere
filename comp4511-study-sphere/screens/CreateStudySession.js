@@ -214,6 +214,8 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
     setArrayState(currentState);
   };
 
+ 
+
   const getItemsAdded = (itemsArray, removeItemFunction) => {
     return (
       <View style={styles.bubbleParentContainer}>
@@ -246,6 +248,39 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
 
   const navigateLocationStep = () => {
     setCurrentPosition(2);
+  };
+
+  const getButtonColor = (availability) => {
+    if (availability === 0) return "#FFB6B6";
+    if (availability === 25) return "#FFDAA5";
+    if (availability === 50) return "#8DB4E2";
+    if (availability === 75) return "#8497B0";
+    if (availability === 100) return "#90EE90";
+    return "#FFFFFF";
+  };
+
+
+  const renderAvailability = () => {
+    if (!selectedDate) {
+      return null;
+    }
+    return timeSlots.map((slot, index) => (
+      <View
+        key={index}
+        style={[
+          buttonstyle2(getButtonColor(slot.availability)),
+          styles.timeSlotButton,
+        ]}
+      >
+        <View style={styles.slot}>
+          <Text style={styles.timeText}>{slot.time}</Text>
+          <Text style={styles.timeText}>
+            {"                                     "} {getAvailabilityText(getButtonColor(slot.availability))} (
+            {slot.availability}%)
+          </Text>
+        </View>
+      </View>
+    ));
   };
 
   /**
@@ -328,9 +363,9 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
   const getAvailabilityText = (color) => {
     let result;
     if (color === 'green') {
-      result = 'Available';
-    } else {
       result = 'Unavailable';
+    } else {
+      result = 'Available';
     }
     return result;
   };
@@ -349,6 +384,28 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
     borderRadius: 10
   });
 
+  const buttonstyle2 = (color) => ({
+    ...styles.timeSlot,
+    borderWidth: 1,
+    borderColor: "gray",
+    backgroundColor: color,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  });
+
+  const timeSlots = [
+    { time: "7 AM", availability: 0 },
+    { time: "8 AM", availability: 25 },
+    { time: "9 AM", availability: 25 },
+    { time: "10 AM", availability: 50 },
+    { time: "11 AM", availability: 25 },
+    { time: "12 AM", availability: 100 },
+    { time: "1 AM", availability: 25 },
+    { time: "2 AM", availability: 25 },
+    { time: "3 AM", availability: 25 },
+    { time: "4 AM", availability: 75 },
+    { time: "5 PM", availability: 0 },
+  ];
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
@@ -483,32 +540,12 @@ export default function CreateStudySessionScreen({ navigation, userId }) {
                   selectedStartDate={new Date(selectedDate)}
                 />
               </View>
-
-              {selectedDate && buttonColorsByDate[selectedDate] && (
-                <View>
+                {selectedDate && (
                   <Text style={styles.dateText}>
                     {dateFormat(selectedDate)}
                   </Text>
-                  {Object.keys(buttonColorsByDate[selectedDate]).map(
-                    (timeSlot, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={buttonstyle(
-                          buttonColorsByDate[selectedDate][timeSlot]
-                        )}
-                        onPress={() => changeButtonColor(timeSlot)}
-                      >
-                        <Text style={styles.timeText}>
-                          {timeSlot} -{' '}
-                          {getAvailabilityText(
-                            buttonColorsByDate[selectedDate][timeSlot]
-                          )}
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  )}
-                </View>
-              )}
+                )}
+                {renderAvailability()}
             </View>
             <Text
               style={{
@@ -823,4 +860,19 @@ const styles = StyleSheet.create({
     top: 5,
     left: 5,
   },
+
+  slot: {
+    width: "100%",
+    flexDirection: "row",
+    height: 40,
+  },
+
+  timeSlot: {
+    // paddingVertical: 25,
+    paddingHorizontal: 25,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    alignSelf: "stretch",
+  },
 });
+
