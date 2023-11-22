@@ -348,12 +348,20 @@ export default function Create({ route, navigation }) {
             onValueChange={onSliderSliding}
           />
         </View>
-        <MaterialCommunityIcons
+        <TouchableOpacity
+          style={[styles.browseButton]}
+          onPress={() => setVisibleAlert((v) => !v)}
+        >
+          <Text style={[styles.browseButtonText]}>
+            Edit
+          </Text>
+        </TouchableOpacity>
+        {/* <MaterialCommunityIcons
           name="pencil"
           size={15}
           color="black"
           onPress={openEditModal}
-        />
+        /> */}›
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
@@ -585,8 +593,8 @@ const styles = StyleSheet.create({
   },
   editButton: {
     borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    // padding: 10,
+    // elevation: 2,
   },
   editButtonOpen: {
     backgroundColor: "#F194FF",

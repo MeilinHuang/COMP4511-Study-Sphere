@@ -50,16 +50,48 @@ export default function TodoBox(params) {
         <View style={styles.modal}>
           <Text style={styles.modalHeading}>More Actions:</Text>
           <View style={styles.modalButtonsView}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setVisibleAlert((v) => !v)}
-            >
-              <Text style={styles.modalButtonText}>Close more actions</Text>
-            </TouchableOpacity>
             {params.tag !== "Completed" ? (
               <View style={styles.buttonsContainer}>
-                <View style={{ paddingLeft: params.img ? 0 : 60 }}>
-                  <Pressable
+                <View style={{ flexDirection: "column" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={() => setVisibleAlert((v) => !v)}
+                    >
+                      <Text style={styles.cancelButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={() => setVisibleAlert((v) => !v)}
+                    >
+                      <Text style={styles.cancelButtonText}>Start Timer</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={() => setVisibleAlert((v) => !v)}
+                    >
+                      <Text style={styles.cancelButtonText}>Complete Task</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={() => setVisibleAlert((v) => !v)}
+                    >
+                      <Text style={styles.cancelButtonText}>Delete Task</Text>
+                    </TouchableOpacity>
+                  </View>
+                  {/* <Pressable
                     accessibilityLabel="Start timer"
                     onPress={() =>
                       params.navigation.navigate("Timer", {
@@ -145,8 +177,8 @@ export default function TodoBox(params) {
                       name="delete-circle-outline"
                       size={30}
                       color="black"
-                    />
-                  </Pressable>
+                    /> */}
+                  {/* </Pressable> */}
                 </View>
               </View>
             ) : (
@@ -203,6 +235,12 @@ export default function TodoBox(params) {
                 </Pressable>
               </View>
             )}
+            <TouchableOpacity
+              style={[styles.cancelButton, { backgroundColor: "#5D69D7" }]}
+              onPress={() => setVisibleAlert((v) => !v)}
+            >
+              <Text style={[styles.cancelButtonText, { color: "#fff" }]}>Close more actions</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Overlay>
@@ -435,7 +473,33 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
   },
+  cancelButton: {
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 50,
+    marginTop: 10,
+    marginBottom: 15,
+    backgroundColor: "#efefef",
+    paddingHorizontal: 20,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#5D69D7",
+    padding: 20,
+  },
   buttonsContainer: {
     flexDirection: "row",
+  },
+  buttonLeave: {
+    paddingTop: "10%",
+  },
+  buttonLeaveText: {
+    fontWeight: "bold",
+  },
+  modalHeading: {
+    fontWeight: "bold",
+    fontSize: 20,
   },
 });
