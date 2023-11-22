@@ -333,7 +333,7 @@ export default function Create({ route, navigation }) {
           <Animated.Text
             style={[
               styles.sliderText,
-              { marginLeft: animatedValue, marginBottom: 10 },
+              { marginLeft: animatedValue, marginBottom: 10 }, sliderValue >= 280 && {marginLeft: 280}
             ]}
           >
             {sliderValue}
@@ -361,7 +361,7 @@ export default function Create({ route, navigation }) {
           size={15}
           color="black"
           onPress={openEditModal}
-        /> */}›
+        /> */}
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>

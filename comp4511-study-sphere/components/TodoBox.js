@@ -81,6 +81,7 @@ export default function TodoBox(params) {
                       accessibilityLabel="Start timer"
                       style={styles.cancelButton}
                       onPress={() => {
+                        setVisibleAlert(false);
                         params.navigation.navigate("Timer", {
                           duration:
                             parseInt(params.duration) === 0 ||
@@ -102,7 +103,8 @@ export default function TodoBox(params) {
                     <Pressable
                       accessibilityLabel="Mark todo as completed"
                       style={styles.cancelButton}
-                      onPress={() =>
+                      onPress={() => {
+                        setVisibleAlert(false);
                         params.navigation.navigate("Study Tools", {
                           title: params.title,
                           dueDate: params.dueDate,
@@ -114,8 +116,8 @@ export default function TodoBox(params) {
                             oldTag: params.tag,
                             key: params.myKey,
                           },
-                        })
-                      }
+                        });
+                      }}
                     >
                       <Text style={styles.cancelButtonText}>Complete Task</Text>
                     </Pressable>
@@ -123,7 +125,7 @@ export default function TodoBox(params) {
                       accessibilityLabel="Delete Todo"
                       style={styles.cancelButton}
                       onPress={() => {
-                        console.log("clicked");
+                        setVisibleAlert(false);
                         params.navigation.navigate("Study Tools", {
                           title: params.title,
                           dueDate: params.dueDate,
