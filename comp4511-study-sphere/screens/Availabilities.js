@@ -42,6 +42,14 @@ export default function Availabilities({
     }
   };
 
+  const getAvailabilityText2 = (color) => {
+    if (color === "green") {
+      return "Unavailable";
+    } else {
+      return "Available";
+    }
+  };
+
   const dateFormat = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -149,7 +157,8 @@ export default function Availabilities({
           <View style={styles.slot}>
             <Text style={styles.timeText}>{slot.time}</Text>
             <Text style={styles.timeTextAvailability}>
-              {slot.availability}% Available
+              {getAvailabilityText2(getButtonColor(slot.availability))} (
+              {slot.availability}%)
             </Text>
           </View>
         </View>
@@ -158,7 +167,6 @@ export default function Availabilities({
 
     const buttonstyle2 = (color) => ({
       ...styles.timeSlot,
-      // paddingVertical: 25,
       borderWidth: 1,
       borderColor: "gray",
       backgroundColor: color,
@@ -346,12 +354,6 @@ export default function Availabilities({
                         )}
                         onPress={() => changeButtonColor(timeSlot)}
                       >
-                        {/* <Text style={styles.timeText}>
-                          {timeSlot} -{" "}
-                          {getAvailabilityText(
-                            buttonColorsByDate[selectedDate][timeSlot]
-                          )}
-                        </Text> */}
                         <View style={styles.slot}>
                           <Text style={styles.timeText}>{timeSlot}</Text>
                           <Text style={styles.timeTextAvailability}>
@@ -483,18 +485,11 @@ const styles = StyleSheet.create({
     paddingTop: 5,
 
     alignSelf: "flex-start",
-    // position: "absolute",
-    // top: 5,
-    // left: 5,
+
   },
   timeTextAvailability: {
     fontSize: 16,
     color: "#5C5C5C",
-    // alignSelf: "center",
-    // justifyContent: "center",
-    // position: "absolute",
-    // top: 5,
-    // left: 5,
     paddingVertical: 20,
     paddingLeft: 30,
   },
@@ -580,3 +575,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 });
+
