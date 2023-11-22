@@ -87,17 +87,15 @@ export default function TodoBox(params) {
               <View style={{ paddingLeft: params.img ? 0 : 60 }}>
                 <Pressable
                   accessibilityLabel="Start timer"
-                  onPress={() =>
+                  onPress={() => {
+                    console.log("here", params.duration);
                     params.navigation.navigate("Timer", {
-                      origTitle: params.title,
-                      origDueDate: params.dueDate,
-                      origTag: params.tag,
-                      origKey: params.myKey,
-                      origBody: params.body,
-                      origDuration: params.duration,
-                      origImg: params.img,
-                    })
-                  }
+                      duration:
+                        parseInt(params.duration) === 0
+                          ? 25
+                          : parseInt(params.duration),
+                    });
+                  }}
                 >
                   <MaterialCommunityIcons
                     name="play-circle-outline"

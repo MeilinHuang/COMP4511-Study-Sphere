@@ -546,7 +546,10 @@ export default function App() {
                 />
               )}
             </RootStack.Screen>
-            <RootStack.Screen name="Timer" options={{ presentation: "card" }}>
+            <RootStack.Screen
+              name="Timer"
+              options={{ headerBackTitle: "Back" }}
+            >
               {(props) => (
                 <Timer
                   {...props}

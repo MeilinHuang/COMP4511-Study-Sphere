@@ -1,61 +1,90 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import {
+  CountdownCircleTimer,
+  useCountdown,
+} from "react-native-countdown-circle-timer";
 
-export default function Timer() {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const onComplete = () => {
-    // Do something when the countdown completes
-    console.log("Countdown completed!");
-  };
-
+export default function Timer({ route, navigation }) {
+  const { duration } = route.params ?? {};
+  const [isPlay, setIsPlay] = useState(true);
+  //   const {
+  //     path,
+  //     pathLength,
+  //     stroke,
+  //     strokeDashoffset,
+  //     remainingTime,
+  //     elapsedTime,
+  //     size,
+  //     strokeWidth,
+  //   } = useCountdown({
+  //     isPlaying: true,
+  //     duration: duration * 60,
+  //     colors: "#abc",
+  //   });
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingTop: "50%",
+      }}
+    >
       <CountdownCircleTimer
-        isPlaying={isPlaying}
-        duration={10} // Set the countdown duration in seconds
-        onComplete={onComplete}
-        colors={[["#004777", 0.4], ["#F7B801", 0.4], ["#A30000"]]}
+        isPlaying={isPlay}
+        duration={duration * 60}
+        colors={["#6A74CF", "#F04444", "#FF0000"]}
+        colorsTime={[duration * 60, 60, 0]}
+        size={300}
       >
-        {({ remainingTime, animatedColor }) => (
-          <View style={styles.timerContainer}>
-            <Text style={{ color: animatedColor, fontSize: 24 }}>
-              {remainingTime}
-            </Text>
-          </View>
+        {({ remainingTime }) => (
+          <Text style={{ fontSize: 50 }}>
+            {Math.floor(remainingTime / 3600)} :{" "}
+            {Math.floor((remainingTime % 3600) / 60)} : {remainingTime % 60}
+          </Text>
         )}
       </CountdownCircleTimer>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => setIsPlaying(!isPlaying)}
-          style={styles.controlButton}
-        >
-          <Text style={{ color: "#FFF" }}>{isPlaying ? "Pause" : "Start"}</Text>
-        </TouchableOpacity>
+      <View>
+        {isPlay ? (
+          <TouchableOpacity
+            onPress={() => {
+              setIsPlay(false);
+            }}
+            style={styles.cancelButton}
+          >
+            <Text style={styles.cancelButtonText}>Pause</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setIsPlay(true);
+            }}
+            style={styles.cancelButton}
+          >
+            <Text style={styles.cancelButtonText}>Resume</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    timerContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    buttonContainer: {
-      marginTop: 20,
-    },
-    controlButton: {
-      backgroundColor: '#007BFF',
-      padding: 10,
-      borderRadius: 5,
-    },
-  });
+  cancelButton: {
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 50,
+    marginTop: 10,
+    marginBottom: 15,
+    backgroundColor: "#5D69D7",
+    paddingHorizontal: 20,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#fff",
+    padding: 20,
+  },
+});
