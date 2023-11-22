@@ -149,8 +149,7 @@ export default function Availabilities({
           <View style={styles.slot}>
             <Text style={styles.timeText}>{slot.time}</Text>
             <Text style={styles.timeTextAvailability}>
-              {getAvailabilityText(getButtonColor(slot.availability))} (
-              {slot.availability}%)
+              {slot.availability}% Available
             </Text>
           </View>
         </View>
