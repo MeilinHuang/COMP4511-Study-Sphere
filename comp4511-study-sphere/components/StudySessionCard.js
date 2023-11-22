@@ -30,6 +30,7 @@ export default function StudySessionCard({
     members.some((member) => member === userId)
   );
   const [visibleAlert, setVisibleAlert] = useState(false);
+  const isOwner = studySessionInfo.owner === userId;
 
   useEffect(() => {
     setIsMember(members.some((member) => member === userId));
@@ -67,7 +68,7 @@ export default function StudySessionCard({
           <Text>{participants.length + 1} Members</Text>
         </View>
       </View>
-      {!isMember ? (
+      {isOwner ? null : !isMember ? (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.buttonJoin}

@@ -17,10 +17,16 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-export default function StudySessionDetails({ navigation, route, users }) {
+export default function StudySessionDetails({
+  navigation,
+  route,
+  users,
+  userId,
+}) {
   const { studySessionInfo, sessionIdx, handleLeave } = route.params;
   const owner = users.filter((user) => user.id === studySessionInfo.owner);
   const [visibleAlert, setVisibleAlert] = useState(false);
+  const isOwner = userId === studySessionInfo.owner;
 
   useEffect(() => {
     navigation.setOptions({ title: studySessionInfo.title });
@@ -30,12 +36,14 @@ export default function StudySessionDetails({ navigation, route, users }) {
     <LinearGradient colors={['#B6B2E6', '#C5DDBA']} style={styles.background}>
       <View style={styles.container}>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={styles.buttonLeave}
-            onPress={() => setVisibleAlert(true)}
-          >
-            <Text style={styles.buttonLeaveText}>Leave</Text>
-          </TouchableOpacity>
+          {!isOwner && (
+            <TouchableOpacity
+              style={styles.buttonLeave}
+              onPress={() => setVisibleAlert(true)}
+            >
+              <Text style={styles.buttonLeaveText}>Leave</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <ScrollView contentContainerStyle={styles.containerInner}>
           <View style={styles.detailsContainer}>
@@ -74,7 +82,9 @@ export default function StudySessionDetails({ navigation, route, users }) {
                   {studySessionInfo.location}
                 </Text>
               ) : (
-                <Text style={styles.detailsInfo}>Owner hasn't specified a location!</Text>
+                <Text style={styles.detailsInfo}>
+                  Owner hasn't specified a location!
+                </Text>
               )}
             </View>
           </View>
