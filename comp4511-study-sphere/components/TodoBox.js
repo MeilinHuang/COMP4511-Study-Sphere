@@ -52,25 +52,46 @@ export default function TodoBox(params) {
           <View style={styles.modalButtonsView}>
             {params.tag !== "Completed" ? (
               <View style={styles.buttonsContainer}>
-                <View style={{ flexDirection: "column" }}>
+                <View>
                   <View
                     style={{
                       flexDirection: "row",
                       justifyContent: "space-around",
                     }}
                   >
-                    <TouchableOpacity
+                    <Pressable
+                      accessibilityLabel="Edit todo"
                       style={styles.cancelButton}
-                      onPress={() => setVisibleAlert((v) => !v)}
+                      onPress={() => {
+                        setVisibleAlert(false);
+                        params.navigation.navigate("Edit", {
+                          origTitle: params.title,
+                          origDueDate: params.dueDate,
+                          origTag: params.tag,
+                          origKey: params.myKey,
+                          origBody: params.body,
+                          origDuration: params.duration || 25,
+                          origImg: params.img,
+                        });
+                      }}
                     >
                       <Text style={styles.cancelButtonText}>Edit</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </Pressable>
+                    <Pressable
+                      accessibilityLabel="Start timer"
                       style={styles.cancelButton}
-                      onPress={() => setVisibleAlert((v) => !v)}
+                      onPress={() => {
+                        params.navigation.navigate("Timer", {
+                          duration:
+                            parseInt(params.duration) === 0 ||
+                            params.duration === undefined
+                              ? 25
+                              : parseInt(params.duration),
+                        });
+                      }}
                     >
                       <Text style={styles.cancelButtonText}>Start Timer</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                   <View
                     style={{
@@ -78,118 +99,54 @@ export default function TodoBox(params) {
                       justifyContent: "space-around",
                     }}
                   >
-                    <TouchableOpacity
+                    <Pressable
+                      accessibilityLabel="Mark todo as completed"
                       style={styles.cancelButton}
-                      onPress={() => setVisibleAlert((v) => !v)}
+                      onPress={() =>
+                        params.navigation.navigate("Study Tools", {
+                          title: params.title,
+                          dueDate: params.dueDate,
+                          tag: "Completed",
+                          body: params.body,
+                          img: params.img,
+                          payload: {
+                            action: "edit",
+                            oldTag: params.tag,
+                            key: params.myKey,
+                          },
+                        })
+                      }
                     >
                       <Text style={styles.cancelButtonText}>Complete Task</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </Pressable>
+                    <Pressable
+                      accessibilityLabel="Delete Todo"
                       style={styles.cancelButton}
-                      onPress={() => setVisibleAlert((v) => !v)}
+                      onPress={() => {
+                        console.log("clicked");
+                        params.navigation.navigate("Study Tools", {
+                          title: params.title,
+                          dueDate: params.dueDate,
+                          tag: params.tag,
+                          body: params.body,
+                          img: params.img,
+                          payload: {
+                            action: "delete",
+                            key: params.myKey,
+                          },
+                        });
+                      }}
                     >
                       <Text style={styles.cancelButtonText}>Delete Task</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
-                  {/* <Pressable
-                    accessibilityLabel="Start timer"
-                    onPress={() =>
-                      params.navigation.navigate("Timer", {
-                        origTitle: params.title,
-                        origDueDate: params.dueDate,
-                        origTag: params.tag,
-                        origKey: params.myKey,
-                        origBody: params.body,
-                        origDuration: params.duration,
-                        origImg: params.img,
-                      })
-                    }
-                  >
-                    <MaterialCommunityIcons
-                      name="play-circle-outline"
-                      size={30}
-                      color="black"
-                    />
-                  </Pressable>
-                  <Pressable
-                    accessibilityLabel="Mark todo as completed"
-                    onPress={() =>
-                      params.navigation.navigate("Study Tools", {
-                        title: params.title,
-                        dueDate: params.dueDate,
-                        tag: "Completed",
-                        body: params.body,
-                        img: params.img,
-                        payload: {
-                          action: "edit",
-                          oldTag: params.tag,
-                          key: params.myKey,
-                        },
-                      })
-                    }
-                  >
-                    <MaterialCommunityIcons
-                      name="check-circle-outline"
-                      size={30}
-                      color="black"
-                    />
-                  </Pressable>
-                </View>
-                <View>
-                  <Pressable
-                    accessibilityLabel="Edit todo"
-                    onPress={() =>
-                      params.navigation.navigate("Edit", {
-                        origTitle: params.title,
-                        origDueDate: params.dueDate,
-                        origTag: params.tag,
-                        origKey: params.myKey,
-                        origBody: params.body,
-                        origDuration: params.duration,
-                        origImg: params.img,
-                      })
-                    }
-                  >
-                    <MaterialCommunityIcons
-                      name="pencil-circle-outline"
-                      size={30}
-                      color="black"
-                    />
-                  </Pressable>
-                  <Pressable
-                    accessibilityLabel="Delete Todo"
-                    onPress={() => {
-                      // console.log("clicked");
-                      params.navigation.navigate("Study Tools", {
-                        title: params.title,
-                        dueDate: params.dueDate,
-                        tag: params.tag,
-                        body: params.body,
-                        img: params.img,
-                        payload: {
-                          action: "delete",
-                          key: params.myKey,
-                        },
-                      });
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="delete-circle-outline"
-                      size={30}
-                      color="black"
-                    /> */}
-                  {/* </Pressable> */}
                 </View>
               </View>
             ) : (
-              <View
-                style={[
-                  styles.buttonsContainer,
-                  { paddingLeft: params.img ? 0 : 60 },
-                ]}
-              >
+              <View style={[styles.buttonsContainer]}>
                 <Pressable
                   accessibilityLabel="Unmark todo as completed"
+                  style={styles.cancelButton}
                   onPress={() =>
                     params.navigation.navigate("Study Tools", {
                       title: params.title,
@@ -205,15 +162,13 @@ export default function TodoBox(params) {
                     })
                   }
                 >
-                  <MaterialCommunityIcons
-                    name="check-circle-outline"
-                    size={30}
-                    color="green"
-                  />
+                  <Text style={styles.cancelButtonText}>Incomplete Task</Text>
                 </Pressable>
                 <Pressable
                   accessibilityLabel="Delete Todo"
-                  onPress={() =>
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    console.log("clicked");
                     params.navigation.navigate("Study Tools", {
                       title: params.title,
                       dueDate: params.dueDate,
@@ -224,14 +179,10 @@ export default function TodoBox(params) {
                         action: "delete",
                         key: params.myKey,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
-                  <MaterialCommunityIcons
-                    name="delete-circle-outline"
-                    size={30}
-                    color="black"
-                  />
+                  <Text style={styles.cancelButtonText}>Delete Task</Text>
                 </Pressable>
               </View>
             )}
@@ -239,7 +190,9 @@ export default function TodoBox(params) {
               style={[styles.cancelButton, { backgroundColor: "#5D69D7" }]}
               onPress={() => setVisibleAlert((v) => !v)}
             >
-              <Text style={[styles.cancelButtonText, { color: "#fff" }]}>Close more actions</Text>
+              <Text style={[styles.cancelButtonText, { color: "#fff" }]}>
+                Close more actions
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

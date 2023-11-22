@@ -140,6 +140,7 @@ export default function Edit({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+
       <Text
         aria-label="Label for Task"
         nativeID="labelTask"
